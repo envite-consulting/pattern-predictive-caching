@@ -1,0 +1,22 @@
+= Download the Data Sources
+
+For this project, the link:https://www.kaggle.com/datasets/rmisra/news-category-dataset[News Category Dataset] from Kaggle is used. Note that an account at Kaggle is required to be able
+to download the JSON file into this directory. 
+
+For further data processing, it is more convenient if the data is in a CSV format instead of JSON. Therefore, the following steps
+will convert the JSON file into a CSV file:
+
+.Create a new CSV file which will hold the data:
+----
+touch News_Category_Dataset_v3.csv
+----
+
+.Build the Docker image to be able to run the script without the need to install additional requirements:
+----
+docker image build -t json-to-csv:1.0.0 .
+----
+
+.Run the container:
+----
+docker run -v "/$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Category_Dataset_v3.csv" json-to-csv:1.0.0
+----
