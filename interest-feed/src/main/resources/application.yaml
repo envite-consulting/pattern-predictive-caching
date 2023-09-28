@@ -1,0 +1,6 @@
+server:
+  shutdown: graceful
+
+service:
+  news:
+    url: http://localhost:8081

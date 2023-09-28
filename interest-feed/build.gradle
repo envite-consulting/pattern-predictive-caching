@@ -21,6 +21,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	testImplementation group: 'org.wiremock', name: 'wiremock', version: '3.1.0'
 }
 
 tasks.named('test') {
