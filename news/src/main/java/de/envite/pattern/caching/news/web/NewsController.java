@@ -2,12 +2,11 @@ package de.envite.pattern.caching.news.web;
 
 import de.envite.pattern.caching.news.domain.NewsService;
 import de.envite.pattern.caching.news.adapter.RecommendedNewsQuery;
-import de.envite.pattern.caching.news.adapter.RecommendedNewsResponse;
+import de.envite.pattern.caching.news.adapter.NewsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
 
 @RestController
 @RequestMapping(value ="/")
@@ -20,7 +19,12 @@ public class NewsController {
     }
 
     @PostMapping(value = "/recommendedNews", consumes = "application/json", produces = "application/json")
-    public RecommendedNewsResponse getRecommendedNews(@RequestBody RecommendedNewsQuery query) {
+    public NewsResponse getRecommendedNews(@RequestBody RecommendedNewsQuery query) {
         return this.newsService.getRecommendedNews(query);
+    }
+
+    @GetMapping(value = "/latestNews", produces = "application/json")
+    public NewsResponse getLatestNews(@RequestParam int count, @RequestParam Instant endTime) {
+        return this.newsService.getLatestNews(count, endTime);
     }
 }

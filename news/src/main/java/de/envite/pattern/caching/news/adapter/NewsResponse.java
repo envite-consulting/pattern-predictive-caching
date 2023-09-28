@@ -4,12 +4,12 @@ import de.envite.pattern.caching.news.domain.NewsEntry;
 
 import java.util.List;
 
-public class RecommendedNewsResponse {
+public class NewsResponse {
     List<NewsEntry> newsEntries;
 
-    public RecommendedNewsResponse() {
+    public NewsResponse() {
     }
-    public RecommendedNewsResponse(List<NewsEntry> newsEntries) {
+    public NewsResponse(List<NewsEntry> newsEntries) {
         this.newsEntries = newsEntries;
     }
 
