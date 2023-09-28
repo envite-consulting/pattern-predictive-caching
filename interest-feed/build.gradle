@@ -20,9 +20,14 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.data:spring-data-redis'
+	implementation 'redis.clients:jedis:4.4.5'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	testImplementation group: 'org.wiremock', name: 'wiremock', version: '3.1.0'
+	testImplementation 'org.wiremock:wiremock:3.1.0'
+	testImplementation 'org.testcontainers:testcontainers:1.19.0'
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
 }
 
 tasks.named('test') {

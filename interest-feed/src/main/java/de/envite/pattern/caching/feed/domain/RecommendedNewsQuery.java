@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.feed.adapter;
+package de.envite.pattern.caching.feed.domain;
 
 import java.io.Serializable;
 import java.time.Instant;

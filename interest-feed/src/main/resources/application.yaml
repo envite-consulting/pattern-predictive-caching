@@ -1,6 +1,17 @@
 server:
+  port: 8080
   shutdown: graceful
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 service:
   news:
     url: http://localhost:8081
+
+feed:
+  limit: 20
+  period: 1w

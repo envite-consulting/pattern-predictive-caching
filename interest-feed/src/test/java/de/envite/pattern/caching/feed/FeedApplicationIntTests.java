@@ -4,31 +4,42 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import de.envite.pattern.caching.feed.adapter.RecommendedNews;
+import de.envite.pattern.caching.feed.domain.RecommendedNews;
 import de.envite.pattern.caching.feed.domain.FeedEntry;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@Testcontainers
 @WireMockTest
 class FeedApplicationIntTests {
+
+	@Container
+	static GenericContainer<?> redis =
+			new GenericContainer<>(DockerImageName.parse("redis:7.2.1-alpine")).withExposedPorts(6379);
 
 	@RegisterExtension
 	static WireMockExtension wireMock = WireMockExtension.newInstance()
@@ -37,6 +48,8 @@ class FeedApplicationIntTests {
 
 	@DynamicPropertySource
 	static void dynamicProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.redis.host", redis::getHost);
+		registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379).toString());
 		registry.add("service.news.url", wireMock::baseUrl);
 	}
 
@@ -44,6 +57,9 @@ class FeedApplicationIntTests {
 
 	@LocalServerPort
 	int serverPort;
+
+	@Autowired
+	RedisTemplate<String, Set<String>> redisTemplate;
 
 	RestTemplate restTemplate;
 
@@ -54,6 +70,8 @@ class FeedApplicationIntTests {
 
 	@Test
 	void shouldReturnFeed() throws JsonProcessingException {
+		redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
+
 		wireMock.stubFor(post(urlEqualTo("/recommendedNews"))
 				.willReturn(okJson(om.writeValueAsString(List.of(
 						new RecommendedNews(
