@@ -32,7 +32,7 @@ public class FeedService {
         final Instant endTime = date.atTime(OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC)).toInstant();
         final Instant startTime = endTime.minus(feedProperties.getPeriod());
         return newsAdapter.getRecommendedNews(interests, startTime, endTime, feedProperties.getLimit()).stream()
-                .map(r -> new FeedEntry(r.link(), r.headline(), r.category(), r.short_description(), r.authors(), LocalDate.parse(r.date())))
+                .map(r -> new FeedEntry(r.link(), r.headline(), r.category(), r.shortDescription(), r.authors(), LocalDate.parse(r.date())))
                 .toList();
     }
 

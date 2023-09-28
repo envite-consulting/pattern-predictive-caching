@@ -83,6 +83,7 @@ class FeedApplicationIntTests {
 				.withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), Instant.parse("2022-09-23T00:00:00Z").minus(feedProperties.getPeriod()), Instant.parse("2022-09-23T00:00:00Z"), feedProperties.getLimit()))))
 				.willReturn(okJson(om.writeValueAsString(List.of(
 						new RecommendedNews(
+								1234,
 								"https://www.huffpost.com/entry/covid-boosters-uptake-us_n_632d719ee4b087fae6feaac9",
 								"Over 4 Million Americans Roll Up Sleeves For Omicron-Targeted COVID Boosters",
 								"U.S. NEWS",
