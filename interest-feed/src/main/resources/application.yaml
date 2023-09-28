@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
   shutdown: graceful
 
 spring:
@@ -14,4 +14,4 @@ service:
 
 feed:
   limit: 20
-  period: 1w
+  period: 1m

@@ -1,5 +1,6 @@
 package de.envite.pattern.caching.feed.adapter;
 
 import java.io.Serializable;
+import java.util.List;
 
-public record RecommendedNews(int id, String link, String headline, String category, String shortDescription, String authors, String date) implements Serializable {}
+public record RecommendedNews(List<NewsEntry> newsEntries) implements Serializable {}

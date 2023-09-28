@@ -2,22 +2,11 @@ version: "3.8"
 
 services:
 
-  #news:
-  #  container_name: news
-  #  hostname: news
-  #  image: enviteconsulting/news
-  #  build:
-  #    context: .
-  #    dockerfile: Dockerfile
-  #  ports:
-  #    - "8081:8081"
-  #  networks:
-  #    - envite
-
   news-db:
     container_name: news-db
     hostname: news-db
     image: mariadb:11.1.2
+    restart: on-failure
     ports:
       - "3306:3306"
     environment:
@@ -26,29 +15,76 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
-      - ./news-db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./datasource/News_Category_Dataset_v3.csv:/etc/News_Category_Dataset_v3.csv
+      - ./news-db/init.sql:/docker-entrypoint-initdb.d/init.sql:z
+      - ./datasource/News_Category_Dataset_v3.csv:/etc/News_Category_Dataset_v3.csv:z
     networks:
       - envite
 
-  #interest-feed:
-  #  container_name: interest-feed
-  #  hostname: interest-feed
-  #  image: enviteconsulting/interest-feed
-  #  build:
-  #    context: .
-  #    dockerfile: Dockerfile
-  #  ports:
-  #    - "8082:8082"
-  #  networks:
-  #    - envite
+  news:
+    container_name: news
+    hostname: news
+    image: news:1.0.0-SNAPSHOT
+    depends_on:
+      - news-db
+    restart: on-failure
+    ports:
+      - "8081:8081"
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:mariadb://news-db:3306/newsdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - envite
 
-  interest-feed-db:
-    container_name: interest-feed-db
-    hostname: interest-feed-db
+  user-interest-db:
+    container_name: user-interest-db
+    hostname: user-interest-db
     image: redis:7.2.1-alpine
+    restart: on-failure
     ports:
       - "6379:6379"
+    networks:
+      - envite
+
+  user-interest-db-init:
+    container_name: user-interest-db-init
+    hostname: user-interest-db-init
+    image: user-interest-db-init:1.0.0-SNAPSHOT
+    depends_on:
+      - user-interest-db
+    restart: on-failure
+    environment:
+      APP_USERS_DATASET_CSV_FILE: /workspace/datasource/users.csv
+      APP_NEWS_DATASET_CSV_FILE: /workspace/datasource/News_Category_Dataset_v3.csv
+      APP_USERS_COUNT: 10000
+      APP_MIN_INTERESTS: 0
+      APP_MAX_INTERESTS: 10
+      SPRING_DATA_REDIS_HOST: user-interest-db
+      SPRING_DATA_REDIS_PORT: 6379
+    volumes:
+      - ./datasource/users.csv:/workspace/datasource/users.csv:z
+      - ./datasource/News_Category_Dataset_v3.csv:/workspace/datasource/News_Category_Dataset_v3.csv:z
+    networks:
+      - envite
+
+  interest-feed:
+    container_name: interest-feed
+    hostname: interest-feed
+    image: interest-feed:1.0.0-SNAPSHOT
+    depends_on:
+      - user-interest-db
+      - user-interest-db-init
+    restart: on-failure
+    ports:
+      - "8082:8082"
+    environment:
+      SERVER_PORT: 8082
+      SPRING_DATA_REDIS_HOST: user-interest-db
+      SPRING_DATA_REDIS_PORT: 6379
+      SERVICE_NEWS_URL: http://news:8081
+      FEED_LIMIT: 20
+      FEED_PERIOD: 1m
     networks:
       - envite
 

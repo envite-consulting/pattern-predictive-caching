@@ -30,8 +30,8 @@ public class FeedService {
     public List<FeedEntry> getFeedByUser(final String user, final LocalDate date) {
         final Set<String> interests = userInterestService.getInterestsByUser(user);
         final Instant endTime = date.atTime(OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC)).toInstant();
-        final Instant startTime = endTime.minus(feedProperties.getPeriod());
-        return newsAdapter.getRecommendedNews(interests, startTime, endTime, feedProperties.getLimit()).stream()
+        final Instant startTime = endTime.atOffset(ZoneOffset.UTC).minus(feedProperties.getPeriod()).toInstant();
+        return newsAdapter.getRecommendedNews(interests, startTime, endTime, feedProperties.getLimit()).newsEntries().stream()
                 .map(r -> new FeedEntry(r.link(), r.headline(), r.category(), r.shortDescription(), r.authors(), LocalDate.parse(r.date())))
                 .toList();
     }

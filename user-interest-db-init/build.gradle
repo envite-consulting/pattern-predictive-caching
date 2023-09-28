@@ -1,0 +1,43 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.4'
+	id 'io.spring.dependency-management' version '1.1.3'
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+compileJava {
+	options.release = 17
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'com.opencsv:opencsv:5.8'
+	implementation 'org.springframework.data:spring-data-redis'
+	implementation 'redis.clients:jedis:4.4.5'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	testImplementation 'org.wiremock:wiremock:3.1.0'
+	testImplementation 'org.testcontainers:testcontainers:1.19.0'
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// required for podman
+tasks.named("bootBuildImage") {
+	docker {
+		bindHostToBuilder = true
+	}
+}

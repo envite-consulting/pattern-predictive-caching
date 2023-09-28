@@ -1,5 +1,7 @@
 = Download the Data Sources
 
+== News Dataset
+
 For this project, the link:https://www.kaggle.com/datasets/rmisra/news-category-dataset[News Category Dataset] from Kaggle is used. Note that an account at Kaggle is required to be able
 to download the JSON file into this directory. 
 
@@ -7,16 +9,36 @@ For further data processing, it is more convenient if the data is in a CSV forma
 will convert the JSON file into a CSV file:
 
 .Create a new CSV file which will hold the data:
+[source,bash]
 ----
 touch News_Category_Dataset_v3.csv
 ----
 
 .Build the Docker image to be able to run the script without the need to install additional requirements:
+[source,bash]
 ----
 docker image build -t json-to-csv:1.0.0 .
 ----
 
 .Run the container:
+[source,bash]
 ----
 docker run -v "/$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Category_Dataset_v3.csv" json-to-csv:1.0.0
+----
+
+.Provide read permissions to those files to anyone to allow access within container:
+[source,bash]
+----
+chmod -R g+r,o+r .
+----
+
+== Usernames Dataset
+
+For this project, the link:https://www.kaggle.com/datasets/colinmorris/reddit-usernames/[Reddit Usernames] from Kaggle is used. Note that an account at Kaggle is required to be able
+to download the JSON file into this directory.
+
+.Provide read permissions to those files to anyone to allow access within container:
+[source,bash]
+----
+chmod -R g+r,o+r .
 ----

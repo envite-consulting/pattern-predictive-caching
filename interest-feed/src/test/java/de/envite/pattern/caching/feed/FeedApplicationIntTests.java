@@ -4,10 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import de.envite.pattern.caching.feed.config.FeedProperties;
+import de.envite.pattern.caching.feed.adapter.NewsEntry;
 import de.envite.pattern.caching.feed.adapter.RecommendedNews;
-import de.envite.pattern.caching.feed.domain.FeedEntry;
 import de.envite.pattern.caching.feed.adapter.RecommendedNewsQuery;
+import de.envite.pattern.caching.feed.config.FeedProperties;
+import de.envite.pattern.caching.feed.domain.FeedEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -28,6 +29,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -80,16 +82,16 @@ class FeedApplicationIntTests {
 
 		wireMock.stubFor(
 				post(urlEqualTo("/recommendedNews"))
-				.withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), Instant.parse("2022-09-23T00:00:00Z").minus(feedProperties.getPeriod()), Instant.parse("2022-09-23T00:00:00Z"), feedProperties.getLimit()))))
-				.willReturn(okJson(om.writeValueAsString(List.of(
-						new RecommendedNews(
+				.withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), OffsetDateTime.parse("2022-09-23T00:00:00Z").minus(feedProperties.getPeriod()).toInstant(), Instant.parse("2022-09-23T00:00:00Z"), feedProperties.getLimit()))))
+				.willReturn(okJson(om.writeValueAsString(new RecommendedNews(List.of(
+						new NewsEntry(
 								1234,
 								"https://www.huffpost.com/entry/covid-boosters-uptake-us_n_632d719ee4b087fae6feaac9",
 								"Over 4 Million Americans Roll Up Sleeves For Omicron-Targeted COVID Boosters",
 								"U.S. NEWS",
 								"Health experts said it is too early to predict whether demand would match up with the 171 million doses of the new boosters the U.S. ordered for the fall.",
 								"Carla K. Johnson, AP",
-								"2022-09-23"))))));
+								"2022-09-23")))))));
 
 		FeedEntry[] feedEntries = restTemplate.getForObject("/feed/ada?date=2022-09-23", FeedEntry[].class);
 		assertThat(feedEntries)

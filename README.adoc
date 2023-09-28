@@ -8,6 +8,13 @@
 ./gradlew bootBuildImage
 ----
 
+.Provide read permissions to those files to anyone to allow access within container
+[source,bash]
+----
+chmod -R g+r,o+r datasource/
+chmod -R g+r,o+r news-db/
+----
+
 .Run demo environment
 [source,bash]
 ----
@@ -17,11 +24,21 @@ docker-compose up
 == News Service
 
 .Test curl request to get recommended news:
+[source,bash]
 ----
 curl -XPOST -H "Content-type: application/json" -d '{"topics" : ["U.S. NEWS"], "limit":10, "startTime":"2012-02-03T03:37:30.00Z", "endTime":"2022-02-10T03:37:30.00Z"}' 'http://localhost:8081/recommendedNews'
 ----
 
 .Test curl request to get latest news:
+[source,bash]
 ----
 curl -XGET 'http://localhost:8081/latestNews?count=3&endTime=2022-02-10T03:37:30.00Z'
+----
+
+== Interest Feed Service
+
+.Test curl request to get feed for a user:
+[source,bash]
+----
+curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/supposed2bworking?date=2022-02-10'
 ----
