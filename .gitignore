@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Data Source ###
+/datasource/News_Category_Dataset_v3.csv
+/datasource/News_Category_Dataset_v3.json
