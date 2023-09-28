@@ -1,6 +1,5 @@
-package de.envite.pattern.caching.news;
+package de.envite.pattern.caching.news.domain;
 
-import de.envite.pattern.caching.news.model.NewsEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

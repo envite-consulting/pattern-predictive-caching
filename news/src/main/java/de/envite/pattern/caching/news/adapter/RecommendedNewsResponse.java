@@ -1,4 +1,6 @@
-package de.envite.pattern.caching.news.model;
+package de.envite.pattern.caching.news.adapter;
+
+import de.envite.pattern.caching.news.domain.NewsEntry;
 
 import java.util.List;
 

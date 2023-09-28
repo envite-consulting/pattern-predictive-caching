@@ -1,8 +1,8 @@
-package de.envite.pattern.caching.news.controller;
+package de.envite.pattern.caching.news.web;
 
-import de.envite.pattern.caching.news.service.NewsService;
-import de.envite.pattern.caching.news.model.RecommendedNewsQuery;
-import de.envite.pattern.caching.news.model.RecommendedNewsResponse;
+import de.envite.pattern.caching.news.domain.NewsService;
+import de.envite.pattern.caching.news.adapter.RecommendedNewsQuery;
+import de.envite.pattern.caching.news.adapter.RecommendedNewsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

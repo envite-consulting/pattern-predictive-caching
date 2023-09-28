@@ -1,12 +1,8 @@
-package de.envite.pattern.caching.news.model;
+package de.envite.pattern.caching.news.domain;
 
 import jakarta.persistence.*;
-import org.springframework.cglib.core.Local;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity

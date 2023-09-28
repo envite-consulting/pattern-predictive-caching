@@ -1,6 +1,5 @@
-package de.envite.pattern.caching.news.model;
+package de.envite.pattern.caching.news.adapter;
 
-import java.text.DateFormat;
 import java.time.Instant;
 import java.util.List;
 

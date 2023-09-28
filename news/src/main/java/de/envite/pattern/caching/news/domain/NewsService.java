@@ -1,23 +1,15 @@
-package de.envite.pattern.caching.news.service;
+package de.envite.pattern.caching.news.domain;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-import de.envite.pattern.caching.news.NewsRepository;
-import de.envite.pattern.caching.news.model.NewsEntry;
-import de.envite.pattern.caching.news.model.RecommendedNewsQuery;
-import de.envite.pattern.caching.news.model.RecommendedNewsResponse;
-import org.checkerframework.checker.units.qual.Time;
+import de.envite.pattern.caching.news.adapter.RecommendedNewsQuery;
+import de.envite.pattern.caching.news.adapter.RecommendedNewsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 public class NewsService {
