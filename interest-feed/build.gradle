@@ -5,7 +5,13 @@ plugins {
 }
 
 java {
-	sourceCompatibility = '21'
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+compileJava {
+	options.release = 17
 }
 
 repositories {
