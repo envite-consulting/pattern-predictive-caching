@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class FeedService {
 
     public List<FeedEntry> getFeedByUser(final String user, final LocalDate date) {
         final Set<String> interests = userInterestService.getInterestsByUser(user);
-        final Instant endTime = date.atTime(OffsetTime.now()).toInstant();
+        final Instant endTime = date.atTime(OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC)).toInstant();
         final Instant startTime = endTime.minus(feedProperties.getPeriod());
         return newsService.getRecommendedNews(interests, startTime, endTime, feedProperties.getLimit()).stream()
                 .map(r -> new FeedEntry(r.link(), r.headline(), r.category(), r.short_description(), r.authors(), LocalDate.parse(r.date())))

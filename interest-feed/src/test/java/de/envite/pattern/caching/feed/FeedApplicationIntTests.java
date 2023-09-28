@@ -2,10 +2,13 @@ package de.envite.pattern.caching.feed;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import de.envite.pattern.caching.feed.config.FeedProperties;
 import de.envite.pattern.caching.feed.domain.RecommendedNews;
 import de.envite.pattern.caching.feed.domain.FeedEntry;
+import de.envite.pattern.caching.feed.domain.RecommendedNewsQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -15,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +28,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -53,10 +58,13 @@ class FeedApplicationIntTests {
 		registry.add("service.news.url", wireMock::baseUrl);
 	}
 
-	static ObjectMapper om = new ObjectMapper();
-
 	@LocalServerPort
 	int serverPort;
+	@Autowired
+	FeedProperties feedProperties;
+
+	@Autowired
+	ObjectMapper om;
 
 	@Autowired
 	RedisTemplate<String, Set<String>> redisTemplate;
@@ -72,7 +80,9 @@ class FeedApplicationIntTests {
 	void shouldReturnFeed() throws JsonProcessingException {
 		redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
 
-		wireMock.stubFor(post(urlEqualTo("/recommendedNews"))
+		wireMock.stubFor(
+				post(urlEqualTo("/recommendedNews"))
+				.withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), Instant.parse("2022-09-23T00:00:00Z").minus(feedProperties.getPeriod()), Instant.parse("2022-09-23T00:00:00Z"), feedProperties.getLimit()))))
 				.willReturn(okJson(om.writeValueAsString(List.of(
 						new RecommendedNews(
 								"https://www.huffpost.com/entry/covid-boosters-uptake-us_n_632d719ee4b087fae6feaac9",
@@ -82,7 +92,7 @@ class FeedApplicationIntTests {
 								"Carla K. Johnson, AP",
 								"2022-09-23"))))));
 
-		FeedEntry[] feedEntries = restTemplate.getForObject("/feed/ada", FeedEntry[].class);
+		FeedEntry[] feedEntries = restTemplate.getForObject("/feed/ada?date=2022-09-23", FeedEntry[].class);
 		assertThat(feedEntries)
 				.hasSize(1)
 				.contains(new FeedEntry(
