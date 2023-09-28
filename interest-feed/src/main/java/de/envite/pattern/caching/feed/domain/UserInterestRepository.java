@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public class UserInterestService {
+public class UserInterestRepository {
 
     private final RedisTemplate<String, Set<String>> redisTemplate;
 
-    public UserInterestService(@Autowired final RedisTemplate<String, Set<String>> redisTemplate) {
+    public UserInterestRepository(@Autowired final RedisTemplate<String, Set<String>> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

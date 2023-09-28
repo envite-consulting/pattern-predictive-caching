@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.feed.domain;
+package de.envite.pattern.caching.feed.adapter;
 
 import java.io.Serializable;
 

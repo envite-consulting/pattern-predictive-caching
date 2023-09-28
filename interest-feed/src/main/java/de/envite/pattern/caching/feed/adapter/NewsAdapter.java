@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.feed.domain;
+package de.envite.pattern.caching.feed.adapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,12 +14,12 @@ import static java.util.Collections.emptyList;
 import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @Component
-public class NewsService {
+public class NewsAdapter {
 
     private final RestTemplate restTemplate;
     private final UriComponents recommendedNewsUri;
 
-    public NewsService(
+    public NewsAdapter(
             @Autowired final RestTemplate restTemplate,
             @Value("${service.news.url}") final String newsServiceUrl) {
         this.restTemplate = restTemplate;
