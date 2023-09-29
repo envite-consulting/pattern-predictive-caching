@@ -14,6 +14,12 @@ will convert the JSON file into a CSV file:
 touch News_Category_Dataset_v3.csv
 ----
 
+.Provide read permissions to those files to anyone to allow access within container:
+[source,bash]
+----
+chmod -R g+r,o+r .
+----
+
 .Build the Docker image to be able to run the script without the need to install additional requirements:
 [source,bash]
 ----
@@ -23,13 +29,7 @@ docker image build -t json-to-csv:1.0.0 .
 .Run the container:
 [source,bash]
 ----
-docker run -v "/$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Category_Dataset_v3.csv" json-to-csv:1.0.0
-----
-
-.Provide read permissions to those files to anyone to allow access within container:
-[source,bash]
-----
-chmod -R g+r,o+r .
+docker run -v "$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Category_Dataset_v3.csv:z" json-to-csv:1.0.0
 ----
 
 == Usernames Dataset
