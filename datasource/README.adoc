@@ -35,7 +35,7 @@ docker run -v "$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Category_Da
 == Usernames Dataset
 
 For this project, the link:https://www.kaggle.com/datasets/colinmorris/reddit-usernames/[Reddit Usernames] from Kaggle is used. Note that an account at Kaggle is required to be able
-to download the JSON file into this directory.
+to download the CSV file into this directory.
 
 .Provide read permissions to those files to anyone to allow access within container:
 [source,bash]
