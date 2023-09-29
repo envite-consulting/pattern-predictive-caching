@@ -2,6 +2,10 @@ version: "3.8"
 
 services:
 
+  ##########################################################
+  # Applications                                           #
+  ##########################################################
+
   news-db:
     container_name: news-db
     hostname: news-db
@@ -87,6 +91,21 @@ services:
       FEED_PERIOD: 1m
     networks:
       - envite
+
+  #benchmark:
+  #  container_name: benchmark
+  #  hostname: benchmark
+  #  image: benchmark:1.0.0-SNAPSHOT
+  #  restart: on-failure
+  #  environment:
+  #    SERVICE_INTERESTFEED_URL: http://interest-feed:8082
+  #    BENCHMARK_INITIALWAITINGPERIOD: PT1M
+  #    BENCHMARK_NUMBEROFUSERS: 1000
+  #    BENCHMARK_DATE: "2012-01-01"
+  #    BENCHMARK_TESTDURATION: PT5M
+  #    BENCHMARK_REQUESTWAITINGPERIOD: PT1S
+  #  networks:
+  #    - envite
 
 networks:
   envite:

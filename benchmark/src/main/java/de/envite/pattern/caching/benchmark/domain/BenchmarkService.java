@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.util.concurrent.CompletableFuture.runAsync;
+
 @Service
 public class BenchmarkService {
 
@@ -28,7 +30,7 @@ public class BenchmarkService {
                             @Autowired FeedAdapter feedAdapter) {
         this.benchmarkProperties = benchmarkProperties;
         this.feedAdapter = feedAdapter;
-        this.executorService = Executors.newCachedThreadPool();
+        this.executorService = Executors.newVirtualThreadPerTaskExecutor();
         stop = new AtomicBoolean(false);
     }
 
@@ -44,8 +46,8 @@ public class BenchmarkService {
         log.info("Starting Benchmark after {} seconds initial waiting time...", benchmarkProperties.getInitialWaitingPeriod());
 
         CompletableFuture<?>[] completableFutures = usernames.stream()
-                .map((username) -> new UserSimulator(benchmarkProperties, feedAdapter, username, stop))
-                .map((userSimulator) -> CompletableFuture.runAsync(userSimulator, executorService))
+                .map(username -> new UserSimulator(benchmarkProperties, feedAdapter, username, stop))
+                .map(userSimulator -> runAsync(userSimulator, executorService))
                 .toArray(CompletableFuture[]::new);
 
         Thread.sleep(benchmarkProperties.getTestDuration().toMillis());
