@@ -45,7 +45,7 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/suppo
 
 == ToDos
 
-* [] Feed should always contain news (use latest feeds API)
+* [x] Feed should always contain news (use latest feeds API)
 * [] API to show all users (and maybe their interests)
 * [] Benchmark app
 * [] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
