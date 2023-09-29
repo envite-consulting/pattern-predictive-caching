@@ -27,9 +27,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -82,7 +80,7 @@ class FeedApplicationIntTests {
 
 		wireMock.stubFor(
 				post(urlEqualTo("/recommendedNews"))
-				.withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), OffsetDateTime.parse("2022-09-23T00:00:00Z").minus(feedProperties.getPeriod()).toInstant(), Instant.parse("2022-09-23T00:00:00Z"), feedProperties.getLimit()))))
+				.withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), LocalDate.parse("2022-09-23").minus(feedProperties.getPeriod()), LocalDate.parse("2022-09-23"), feedProperties.getLimit()))))
 				.willReturn(okJson(om.writeValueAsString(new RecommendedNews(List.of(
 						new NewsEntry(
 								1234,

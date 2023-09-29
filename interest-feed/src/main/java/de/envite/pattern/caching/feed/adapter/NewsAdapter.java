@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
@@ -24,7 +24,7 @@ public class NewsAdapter {
         this.recommendedNewsUri = fromHttpUrl(newsServiceUrl).path("recommendedNews").build();
     }
 
-    public RecommendedNews getRecommendedNews(final Set<String> topics, final Instant startTime, final Instant endTime, final int limit) {
-        return restTemplate.postForObject(recommendedNewsUri.toUri(), new RecommendedNewsQuery(topics, startTime, endTime, limit), RecommendedNews.class);
+    public RecommendedNews getRecommendedNews(final Set<String> topics, final LocalDate fromDate, final LocalDate untilDate, final int limit) {
+        return restTemplate.postForObject(recommendedNewsUri.toUri(), new RecommendedNewsQuery(topics, fromDate, untilDate, limit), RecommendedNews.class);
     }
 }
