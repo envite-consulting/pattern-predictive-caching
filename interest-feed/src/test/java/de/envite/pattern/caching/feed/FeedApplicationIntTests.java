@@ -185,4 +185,28 @@ class FeedApplicationIntTests {
                         )
                 );
     }
+
+    @Test
+    void shouldReturnUsernames_WithoutLimit() {
+        redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
+        redisTemplate.opsForValue().set("supposed2bworking", Set.of("SPORTS"));
+        redisTemplate.opsForValue().set("mightbjosh", Set.of("U.S. NEWS", "COMEDY"));
+        redisTemplate.opsForValue().set("finn2605", Set.of("WEIRD NEWS", "COMEDY"));
+
+        String[] usernames = restTemplate.getForObject("/usernames", String[].class);
+        assertThat(usernames)
+                .hasSize(4)
+                .contains("ada", "supposed2bworking", "mightbjosh", "finn2605");
+    }
+
+    @Test
+    void shouldReturnUsernames_WithLimit() {
+        redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
+        redisTemplate.opsForValue().set("supposed2bworking", Set.of("SPORTS"));
+        redisTemplate.opsForValue().set("mightbjosh", Set.of("U.S. NEWS", "COMEDY"));
+        redisTemplate.opsForValue().set("finn2605", Set.of("WEIRD NEWS", "COMEDY"));
+
+        String[] usernames = restTemplate.getForObject("/usernames?limit=3", String[].class);
+        assertThat(usernames).hasSize(3);
+    }
 }

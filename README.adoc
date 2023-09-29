@@ -43,13 +43,20 @@ curl -XGET 'http://localhost:8081/latestNews?limit=3&untilDate=2022-02-10'
 curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/supposed2bworking?date=2022-02-10'
 ----
 
+.Test curl request to get usernames:
+[source,bash]
+----
+curl -XGET -H "Content-type: application/json" 'http://localhost:8082/usernames?limit=10'
+----
+
 == ToDos
 
 * [x] Feed should always contain news (use latest feeds API)
-* [] API to show all users (and maybe their interests)
+* [x] API to show all users (and maybe their interests)
 * [] Benchmark app
 * [] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
 * [] Metrics for service internals like http connections, ...
+* [] UI for Feeds and Usernames
 
 * [] Implementation of simple Feed caching (enable via config)
 * [] Monitoring for Watt and CO2e
