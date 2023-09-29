@@ -18,7 +18,7 @@ chmod -R g+r,o+r news-db/
 .Run demo environment
 [source,bash]
 ----
-docker-compose up
+docker-compose up -d
 ----
 
 == News Service
@@ -42,3 +42,12 @@ curl -XGET 'http://localhost:8081/latestNews?count=3&endTime=2022-02-10T03:37:30
 ----
 curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/supposed2bworking?date=2022-02-10'
 ----
+
+== ToDos
+
+* [] Feed should always contain news (use latest feeds API)
+* [] API to show all users (and maybe their interests)
+* [] Benchmark app
+* [] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
+* [] Metrics for service internals like http connections, ...
+* [] Implementation of simple Feed caching (enable via config)
