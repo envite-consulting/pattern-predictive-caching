@@ -50,4 +50,8 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/suppo
 * [] Benchmark app
 * [] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
 * [] Metrics for service internals like http connections, ...
+
 * [] Implementation of simple Feed caching (enable via config)
+* [] Monitoring for Watt and CO2e
+* [] Implementation of predictive caching
+* [] Migrate to Kubernetes
