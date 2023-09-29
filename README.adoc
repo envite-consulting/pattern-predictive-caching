@@ -88,3 +88,4 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/
 * [] Monitoring for Watt and CO2e
 * [] Implementation of predictive caching
 * [] Migrate to Kubernetes
+* [] Documentation with images
