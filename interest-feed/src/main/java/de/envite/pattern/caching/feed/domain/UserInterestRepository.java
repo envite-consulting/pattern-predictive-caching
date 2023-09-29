@@ -6,6 +6,8 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -20,13 +22,22 @@ public class UserInterestRepository {
         this.redisTemplate = redisTemplate;
     }
 
-    public Set<String> getInterestsByUser(final String user) {
-        return redisTemplate.opsForValue().get(user);
+    public Set<String> getInterestsByUser(final String username) {
+        return redisTemplate.opsForValue().get(username);
     }
 
     public Set<String> getUsernames(final int limit) {
         try(final Cursor<String> keyCursor = redisTemplate.scan(scanOptions().type(DataType.STRING).build())) {
             return keyCursor.stream().limit(limit).collect(toSet());
         }
+    }
+
+    public Map<String,Set<String>> getInterests(final int limit) {
+        final Map<String,Set<String>> interests = new HashMap<>();
+        final Set<String> usernames = getUsernames(limit);
+        for(final String username : usernames) {
+            interests.put(username, getInterestsByUser(username));
+        }
+        return interests;
     }
 }
