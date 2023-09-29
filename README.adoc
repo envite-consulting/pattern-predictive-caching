@@ -26,13 +26,13 @@ docker-compose up -d
 .Test curl request to get recommended news:
 [source,bash]
 ----
-curl -XPOST -H "Content-type: application/json" -d '{"topics" : ["U.S. NEWS"], "limit":10, "startTime":"2012-02-03T03:37:30.00Z", "endTime":"2022-02-10T03:37:30.00Z"}' 'http://localhost:8081/recommendedNews'
+curl -XPOST -H "Content-type: application/json" -d '{"topics" : ["U.S. NEWS"], "limit":10, "fromDate":"2012-02-03T03:37:30.00Z", "untilDate":"2022-02-10T03:37:30.00Z"}' 'http://localhost:8081/recommendedNews'
 ----
 
 .Test curl request to get latest news:
 [source,bash]
 ----
-curl -XGET 'http://localhost:8081/latestNews?count=3&endTime=2022-02-10T03:37:30.00Z'
+curl -XGET 'http://localhost:8081/latestNews?limit=3&untilDate=2022-02-10T03:37:30.00Z'
 ----
 
 == Interest Feed Service
