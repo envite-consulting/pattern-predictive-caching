@@ -1,23 +1,24 @@
 package de.envite.pattern.caching.news.adapter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 public class RecommendedNewsQuery {
     private List<String> topics;
     private int limit;
-    private Instant startTime;
-    private Instant endTime;
+    private LocalDate fromDate;
+    private LocalDate untilDate;
 
 
     public RecommendedNewsQuery() {
     }
 
-    public RecommendedNewsQuery(List<String> topics, int limit, Instant startTime, Instant endTime) {
+    public RecommendedNewsQuery(List<String> topics, int limit, LocalDate fromDate, LocalDate untilDate) {
         this.topics = topics;
         this.limit = limit;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.fromDate = fromDate;
+        this.untilDate = untilDate;
     }
 
     public List<String> getTopics() {
@@ -36,19 +37,19 @@ public class RecommendedNewsQuery {
         this.limit = limit;
     }
 
-    public Instant getStartTime() {
-        return startTime;
+    public LocalDate getFromDate() {
+        return fromDate;
     }
 
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
+    public void setFromDate(LocalDate fromDate) {
+        this.fromDate = fromDate;
     }
 
-    public Instant getEndTime() {
-        return endTime;
+    public LocalDate getUntilDate() {
+        return untilDate;
     }
 
-    public void setEndTime(Instant endTime) {
-        this.endTime = endTime;
+    public void setUntilDate(LocalDate untilDate) {
+        this.untilDate = untilDate;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value ="/")
@@ -24,7 +25,7 @@ public class NewsController {
     }
 
     @GetMapping(value = "/latestNews", produces = "application/json")
-    public NewsResponse getLatestNews(@RequestParam int count, @RequestParam Instant endTime) {
-        return this.newsService.getLatestNews(count, endTime);
+    public NewsResponse getLatestNews(@RequestParam int limit, @RequestParam LocalDate untilDate) {
+        return this.newsService.getLatestNews(limit, untilDate);
     }
 }
