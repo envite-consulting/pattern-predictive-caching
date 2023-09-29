@@ -3,4 +3,5 @@ rootProject.name = 'pattern-predictive-caching'
 include 'news'
 include 'interest-feed'
 include 'user-interest-db-init'
+include 'benchmark'
 

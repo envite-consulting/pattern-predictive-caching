@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class UserInterestDBInitApplication implements CommandLineRunner {
 
-    @Autowired
     private final UserInterestDBInitService userInterestDbInitService;
 
     public UserInterestDBInitApplication(@Autowired final UserInterestDBInitService userInterestDbInitService) {
@@ -18,7 +17,7 @@ public class UserInterestDBInitApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userInterestDbInitService.inidDB();
+        userInterestDbInitService.initDB();
         userInterestDbInitService.logDB();
     }
 

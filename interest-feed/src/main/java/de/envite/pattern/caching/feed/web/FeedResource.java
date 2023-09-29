@@ -2,6 +2,8 @@ package de.envite.pattern.caching.feed.web;
 
 import de.envite.pattern.caching.feed.domain.FeedEntry;
 import de.envite.pattern.caching.feed.domain.FeedService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +15,7 @@ import java.util.Optional;
 @RequestMapping("/feed")
 public class FeedResource {
 
-
+    private static final Logger log = LoggerFactory.getLogger(FeedResource.class);
     private final FeedService feedService;
 
     public FeedResource(@Autowired final FeedService feedService) {
@@ -22,6 +24,7 @@ public class FeedResource {
 
     @GetMapping(path = "/{username}")
     public List<FeedEntry> getFeedByUser(@PathVariable final String username, @RequestParam(name = "date", required = false) final LocalDate date) {
+        log.info("Get FeedByUser: {}", username);
         return feedService.getFeedByUser(username, Optional.ofNullable(date).orElseGet(LocalDate::now));
     }
 }

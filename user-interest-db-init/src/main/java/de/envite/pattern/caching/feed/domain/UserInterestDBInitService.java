@@ -42,7 +42,7 @@ public class UserInterestDBInitService {
         this.random = random;
     }
 
-    public void inidDB() {
+    public void initDB() {
         log.info("Start initializing user interest db");
         final long startTimeMs = System.currentTimeMillis();
         final List<String> users = usersDatasetService.getUsers().stream().limit(appProperties.getUsersCount()).toList();
