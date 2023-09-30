@@ -15,7 +15,6 @@ import java.util.Optional;
 @RequestMapping("/feed")
 public class FeedResource {
 
-    private static final Logger log = LoggerFactory.getLogger(FeedResource.class);
     private final FeedService feedService;
 
     public FeedResource(@Autowired final FeedService feedService) {
@@ -24,7 +23,6 @@ public class FeedResource {
 
     @GetMapping(path = "/{username}")
     public List<FeedEntry> getFeedByUser(@PathVariable final String username, @RequestParam(name = "date", required = false) final LocalDate date) {
-        log.info("Get FeedByUser: {}", username);
         return feedService.getFeedByUser(username, Optional.ofNullable(date).orElseGet(LocalDate::now));
     }
 }
