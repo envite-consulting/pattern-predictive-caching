@@ -82,8 +82,10 @@ services:
     restart: on-failure
     ports:
       - "8082:8082"
+      - "8182:8182"
     environment:
       SERVER_PORT: 8082
+      MANAGEMENT_SERVER_PORT: 8182
       SPRING_DATA_REDIS_HOST: user-interest-db
       SPRING_DATA_REDIS_PORT: 6379
       SERVICE_NEWS_URL: http://news:8081
