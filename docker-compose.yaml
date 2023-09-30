@@ -119,7 +119,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yml:z
+      - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yml:roz
     extra_hosts:
       - host.docker.internal:host-gateway
     networks:
@@ -133,7 +133,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./monitoring/grafana/provisioning/:/etc/grafana/provisioning:z
+      - ./monitoring/grafana/provisioning/:/etc/grafana/provisioning:roz
     environment:
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
       GF_AUTH_ANONYMOUS_ENABLED: "true"
