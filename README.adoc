@@ -80,11 +80,10 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/
 
 * [x] Feed should always contain news (use latest feeds API)
 * [x] API to show all users (and maybe their interests)
-* [ ] Benchmark app
-* [ ] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
-* [ ] Metrics for service internals like http connections, ...
+* [ ] Benchmark app (WIP)
+* [x] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
+* [ ] Metrics for service and db internals like http connections, ... (WIP)
 * [ ] UI for Feeds and Usernames
-
 * [ ] Implementation of simple Feed caching (enable via config)
 * [ ] Monitoring for Watt and CO2e
 * [ ] Implementation of predictive caching
