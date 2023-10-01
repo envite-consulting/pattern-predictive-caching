@@ -2,6 +2,7 @@ package de.envite.pattern.caching.feed;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import de.envite.pattern.caching.feed.adapter.NewsEntry;
@@ -20,6 +21,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.client.RestTemplate;
@@ -70,12 +72,12 @@ class FeedApplicationIntTests {
     int serverPort;
 
     @Autowired
-    ObjectMapper om;
-
-    @Autowired
     RedisTemplate<String, Set<String>> redisTemplate;
 
     RestTemplate restTemplate;
+
+    ObjectMapper om = Jackson2ObjectMapperBuilder.json().build()
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     @BeforeEach
     void setupRestTemplate() {

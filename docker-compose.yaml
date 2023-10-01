@@ -78,7 +78,6 @@ services:
     image: interest-feed:1.0.0-SNAPSHOT
     depends_on:
       - user-interest-db
-      - user-interest-db-init
     restart: on-failure
     ports:
       - "8082:8082"

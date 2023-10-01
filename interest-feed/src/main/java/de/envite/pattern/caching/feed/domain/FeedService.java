@@ -3,6 +3,7 @@ package de.envite.pattern.caching.feed.domain;
 import de.envite.pattern.caching.feed.adapter.NewsAdapter;
 import de.envite.pattern.caching.feed.adapter.NewsResponse;
 import de.envite.pattern.caching.feed.config.FeedProperties;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ public class FeedService {
         this.newsAdapter = newsAdapter;
     }
 
+    @Timed
     public List<FeedEntry> getFeedByUser(final String user, final LocalDate date) {
         final List<FeedEntry> feed = new ArrayList<>(feedProperties.getLimit());
         final Set<String> interests = userInterestService.getInterestsByUser(user);

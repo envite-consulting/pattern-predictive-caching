@@ -1,3 +1,22 @@
+feed:
+  limit: 20
+  period: 1m
+
+service:
+  news:
+    url: http://localhost:8081
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+#  jmx:
+#    enabled: true
+
 server:
   port: 8082
   shutdown: graceful
@@ -6,30 +25,14 @@ server:
       # Should be enabled for additional detailed Tomcat metrics
       enabled: true
 #    accept-count: 100 #100
-    max-connections: 15000 #8192
-    connection-timeout: 60000 #20000
-    threads:
-      max: 400 #200
+#    max-connections: 15000 #8192
+#    connection-timeout: 60000 #20000
+#    threads:
+#      max: 400 #200
 #      min-spare: 10 #10
   error:
     include-exception: true
     include-stacktrace: never
-
-spring:
-  data:
-    redis:
-      host: localhost
-      port: 6379
-  jmx:
-    enabled: true
-
-service:
-  news:
-    url: http://localhost:8081
-
-feed:
-  limit: 20
-  period: 1m
 
 management:
   server:
@@ -39,12 +42,28 @@ management:
     web:
       exposure:
         include: "*"
+#    jmx:
+#      exposure:
+#        include: "*"
   metrics:
     distribution:
       slo:
-        http.server.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
-        http.client.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
+        http.server.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s
+        http.client.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s
+        method.timed: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s
+#  jmx:
+#    metrics:
+#      export:
+#        enabled: true
+#        step: 5s
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 5s
 
 logging:
   level:
     root: INFO
+
+# For metrics configuration see https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.metrics
