@@ -1,11 +1,9 @@
 package de.envite.pattern.caching.feed.adapter;
 
-import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -17,24 +15,22 @@ import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 public class NewsAdapter {
 
     private final RestTemplate restTemplate;
-    private final UriComponents recommendedNewsUri;
-    private final UriComponents latestNewsUri;
+    private final String recommendedNewsUriTemplate;
+    private final String latestNewsUriTemplate;
 
     public NewsAdapter(
             @Autowired final RestTemplate restTemplate,
             @Value("${service.news.url}") final String newsServiceUrl) {
         this.restTemplate = restTemplate;
-        this.recommendedNewsUri = fromHttpUrl(newsServiceUrl).path("recommendedNews").build();
-        this.latestNewsUri = fromHttpUrl(newsServiceUrl).path("latestNews").queryParam("untilDate","{untilDate}").queryParam("limit", "{limit}").build();
+        this.recommendedNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("recommendedNews").build().toUriString();
+        this.latestNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("latestNews").queryParam("untilDate","{untilDate}").queryParam("limit", "{limit}").build().toUriString();
     }
 
-    @Timed
     public NewsResponse getRecommendedNews(final Set<String> topics, final LocalDate fromDate, final LocalDate untilDate, final int limit) {
-        return restTemplate.postForObject(recommendedNewsUri.toUri(), new RecommendedNewsQuery(topics, fromDate, untilDate, limit), NewsResponse.class);
+        return restTemplate.postForObject(recommendedNewsUriTemplate, new RecommendedNewsQuery(topics, fromDate, untilDate, limit), NewsResponse.class);
     }
 
-    @Timed
     public NewsResponse getLatestNews(final LocalDate untilDate, final int limit) {
-        return restTemplate.getForObject(latestNewsUri.expand(Map.of("untilDate", untilDate.toString(), "limit", Integer.toString(limit))).toUri(), NewsResponse.class);
+        return restTemplate.getForObject(latestNewsUriTemplate, NewsResponse.class, Map.of("untilDate", untilDate.toString(), "limit", Integer.toString(limit)));
     }
 }

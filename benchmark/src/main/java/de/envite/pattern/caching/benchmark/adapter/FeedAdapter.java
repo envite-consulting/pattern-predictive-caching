@@ -3,44 +3,44 @@ package de.envite.pattern.caching.benchmark.adapter;
 import de.envite.pattern.caching.benchmark.domain.FeedEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @Component
 public class FeedAdapter {
 
-    private final RestTemplate restTemplate;
+    private static final ParameterizedTypeReference<List<FeedEntry>> LIST_FEEDENTRY = new ParameterizedTypeReference<List<FeedEntry>>(){};
+    private static final ParameterizedTypeReference<List<String>> LIST_STRING_TYPE = new ParameterizedTypeReference<List<String>>(){};
 
-    private final String feedServiceUrl;
+    private final RestTemplate restTemplate;
+    private final String feedUriTemplate;
+    private final String usernamesUriTemplate;
 
     public FeedAdapter(
             @Autowired final RestTemplate restTemplate,
             @Value("${service.interestFeed.url}") final String feedServiceUrl) {
         this.restTemplate = restTemplate;
-        this.feedServiceUrl = feedServiceUrl;
+        this.feedUriTemplate = fromHttpUrl(feedServiceUrl).path("feed/{username}").queryParam("date", "{date}").build().toUriString();
+        this.usernamesUriTemplate = fromHttpUrl(feedServiceUrl).path("usernames").queryParam("limit", "{limit}").build().toUriString();
     }
 
     public List<FeedEntry> getFeedByUser(final String username, final LocalDate date) {
-        UriComponents feedUri = fromHttpUrl(feedServiceUrl)
-                .path("feed/")
-                .path(username)
-                .queryParam("date", date)
-                .build();
-        return List.of(Objects.requireNonNull(restTemplate.getForObject(feedUri.toUri(), FeedEntry[].class)));
+        return restTemplate.exchange(
+                feedUriTemplate, GET, null, LIST_FEEDENTRY,
+                Map.of("username", username, "date", date.toString())).getBody();
     }
 
     public List<String> getAllUsernames(final int limit) {
-        UriComponents feedUri = fromHttpUrl(feedServiceUrl)
-                .path("usernames")
-                .queryParam("limit", limit)
-                .build();
-        return List.of(Objects.requireNonNull(restTemplate.getForObject(feedUri.toUri(), String[].class)));
+        return restTemplate.exchange(
+                usernamesUriTemplate, GET, null, LIST_STRING_TYPE,
+                Map.of("limit", Integer.toString(limit))).getBody();
     }
 }

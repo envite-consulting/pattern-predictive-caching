@@ -17,19 +17,24 @@ spring:
 #  jmx:
 #    enabled: true
 
+#thread:
+#  virtual: true
+
 server:
   port: 8082
   shutdown: graceful
+#  http2:
+#    enabled: true
   tomcat:
     mbeanregistry:
       # Should be enabled for additional detailed Tomcat metrics
       enabled: true
-#    accept-count: 100 #100
-#    max-connections: 15000 #8192
-#    connection-timeout: 60000 #20000
+#    accept-count: 100
+#    max-connections: 8192
+#    connection-timeout: 20000
 #    threads:
-#      max: 400 #200
-#      min-spare: 10 #10
+#      max: 200
+#      min-spare: 10
   error:
     include-exception: true
     include-stacktrace: never
@@ -48,19 +53,19 @@ management:
   metrics:
     distribution:
       slo:
-        http.server.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s
-        http.client.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s
-        method.timed: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s
+        http.server.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
+        http.client.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
+        method.timed:         10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
 #  jmx:
 #    metrics:
 #      export:
 #        enabled: true
-#        step: 5s
+#        step: 4s
   prometheus:
     metrics:
       export:
         enabled: true
-        step: 5s
+        step: 4s
 
 logging:
   level:

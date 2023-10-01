@@ -748,8 +748,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -954,8 +953,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Cadvisor exporter",
+  "title": "Cadvisor",
   "uid": "pMEd7m0Mz",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }

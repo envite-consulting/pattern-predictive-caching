@@ -12,4 +12,5 @@ public class MetricsConfiguration {
     public TimedAspect timedAspect(final MeterRegistry registry) {
         return new TimedAspect(registry);
     }
+
 }

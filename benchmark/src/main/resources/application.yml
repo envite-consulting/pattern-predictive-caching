@@ -9,4 +9,7 @@ benchmark:
   testDuration: 'PT5M'
   requestWaitingPeriod: 'PT1S'
 
-
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
