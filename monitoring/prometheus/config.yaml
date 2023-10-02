@@ -8,7 +8,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'node_exporter'
+  - job_name: 'node'
     static_configs:
       - targets: ['host.docker.internal:9100']
   - job_name: 'cadvisor'
@@ -32,8 +32,7 @@ scrape_configs:
         action: replace
         target_label: service
 
-  ## config for the multiple Redis targets that the exporter will scrape
-  - job_name: 'redis_exporter_targets'
+  - job_name: 'redis'
     static_configs:
       - targets:
           - redis://user-interest-db:6379
@@ -49,11 +48,23 @@ scrape_configs:
         regex: redis://(.*):.*
         replacement: $1
         target_label: service
-  ## config for scraping the exporter itself
-  - job_name: 'redis_exporter'
+
+  - job_name: 'mariadb'
     static_configs:
       - targets:
-          - redis-prometheus-exporter:9121
+          - news-db:3306
+    metrics_path: /probe
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: mariadb-prometheus-exporter:9104
+      - source_labels: [__param_target]
+        regex: (.*):.*
+        replacement: $1
+        target_label: service
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:

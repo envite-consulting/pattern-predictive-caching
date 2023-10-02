@@ -95,18 +95,6 @@ services:
     networks:
       - envite
 
-  redis-prometheus-exporter:
-    container_name: redis-prometheus-exporter
-    hostname: redis-prometheus-exporter
-    image: oliver006/redis_exporter:v1.54.0-alpine
-    restart: on-failure
-    ports:
-      - "9121:9121"
-    command:
-      - '--redis.addr='
-    networks:
-      - envite
-
   #benchmark:
   #  container_name: benchmark
   #  hostname: benchmark
@@ -189,6 +177,32 @@ services:
       - /:/rootfs:ro,rslave
     command:
       - '--path.rootfs=/rootfs'
+
+  redis-prometheus-exporter:
+    container_name: redis-prometheus-exporter
+    hostname: redis-prometheus-exporter
+    image: oliver006/redis_exporter:v1.54.0-alpine
+    restart: on-failure
+    ports:
+      - "9121:9121"
+    command:
+      - '--redis.addr='
+    networks:
+      - envite
+
+  mariadb-prometheus-exporter:
+    container_name: mariadb-prometheus-exporter
+    hostname: mariadb-prometheus-exporter
+    image: prom/mysqld-exporter:v0.15.0
+    restart: on-failure
+    ports:
+      - "9104:9104"
+    environment:
+      MYSQLD_EXPORTER_PASSWORD: password
+    command:
+      - '--mysqld.username=user'
+    networks:
+      - envite
 
 networks:
   envite:
