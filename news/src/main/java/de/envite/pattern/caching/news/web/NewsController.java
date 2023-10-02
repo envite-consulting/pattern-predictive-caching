@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static java.util.Optional.ofNullable;
 
@@ -21,7 +22,8 @@ public class NewsController {
 
     @PostMapping(value = "/recommendedNews")
     public NewsResponse getRecommendedNews(@RequestBody final RecommendedNewsQuery query) {
-        return new NewsResponse(newsService.getRecommendedNews(query.topics(),
+        return new NewsResponse(newsService.getRecommendedNews(
+                ofNullable(query.topics()).orElseGet(Collections::emptySet),
                 ofNullable(query.fromDate()).orElseGet(LocalDate::now), ofNullable(query.untilDate()).orElseGet(LocalDate::now),
                 ofNullable(query.limit()).orElse(Integer.MAX_VALUE)));
     }

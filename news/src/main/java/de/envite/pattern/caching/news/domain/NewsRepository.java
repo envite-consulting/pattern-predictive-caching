@@ -7,12 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface NewsRepository extends JpaRepository<NewsEntry, Long> {
 
     @Timed
-    List<NewsEntry> findByCategoryInAndDateGreaterThanEqualAndDateLessThanEqual(List<String> categories, LocalDate start, LocalDate end);
+    List<NewsEntry> findByCategoryInAndDateGreaterThanEqualAndDateLessThanEqual(Set<String> categories, LocalDate start, LocalDate end);
 
     @Timed
     List<NewsEntry> findByDateLessThanEqual(LocalDate end, Pageable top);

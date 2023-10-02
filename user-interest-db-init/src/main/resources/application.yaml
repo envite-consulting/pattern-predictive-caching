@@ -1,3 +1,12 @@
+app:
+  users-count: 10000
+  min-interests: 0
+  max-interests: 10
+  news-from-date: "2012-01-01"
+  news-until-date: "2018-04-30" #"2018-04-30" #"2022-09-23"
+  users-dataset-csv-file: datasource/users.csv
+  news-dataset-csv-file: datasource/News_Category_Dataset_v3.csv
+
 spring:
   data:
     redis:

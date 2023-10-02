@@ -5,7 +5,7 @@ service:
 benchmark:
   initialWaitingPeriod: 'PT5S'
   numberOfUsers: 100
-  date: '2012-01-01'
+  date: '2013-08-05'
   testDuration: 'PT5M'
   requestWaitingPeriod: 'PT1S'
 

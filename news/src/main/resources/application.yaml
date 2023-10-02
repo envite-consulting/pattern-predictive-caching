@@ -11,8 +11,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    properties:
-      "[hibernate.generate_statistics]": true
 #  jmx:
 #    enabled: true
 

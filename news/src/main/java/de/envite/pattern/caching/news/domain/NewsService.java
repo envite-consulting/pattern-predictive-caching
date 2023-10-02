@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Collections.shuffle;
@@ -23,7 +24,7 @@ public class NewsService {
     }
 
     @Timed
-    public List<NewsEntry> getRecommendedNews(final List<String> topics, final LocalDate fromDate, final LocalDate untilDate, final int limit) {
+    public List<NewsEntry> getRecommendedNews(final Set<String> topics, final LocalDate fromDate, final LocalDate untilDate, final int limit) {
         final List<NewsEntry> entries = newsRepository.findByCategoryInAndDateGreaterThanEqualAndDateLessThanEqual(topics, fromDate, untilDate);
         return getRandomNewsEntries(entries, limit);
     }

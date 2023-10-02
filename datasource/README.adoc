@@ -2,11 +2,15 @@
 
 == News Dataset
 
-For this project, the link:https://www.kaggle.com/datasets/rmisra/news-category-dataset[News Category Dataset] from Kaggle is used. Note that an account at Kaggle is required to be able
-to download the JSON file into this directory. 
+For this project, the link:https://www.kaggle.com/datasets/rmisra/news-category-dataset[News Category Dataset] from Kaggle is used.
 
-For further data processing, it is more convenient if the data is in a CSV format instead of JSON. Therefore, the following steps
-will convert the JSON file into a CSV file:
+This dataset contains around 210k news headlines from 2012 to 2022 from HuffPost. This is one of the biggest news datasets and can serve as a benchmark for a variety of computational linguistic tasks. HuffPost stopped maintaining an extensive archive of news articles sometime after this dataset was first collected in 2018, so it is not possible to collect such a dataset in the present day. Due to changes in the website, there are about 200k headlines between 2012 and May 2018 and 10k headlines between May 2018 and 2022.
+
+Download the JSON file with the dataset into this directory. Note that an account at Kaggle is required.
+
+For further data processing, it is more convenient if the data is in a CSV format instead of JSON.
+In addition, some links are invalid and/or duplicated
+Therefore, the following steps will convert the JSON file into a CSV file, fix and de-duplicate the links:
 
 .Create a new CSV file which will hold the data:
 [source,bash]
@@ -34,8 +38,12 @@ docker run --rm -v "$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Catego
 
 == Usernames Dataset
 
-For this project, the link:https://www.kaggle.com/datasets/colinmorris/reddit-usernames/[Reddit Usernames] from Kaggle is used. Note that an account at Kaggle is required to be able
-to download the CSV file into this directory.
+For this project, the link:https://www.kaggle.com/datasets/colinmorris/reddit-usernames[Reddit Usernames] from Kaggle is used.
+
+This dataset contains the username of any reddit account that has left at least one comment, and their number of comments.
+This data was grabbed in December 2017 from the Reddit comments dataset hosted on Google BigQuery. It should be current up to November 2017.
+
+Download the CSV file with the dataset into this directory. Note that an account at Kaggle is required.
 
 .Provide read permissions to those files to anyone to allow access within container:
 [source,bash]

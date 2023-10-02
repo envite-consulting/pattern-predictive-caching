@@ -1,9 +1,10 @@
-package de.envite.pattern.caching.feed.config;
+package de.envite.pattern.caching.userinterest.init.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
+import java.time.LocalDate;
 
 @Configuration
 @ConfigurationProperties("app")
@@ -15,6 +16,9 @@ public class AppProperties {
     private int usersCount = 10000;
     private int minInterests = 0;
     private int maxInterests = 10;
+
+    private LocalDate newsFromDate = LocalDate.parse("2012-01-01");
+    private LocalDate newsUntilDate = LocalDate.parse("2022-09-23");
 
     public File getUsersDatasetCsvFile() {
         return usersDatasetCsvFile;
@@ -54,5 +58,21 @@ public class AppProperties {
 
     public void setMaxInterests(int maxInterests) {
         this.maxInterests = maxInterests;
+    }
+
+    public LocalDate getNewsFromDate() {
+        return newsFromDate;
+    }
+
+    public void setNewsFromDate(LocalDate newsFromDate) {
+        this.newsFromDate = newsFromDate;
+    }
+
+    public LocalDate getNewsUntilDate() {
+        return newsUntilDate;
+    }
+
+    public void setNewsUntilDate(LocalDate newsUntilDate) {
+        this.newsUntilDate = newsUntilDate;
     }
 }

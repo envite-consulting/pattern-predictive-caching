@@ -1,6 +1,6 @@
-package de.envite.pattern.caching.feed;
+package de.envite.pattern.caching.userinterest.init;
 
-import de.envite.pattern.caching.feed.domain.UserInterestDBInitService;
+import de.envite.pattern.caching.userinterest.init.domain.UserInterestDBInitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,12 +16,12 @@ public class UserInterestDBInitApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         userInterestDbInitService.initDB();
-        userInterestDbInitService.logDB();
+        userInterestDbInitService.logCategories();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(UserInterestDBInitApplication.class, args);
     }
 }

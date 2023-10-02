@@ -61,11 +61,13 @@ services:
       - user-interest-db
     restart: on-failure
     environment:
-      APP_USERS_DATASET_CSV_FILE: /workspace/datasource/users.csv
-      APP_NEWS_DATASET_CSV_FILE: /workspace/datasource/News_Category_Dataset_v3.csv
-      APP_USERS_COUNT: 10000
-      APP_MIN_INTERESTS: 0
-      APP_MAX_INTERESTS: 10
+      APP_USERSDATASETCSVFILE: /workspace/datasource/users.csv
+      APP_NEWSDATASETCSVFILE: /workspace/datasource/News_Category_Dataset_v3.csv
+      APP_USERSCOUNT: 10000
+      APP_MININTERESTS: 0
+      APP_MAXINTERESTS: 10
+      APP_NEWSFROMDATE: "2012-01-01"
+      APP_NEWSUNTILDATE: "2018-04-30" #"2018-04-30" #"2022-09-23"
       SPRING_DATA_REDIS_HOST: user-interest-db
       SPRING_DATA_REDIS_PORT: 6379
     volumes:
@@ -91,7 +93,7 @@ services:
       SPRING_DATA_REDIS_PORT: 6379
       SERVICE_NEWS_URL: http://news:8081
       FEED_LIMIT: 20
-      FEED_PERIOD: 1m
+      FEED_PERIOD: P1W
     networks:
       - envite
 
@@ -102,9 +104,9 @@ services:
   #  restart: on-failure
   #  environment:
   #    SERVICE_INTERESTFEED_URL: http://interest-feed:8082
-  #    BENCHMARK_INITIALWAITINGPERIOD: PT1M
+  #    BENCHMARK_INITIALWAITINGPERIOD: PT30S
   #    BENCHMARK_NUMBEROFUSERS: 1000
-  #    BENCHMARK_DATE: "2012-01-01"
+  #    BENCHMARK_DATE: "2017-03-03"
   #    BENCHMARK_TESTDURATION: PT5M
   #    BENCHMARK_REQUESTWAITINGPERIOD: PT1S
   #  networks:

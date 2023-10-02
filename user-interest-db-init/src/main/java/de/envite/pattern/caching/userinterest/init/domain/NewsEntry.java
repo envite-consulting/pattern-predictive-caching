@@ -1,8 +1,9 @@
-package de.envite.pattern.caching.feed.domain;
+package de.envite.pattern.caching.userinterest.init.domain;
 
 import com.opencsv.bean.CsvBindByName;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class NewsEntry implements Serializable {
 
@@ -70,5 +71,17 @@ public class NewsEntry implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NewsEntry newsEntry)) return false;
+        return Objects.equals(link, newsEntry.link);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(link);
     }
 }

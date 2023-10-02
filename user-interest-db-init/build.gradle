@@ -20,11 +20,10 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'com.opencsv:opencsv:5.8'
 	implementation 'org.springframework.data:spring-data-redis'
-	runtimeOnly 'redis.clients:jedis:4.4.5'
-	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'com.opencsv:opencsv:5.8'
+
+	runtimeOnly 'io.lettuce:lettuce-core'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
