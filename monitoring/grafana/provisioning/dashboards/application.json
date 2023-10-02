@@ -99,7 +99,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1
+            "y": 9
           },
           "id": 40,
           "options": {
@@ -129,7 +129,7 @@
               "exemplar": true,
               "expr": "tomcat_threads_current_threads{service=~\"$service\"}",
               "interval": "5s",
-              "legendFormat": "{{service}} (current)",
+              "legendFormat": "{{service}}: current",
               "range": true,
               "refId": "A"
             },
@@ -143,7 +143,7 @@
               "expr": "tomcat_threads_busy_threads{service=~\"$service\"}",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{service}} (busy)",
+              "legendFormat": "{{service}}: busy",
               "range": true,
               "refId": "B"
             }
@@ -216,7 +216,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 1
+            "y": 9
           },
           "id": 44,
           "options": {
@@ -319,7 +319,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 9
+            "y": 17
           },
           "id": 43,
           "options": {
@@ -349,7 +349,7 @@
               "exemplar": true,
               "expr": "tomcat_connections_current_connections{service=~\"$service\"}",
               "interval": "5s",
-              "legendFormat": "{{service}} (total)",
+              "legendFormat": "{{service}}: total",
               "range": true,
               "refId": "A"
             },
@@ -363,7 +363,7 @@
               "expr": "tomcat_connections_keepalive_current_connections{service=~\"$service\"}",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{service}} (keepAlive)",
+              "legendFormat": "{{service}}: keepAlive",
               "range": true,
               "refId": "B"
             }
@@ -435,7 +435,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 9
+            "y": 17
           },
           "id": 45,
           "options": {
@@ -537,7 +537,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 17
+            "y": 25
           },
           "id": 46,
           "options": {
@@ -639,7 +639,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 17
+            "y": 25
           },
           "id": 48,
           "options": {
@@ -741,7 +741,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 17
+            "y": 25
           },
           "id": 47,
           "options": {
@@ -789,7 +789,7 @@
           "refId": "A"
         }
       ],
-      "title": "Server Connections (Tomcat)",
+      "title": "Http Server Connections (Tomcat)",
       "type": "row"
     },
     {
@@ -870,12 +870,13 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 26
+            "y": 2
           },
           "id": 25,
           "options": {
             "legend": {
               "calcs": [
+                "min",
                 "max",
                 "lastNotNull"
               ],
@@ -973,12 +974,13 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 26
+            "y": 2
           },
           "id": 7,
           "options": {
             "legend": {
               "calcs": [
+                "min",
                 "max",
                 "lastNotNull"
               ],
@@ -1049,7 +1051,7 @@
           "refId": "A"
         }
       ],
-      "title": "Server Requests",
+      "title": "Http Server Requests",
       "type": "row"
     },
     {
@@ -1100,7 +1102,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 36
+            "y": 11
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -1145,7 +1147,7 @@
             "yAxis": {
               "axisPlacement": "left",
               "reverse": false,
-              "unit": "short"
+              "unit": "s"
             }
           },
           "pluginVersion": "10.1.2",
@@ -1169,7 +1171,7 @@
               "refId": "B"
             }
           ],
-          "title": "Server Request Latency: $http_server_uri (SUCCESS)",
+          "title": "Server Request Latency: $service $http_server_uri (SUCCESS)",
           "tooltip": {
             "show": true,
             "showHistogram": false
@@ -1219,7 +1221,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 36
+            "y": 11
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -1287,7 +1289,7 @@
               "refId": "B"
             }
           ],
-          "title": "Server Request Latency: $http_server_uri (ERROR)",
+          "title": "Server Request Latency: $service $http_server_uri (ERROR)",
           "tooltip": {
             "show": true,
             "showHistogram": false
@@ -1313,7 +1315,7 @@
           "refId": "A"
         }
       ],
-      "title": "Server Latency Histogram",
+      "title": "Http Server Latency Histogram",
       "type": "row"
     },
     {
@@ -1376,7 +1378,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1392,7 +1395,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 37
+            "y": 12
           },
           "id": 3,
           "options": {
@@ -1477,7 +1480,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1493,7 +1497,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 37
+            "y": 12
           },
           "id": 16,
           "options": {
@@ -1578,7 +1582,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1594,7 +1599,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 37
+            "y": 12
           },
           "id": 21,
           "options": {
@@ -1679,7 +1684,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1695,7 +1701,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 46
+            "y": 21
           },
           "id": 17,
           "options": {
@@ -1780,7 +1786,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1796,7 +1803,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 46
+            "y": 21
           },
           "id": 18,
           "options": {
@@ -1881,7 +1888,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1897,7 +1905,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 46
+            "y": 21
           },
           "id": 19,
           "options": {
@@ -1983,7 +1991,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1999,7 +2008,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 55
+            "y": 30
           },
           "id": 20,
           "options": {
@@ -2099,7 +2108,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2115,7 +2125,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 55
+            "y": 30
           },
           "id": 23,
           "options": {
@@ -2216,7 +2226,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2232,7 +2243,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 64
+            "y": 39
           },
           "id": 22,
           "options": {
@@ -2332,7 +2343,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2348,7 +2360,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 64
+            "y": 39
           },
           "id": 24,
           "options": {
@@ -2491,7 +2503,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 5
+            "y": 13
           },
           "id": 103,
           "options": {
@@ -2539,7 +2551,7 @@
           "refId": "A"
         }
       ],
-      "title": "Client Connections (OkHttp)",
+      "title": "Http Client Connections (OkHttp)",
       "type": "row"
     },
     {
@@ -2620,14 +2632,15 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 6
+            "y": 14
           },
           "id": 78,
           "options": {
             "legend": {
               "calcs": [
-                "lastNotNull",
-                "max"
+                "mean",
+                "max",
+                "lastNotNull"
               ],
               "displayMode": "table",
               "placement": "bottom",
@@ -2650,7 +2663,7 @@
               "expr": "irate(http_client_requests_seconds_count{service=~\"$service\"}[15s])",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{method}} {{uri}} ({{status}})",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}})",
               "range": true,
               "refId": "B"
             }
@@ -2723,12 +2736,13 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 6
+            "y": 14
           },
           "id": 79,
           "options": {
             "legend": {
               "calcs": [
+                "mean",
                 "max",
                 "lastNotNull"
               ],
@@ -2753,7 +2767,7 @@
               "expr": "irate(http_client_requests_seconds_sum{service=~\"$service\"}[15s])",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{method}} {{uri}} ({{status}}) (rate)",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (rate)",
               "range": true,
               "refId": "B"
             },
@@ -2767,7 +2781,7 @@
               "hide": false,
               "instant": false,
               "interval": "5s",
-              "legendFormat": "{{method}} {{uri}} ({{status}}) (max per request)",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (max per request)",
               "range": true,
               "refId": "C"
             },
@@ -2781,7 +2795,7 @@
               "expr": "irate(http_client_requests_seconds_sum{service=~\"$service\"}[15s]) / irate(http_client_requests_seconds_count{service=~\"$service\"}[15s])",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{method}} {{uri}} ({{status}}) (avg per request)",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (avg per request)",
               "range": true,
               "refId": "A"
             }
@@ -2799,7 +2813,7 @@
           "refId": "A"
         }
       ],
-      "title": "Client Requests",
+      "title": "Http Client Requests",
       "type": "row"
     },
     {
@@ -2850,7 +2864,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 50
+            "y": 15
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -2895,7 +2909,7 @@
             "yAxis": {
               "axisPlacement": "left",
               "reverse": false,
-              "unit": "short"
+              "unit": "s"
             }
           },
           "pluginVersion": "10.1.2",
@@ -2918,7 +2932,7 @@
               "refId": "B"
             }
           ],
-          "title": "Client Request Latency: $http_client_uri (SUCCESS)",
+          "title": "Client Request Latency: $service $http_client_uri (SUCCESS)",
           "tooltip": {
             "show": true,
             "showHistogram": false
@@ -2968,7 +2982,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 50
+            "y": 15
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -3036,7 +3050,7 @@
               "refId": "B"
             }
           ],
-          "title": "Client Request Latency: $http_client_uri (ERROR)",
+          "title": "Client Request Latency: $service $http_client_uri (ERROR)",
           "tooltip": {
             "show": true,
             "showHistogram": false
@@ -3062,7 +3076,7 @@
           "refId": "A"
         }
       ],
-      "title": "Client Latency Histogram",
+      "title": "Http Client Latency Histogram",
       "type": "row"
     },
     {
@@ -3072,6 +3086,255 @@
         "w": 24,
         "x": 0,
         "y": 7
+      },
+      "id": 143,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "id": 144,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "10.1.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "irate(method_timed_seconds_count{service=~\"$service\"}[15s])",
+              "hide": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}})",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "Method Calls: Completed Requests Rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "log": 10,
+                  "type": "log"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 8
+          },
+          "id": 149,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "10.1.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "irate(method_timed_seconds_sum{service=~\"$service\"}[15s])",
+              "hide": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}}) (rate)",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "expr": "method_timed_seconds_max{service=~\"$service\"}",
+              "hide": false,
+              "instant": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}}) (max per request)",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "irate(method_timed_seconds_sum{service=~\"$service\"}[15s]) / irate(method_timed_seconds_count{service=~\"$service\"}[15s])",
+              "hide": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}}) (avg per request)",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Method Calls: Request Duration",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Method Calls",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
       },
       "id": 91,
       "panels": [
@@ -3109,7 +3372,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 9
+            "y": 18
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -3154,7 +3417,7 @@
             "yAxis": {
               "axisPlacement": "left",
               "reverse": false,
-              "unit": "short"
+              "unit": "s"
             }
           },
           "pluginVersion": "10.1.2",
@@ -3178,7 +3441,7 @@
               "refId": "B"
             }
           ],
-          "title": "Method Latency: $method (success)",
+          "title": "Method Latency: $service $method (success)",
           "tooltip": {
             "show": true,
             "showHistogram": false
@@ -3228,7 +3491,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 9
+            "y": 18
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -3297,7 +3560,7 @@
               "refId": "B"
             }
           ],
-          "title": "Method Latency: $method (error)",
+          "title": "Method Latency: $service $method (error)",
           "tooltip": {
             "show": true,
             "showHistogram": false
@@ -3314,11 +3577,393 @@
           "yBucketBound": "auto"
         }
       ],
-      "title": "Methods",
+      "title": "Method Latency Histogram",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 110,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 19
+          },
+          "id": 111,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "10.1.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "irate(lettuce_command_completion_seconds_count{service=~\"$service\"}[15s])",
+              "hide": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{remote}} {{command}}",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "Redis Requests: Completed Requests Rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "log": 10,
+                  "type": "log"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 19
+          },
+          "id": 112,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "10.1.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "irate(lettuce_command_completion_seconds_sum{service=~\"$service\"}[15s])",
+              "hide": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{remote}} {{command}} (rate)",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "expr": "lettuce_command_completion_seconds_max{service=~\"$service\"}",
+              "hide": false,
+              "instant": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{remote}} {{command}} (max per request)",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "irate(lettuce_command_completion_seconds_sum{service=~\"$service\"}[15s]) / irate(lettuce_command_completion_seconds_count{service=~\"$service\"}[15s])",
+              "hide": false,
+              "interval": "5s",
+              "legendFormat": "{{service}}: {{remote}} {{command}} (avg per request)",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Redis Requests: Request Duration",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Redis Client Requests",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 125,
+      "panels": [
+        {
+          "cards": {},
+          "color": {
+            "cardColor": "#b4ff00",
+            "colorScale": "sqrt",
+            "colorScheme": "interpolateOranges",
+            "exponent": 0.5,
+            "mode": "spectrum"
+          },
+          "dataFormat": "tsbuckets",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "scaleDistribution": {
+                  "type": "linear"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 36
+          },
+          "heatmap": {},
+          "hideZeroBuckets": false,
+          "highlightCards": true,
+          "id": 130,
+          "legend": {
+            "show": false
+          },
+          "maxDataPoints": 100,
+          "maxPerRow": 2,
+          "options": {
+            "calculate": false,
+            "calculation": {},
+            "cellGap": 2,
+            "cellValues": {},
+            "color": {
+              "exponent": 0.5,
+              "fill": "#b4ff00",
+              "mode": "scheme",
+              "reverse": false,
+              "scale": "exponential",
+              "scheme": "Oranges",
+              "steps": 128
+            },
+            "exemplars": {
+              "color": "rgba(255,0,255,0.7)"
+            },
+            "filterValues": {
+              "le": 1e-9
+            },
+            "legend": {
+              "show": false
+            },
+            "rowsFrame": {
+              "layout": "auto"
+            },
+            "showValue": "never",
+            "tooltip": {
+              "show": true,
+              "yHistogram": false
+            },
+            "yAxis": {
+              "axisPlacement": "left",
+              "reverse": false,
+              "unit": "s"
+            }
+          },
+          "pluginVersion": "10.1.2",
+          "repeat": "redis_command",
+          "repeatDirection": "v",
+          "reverseYBuckets": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P1809F7CD0C75ACF3"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "sum(increase(lettuce_command_completion_seconds_bucket{service=~\"$service\",remote=\"$redis_remote\",command=~\"$redis_command\"}[$__interval])) by (le)",
+              "format": "heatmap",
+              "hide": false,
+              "instant": false,
+              "interval": "",
+              "legendFormat": "{{ le }}",
+              "refId": "B"
+            }
+          ],
+          "title": "Redis Client Request Latency: $service $redis_remote $redis_command",
+          "tooltip": {
+            "show": true,
+            "showHistogram": false
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "yAxis": {
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          },
+          "yBucketBound": "auto"
+        }
+      ],
+      "title": "Redis Client Latency Histogram",
       "type": "row"
     }
   ],
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -3434,6 +4079,59 @@
         "options": [],
         "query": {
           "query": "label_values(method_timed_seconds_bucket{service=~\"$service\"},method)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 2,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "user-interest-db/172.18.0.4:6379",
+          "value": "user-interest-db/172.18.0.4:6379"
+        },
+        "definition": "label_values(lettuce_command_completion_seconds_bucket{service=\"$service\"},remote)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "redis_remote",
+        "multi": false,
+        "name": "redis_remote",
+        "options": [],
+        "query": {
+          "query": "label_values(lettuce_command_completion_seconds_bucket{service=\"$service\"},remote)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "P1809F7CD0C75ACF3"
+        },
+        "definition": "label_values(lettuce_command_completion_seconds_bucket{service=~\"$service\", remote=\"$redis_remote\"},command)",
+        "hide": 2,
+        "includeAll": true,
+        "label": "redis_command",
+        "multi": false,
+        "name": "redis_command",
+        "options": [],
+        "query": {
+          "query": "label_values(lettuce_command_completion_seconds_bucket{service=~\"$service\", remote=\"$redis_remote\"},command)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
