@@ -115,7 +115,7 @@ class FeedApplicationIntTests {
                                         "2022-09-22")
                         ))))));
 
-        FeedEntry[] feedEntries = restTemplate.getForObject("/feed/ada?date=2022-09-23", FeedEntry[].class);
+        var feedEntries = restTemplate.getForObject("/feed/ada?date=2022-09-23", FeedEntry[].class);
         assertThat(feedEntries)
                 .hasSize(feedLimit)
                 .contains(
@@ -169,7 +169,7 @@ class FeedApplicationIntTests {
                         )))))
         );
 
-        FeedEntry[] feedEntries = restTemplate.getForObject("/feed/ada?date=2022-09-23", FeedEntry[].class);
+        var feedEntries = restTemplate.getForObject("/feed/ada?date=2022-09-23", FeedEntry[].class);
         assertThat(feedEntries)
                 .hasSize(feedLimit)
                 .contains(
@@ -199,7 +199,7 @@ class FeedApplicationIntTests {
         redisTemplate.opsForValue().set("mightbjosh", Set.of("U.S. NEWS", "COMEDY"));
         redisTemplate.opsForValue().set("finn2605", Set.of("WEIRD NEWS", "COMEDY"));
 
-        String[] usernames = restTemplate.getForObject("/usernames", String[].class);
+        var usernames = restTemplate.getForObject("/usernames", String[].class);
         assertThat(usernames)
                 .hasSize(4)
                 .contains("ada", "supposed2bworking", "mightbjosh", "finn2605");
@@ -212,7 +212,7 @@ class FeedApplicationIntTests {
         redisTemplate.opsForValue().set("mightbjosh", Set.of("U.S. NEWS", "COMEDY"));
         redisTemplate.opsForValue().set("finn2605", Set.of("WEIRD NEWS", "COMEDY"));
 
-        String[] usernames = restTemplate.getForObject("/usernames?limit=3", String[].class);
+        var usernames = restTemplate.getForObject("/usernames?limit=3", String[].class);
         assertThat(usernames).hasSize(3);
     }
 
@@ -223,7 +223,7 @@ class FeedApplicationIntTests {
         redisTemplate.opsForValue().set("mightbjosh", Set.of("U.S. NEWS", "COMEDY"));
         redisTemplate.opsForValue().set("finn2605", Set.of("WEIRD NEWS", "COMEDY"));
 
-        Map<String, Set<String>> interests = restTemplate.exchange("/interests", HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Set<String>>>() {}).getBody();
+        var interests = restTemplate.exchange("/interests", HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Set<String>>>() {}).getBody();
         assertThat(interests)
                 .hasSize(4)
                 .contains(
@@ -240,7 +240,7 @@ class FeedApplicationIntTests {
         redisTemplate.opsForValue().set("mightbjosh", Set.of("U.S. NEWS", "COMEDY"));
         redisTemplate.opsForValue().set("finn2605", Set.of("WEIRD NEWS", "COMEDY"));
 
-        Map<String, Set<String>> interests = restTemplate.exchange("/interests?limit=3", HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Set<String>>>() {}).getBody();
+        var interests = restTemplate.exchange("/interests?limit=3", HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Set<String>>>() {}).getBody();
         assertThat(interests).hasSize(3);
     }
 }

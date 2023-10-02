@@ -1,28 +1,44 @@
 package de.envite.pattern.caching.news.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 @Entity
 @Table(name = "news")
 public class NewsEntry implements Serializable {
+
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+    @NaturalId(mutable = true)
+    @Column(name = "link", nullable = false, unique = true)
     private String link;
+    @Column(name = "headline")
     private String headline;
+    @Column(name = "category")
     private String category;
+    @Column(name = "short_description")
     private String shortDescription;
+    @Column(name = "authors")
     private String authors;
+    @Column(name = "date")
     private LocalDate date;
 
     public NewsEntry() {
     }
 
-    public NewsEntry(int id, String link, String headline, String category, String shortDescription, String authors, LocalDate date) {
+    public NewsEntry(final Integer id,
+                     final String link,
+                     final String headline, final String category, final String shortDescription, final String authors, final LocalDate date) {
         this.id = id;
-        this.link = link;
+        this.link = requireNonNull(link);
         this.headline = headline;
         this.category = category;
         this.shortDescription = shortDescription;
@@ -30,17 +46,14 @@ public class NewsEntry implements Serializable {
         this.date = date;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    @Column(name = "link")
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getLink() {
         return link;
     }
@@ -49,7 +62,6 @@ public class NewsEntry implements Serializable {
         this.link = link;
     }
 
-    @Column(name = "headline")
     public String getHeadline() {
         return headline;
     }
@@ -58,7 +70,6 @@ public class NewsEntry implements Serializable {
         this.headline = headline;
     }
 
-    @Column(name = "category")
     public String getCategory() {
         return category;
     }
@@ -67,7 +78,6 @@ public class NewsEntry implements Serializable {
         this.category = category;
     }
 
-    @Column(name = "short_description")
     public String getShortDescription() {
         return shortDescription;
     }
@@ -76,7 +86,6 @@ public class NewsEntry implements Serializable {
         this.shortDescription = shortDescription;
     }
 
-    @Column(name = "authors")
     public String getAuthors() {
         return authors;
     }
@@ -85,12 +94,23 @@ public class NewsEntry implements Serializable {
         this.authors = authors;
     }
 
-    @Column(name = "date")
     public LocalDate getDate() {
         return date;
     }
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NewsEntry newsEntry)) return false;
+        return Objects.equals(link, newsEntry.link);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(link);
     }
 }

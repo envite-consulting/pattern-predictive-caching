@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.feed.config;
+package de.envite.pattern.caching.news.config;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;

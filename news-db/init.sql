@@ -4,7 +4,7 @@ USE newsdb;
 
 CREATE TABLE IF NOT EXISTS news (
     id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    link VARCHAR(1024),
+    link VARCHAR(1024) NOT NULL UNIQUE,
     headline VARCHAR(1024),
     category VARCHAR(255),
     short_description VARCHAR(2048),

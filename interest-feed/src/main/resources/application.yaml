@@ -1,6 +1,6 @@
 feed:
   limit: 20
-  period: 1m
+  period: P1W
 
 service:
   news:

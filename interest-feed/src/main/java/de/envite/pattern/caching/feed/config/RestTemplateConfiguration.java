@@ -42,7 +42,7 @@ public class RestTemplateConfiguration {
 
     @Bean
     public OkHttpClient httpClient(final OkHttpClientProperties clientProperties, final MeterRegistry meterRegistry, final MetricsProperties properties) {
-        final ConnectionPool connectionPool = new ConnectionPool(clientProperties.getPool().getMaxIdleConnections(), clientProperties.getPool().getKeepAliveDuration().toMillis(), MILLISECONDS);
+        final var connectionPool = new ConnectionPool(clientProperties.getPool().getMaxIdleConnections(), clientProperties.getPool().getKeepAliveDuration().toMillis(), MILLISECONDS);
         new OkHttpConnectionPoolMetrics(connectionPool, "okhttp.pool", toTags(properties.getTags())).bindTo(meterRegistry);
         return new OkHttpClient.Builder()
                 .protocols(clientProperties.getProtocols())

@@ -1,16 +1,16 @@
 package de.envite.pattern.caching.news.domain;
 
-import de.envite.pattern.caching.news.adapter.NewsResponse;
-import de.envite.pattern.caching.news.adapter.RecommendedNewsQuery;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static java.util.Collections.shuffle;
 
 @Service
 public class NewsService {
@@ -18,34 +18,28 @@ public class NewsService {
     private final NewsRepository newsRepository;
 
     @Autowired
-    NewsService(NewsRepository newsRepository) {
+    public NewsService(final NewsRepository newsRepository) {
         this.newsRepository = newsRepository;
     }
 
-    public NewsResponse getRecommendedNews(RecommendedNewsQuery query) {
-        List<NewsEntry> entries = newsRepository.findNewsEntriesByCategoryInAndDateGreaterThanEqualAndDateLessThanEqual(
-                query.getTopics(),
-                query.getFromDate(),
-                query.getUntilDate()
-        );
-        return new NewsResponse(getRandomNewsEntries(entries, query.getLimit()));
+    @Timed
+    public List<NewsEntry> getRecommendedNews(final List<String> topics, final LocalDate fromDate, final LocalDate untilDate, final int limit) {
+        final List<NewsEntry> entries = newsRepository.findByCategoryInAndDateGreaterThanEqualAndDateLessThanEqual(topics, fromDate, untilDate);
+        return getRandomNewsEntries(entries, limit);
     }
 
-    public NewsResponse getLatestNews(int limit, LocalDate untilDate) {
-        Pageable top = PageRequest.of(0, limit);
-        List<NewsEntry> entries = newsRepository.findByDateLessThanEqual(untilDate, top);
-        return new NewsResponse(entries);
+    @Timed
+    public List<NewsEntry> getLatestNews(final LocalDate untilDate, final int limit) {
+        final Pageable top = PageRequest.of(0, limit);
+        return newsRepository.findByDateLessThanEqual(untilDate, top);
     }
 
-    private List<NewsEntry> getRandomNewsEntries(List<NewsEntry> entries, int count) {
-        List<NewsEntry> responseEntries = new ArrayList<>();
-        if(entries.size() > 0) {
-            Random rand = new Random();
-            for(int i = 0; i < count; i++) {
-                NewsEntry randomElement = entries.get(rand.nextInt(entries.size()));
-                responseEntries.add(randomElement);
-            }
+    private List<NewsEntry> getRandomNewsEntries(final List<NewsEntry> entries, final int count) {
+        if(entries.size() > count) {
+            shuffle(entries, ThreadLocalRandom.current());
+            return entries.subList(0, count);
+        } else {
+            return entries;
         }
-        return responseEntries;
     }
 }

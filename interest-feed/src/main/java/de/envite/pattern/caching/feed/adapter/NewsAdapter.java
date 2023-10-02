@@ -6,9 +6,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
+import static java.util.Optional.ofNullable;
 import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @Component
@@ -26,11 +29,16 @@ public class NewsAdapter {
         this.latestNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("latestNews").queryParam("untilDate","{untilDate}").queryParam("limit", "{limit}").build().toUriString();
     }
 
-    public NewsResponse getRecommendedNews(final Set<String> topics, final LocalDate fromDate, final LocalDate untilDate, final int limit) {
-        return restTemplate.postForObject(recommendedNewsUriTemplate, new RecommendedNewsQuery(topics, fromDate, untilDate, limit), NewsResponse.class);
+    public List<NewsEntry> getRecommendedNews(final Set<String> topics, final LocalDate fromDate, final LocalDate untilDate, final Integer limit) {
+        final var newsResponse = restTemplate.postForObject(recommendedNewsUriTemplate, new RecommendedNewsQuery(topics, fromDate, untilDate, limit), NewsResponse.class);
+        return ofNullable(newsResponse).map(NewsResponse::newsEntries).orElseGet(Collections::emptyList);
     }
 
-    public NewsResponse getLatestNews(final LocalDate untilDate, final int limit) {
-        return restTemplate.getForObject(latestNewsUriTemplate, NewsResponse.class, Map.of("untilDate", untilDate.toString(), "limit", Integer.toString(limit)));
+    public List<NewsEntry> getLatestNews(final LocalDate untilDate, final Integer limit) {
+        final var uriVariables = new HashMap<String, String>();
+        ofNullable(untilDate).ifPresent(v -> uriVariables.put("untilDate", v.toString()));
+        ofNullable(limit).ifPresent(v -> uriVariables.put("limit", Integer.toString(v)));
+        final var newsResponse = restTemplate.getForObject(latestNewsUriTemplate, NewsResponse.class, uriVariables);
+        return ofNullable(newsResponse).map(NewsResponse::newsEntries).orElseGet(Collections::emptyList);
     }
 }

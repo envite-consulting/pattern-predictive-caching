@@ -29,7 +29,7 @@ docker image build -t json-to-csv:1.0.0 .
 .Run the container:
 [source,bash]
 ----
-docker run -v "$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Category_Dataset_v3.csv:z" json-to-csv:1.0.0
+docker run --rm -v "$(pwd)/News_Category_Dataset_v3.csv:/usr/app/src/News_Category_Dataset_v3.csv:z" json-to-csv:1.0.0
 ----
 
 == Usernames Dataset

@@ -15,6 +15,14 @@ scrape_configs:
     static_configs:
       - targets: ['cadvisor:8080']
 
+  - job_name: 'news'
+    static_configs:
+      - targets: ['news:8181']
+    metrics_path: '/actuator/prometheus'
+    relabel_configs:
+      - source_labels: [job]
+        action: replace
+        target_label: service
   - job_name: 'interest-feed'
     static_configs:
       - targets: ['interest-feed:8182']
