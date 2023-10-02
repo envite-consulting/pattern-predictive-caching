@@ -4,6 +4,10 @@ spring:
     username: root
     password: password
     driver-class-name: org.mariadb.jdbc.Driver
+#    hikari:
+#      maximum-pool-size: 10
+#      minimum-idle: 10
+#      connection-timeout: 60000
   jpa:
     hibernate:
       ddl-auto: validate
