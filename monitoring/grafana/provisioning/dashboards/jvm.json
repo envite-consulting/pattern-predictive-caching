@@ -3294,7 +3294,7 @@
       }
     }
   ],
-  "refresh": "30s",
+  "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -3449,6 +3449,6 @@
   "timezone": "browser",
   "title": "JVM",
   "uid": "a7e09714-c4d8-4fcb-839b-206e29351d38",
-  "version": 4,
+  "version": 1,
   "weekStart": ""
 }
