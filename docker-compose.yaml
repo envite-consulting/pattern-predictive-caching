@@ -93,6 +93,18 @@ services:
     networks:
       - envite
 
+  redis-prometheus-exporter:
+    container_name: redis-prometheus-exporter
+    hostname: redis-prometheus-exporter
+    image: oliver006/redis_exporter:v1.54.0-alpine
+    restart: on-failure
+    ports:
+      - "9121:9121"
+    command:
+      - '--redis.addr='
+    networks:
+      - envite
+
   #benchmark:
   #  container_name: benchmark
   #  hostname: benchmark
