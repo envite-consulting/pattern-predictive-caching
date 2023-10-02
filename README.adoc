@@ -87,5 +87,5 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/
 * [ ] Implementation of simple Feed caching (enable via config)
 * [ ] Monitoring for Watt and CO2e
 * [ ] Implementation of predictive caching
-* [ ] Migrate to Kubernetes
+* [ ] Setup for Kubernetes
 * [ ] Documentation with images

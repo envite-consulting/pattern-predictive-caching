@@ -39,6 +39,18 @@ server:
     include-exception: true
     include-stacktrace: never
 
+okhttp:
+  client:
+    enabled: false
+#    protocols: h2_prior_knowledge
+#    connect-timeout: 10s
+#    read-timeout: 10s
+#    write-timeout: 10s
+#    call-timeout: 0s
+#    pool:
+#      max-idle-connections: 5
+#      keep-alive-duration: 5m
+
 management:
   server:
     port: 8182
