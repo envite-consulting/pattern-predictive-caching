@@ -2,6 +2,10 @@
 
 == Quick Start
 
+Download required data sources from link:https://www.kaggle.com[Kaggle] into the link:datasource/[] directory
+and prepare the datasets for their usage.
+The required steps are described in the link:datasource/README.adoc[Datasources Readme] file.
+
 .Build container images:
 [source,bash]
 ----
@@ -55,7 +59,7 @@ curl -XGET 'http://localhost:8081/latestNews?untilDate=2022-02-10&limit=3'
 .Test curl request to get feed for a user:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/supposed2bworking?date=2022-02-10'
+curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/ILiveInACup?date=2013-08-05'
 ----
 
 .Test curl request to get usernames:
@@ -73,7 +77,7 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests?
 .Test curl request to get interests by user:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/supposed2bworking'
+curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/ILiveInACup'
 ----
 
 == ToDos

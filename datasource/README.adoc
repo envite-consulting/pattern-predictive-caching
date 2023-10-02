@@ -1,4 +1,4 @@
-= Download the Data Sources
+= Download and Prepare the Data Sources
 
 == News Dataset
 
