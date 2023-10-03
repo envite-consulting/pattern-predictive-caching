@@ -42,11 +42,13 @@ public class FeedService {
     @Timed
     public List<FeedEntry> getFeedByUser(final String user, final LocalDate date) {
         final var feed = new ArrayList<FeedEntry>(feedProperties.getLimit());
-        final var interests = userInterestService.getInterestsByUser(user);
-        final var fromDate = date.minus(feedProperties.getPeriod());
-        feed.addAll(toFeed(newsAdapter.getRecommendedNews(interests, fromDate, date, feedProperties.getLimit())));
+        if (feedProperties.isUseRecommendedNews()) {
+            final var interests = userInterestService.getInterestsByUser(user);
+            final var fromDate = date.minus(feedProperties.getPeriod());
+            feed.addAll(toFeed(newsAdapter.getRecommendedNews(interests, fromDate, date, feedProperties.getLimit())));
+        }
         summaryFeedRecommendedNewsSize.record(feed.size());
-        if (feed.size() < feedProperties.getLimit()) {
+        if (feed.size() < feedProperties.getLimit() && feedProperties.isUseLatestNews()) {
             feed.addAll(toFeed(newsAdapter.getLatestNews(date, feedProperties.getLimit() - feed.size())));
         }
         feed.sort(FEED_COMPARATOR);

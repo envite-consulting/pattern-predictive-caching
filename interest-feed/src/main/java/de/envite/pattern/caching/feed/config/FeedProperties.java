@@ -12,6 +12,9 @@ public class FeedProperties {
     private int limit = 20;
     private Period period = Period.ofWeeks(1);
 
+    private boolean useRecommendedNews = true;
+    private boolean useLatestNews = true;
+
     public int getLimit() {
         return limit;
     }
@@ -26,5 +29,21 @@ public class FeedProperties {
 
     public void setPeriod(Period period) {
         this.period = period;
+    }
+
+    public boolean isUseRecommendedNews() {
+        return useRecommendedNews;
+    }
+
+    public void setUseRecommendedNews(boolean useRecommendedNews) {
+        this.useRecommendedNews = useRecommendedNews;
+    }
+
+    public boolean isUseLatestNews() {
+        return useLatestNews;
+    }
+
+    public void setUseLatestNews(boolean useLatestNews) {
+        this.useLatestNews = useLatestNews;
     }
 }
