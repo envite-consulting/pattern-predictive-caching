@@ -1,8 +1,6 @@
 package de.envite.pattern.caching.feed.config;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
@@ -16,10 +14,8 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
+import static de.envite.pattern.caching.feed.support.MetricsSupport.toTags;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.stream.Collectors.toSet;
 
 @Configuration(proxyBeanMethods = false)
 public class RestTemplateConfiguration {
@@ -56,9 +52,4 @@ public class RestTemplateConfiguration {
                 .build();
     }
 
-    private static Tags toTags(final Map<String, String> tags) {
-        return Tags.of(tags.entrySet().stream()
-                .map(e -> Tag.of(e.getKey(), e.getValue()))
-                .collect(toSet()));
-    }
 }

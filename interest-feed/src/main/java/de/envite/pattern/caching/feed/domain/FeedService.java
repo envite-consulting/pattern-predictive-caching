@@ -4,7 +4,10 @@ import de.envite.pattern.caching.feed.adapter.NewsAdapter;
 import de.envite.pattern.caching.feed.adapter.NewsEntry;
 import de.envite.pattern.caching.feed.config.FeedProperties;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static de.envite.pattern.caching.feed.support.MetricsSupport.toTags;
 import static java.util.Optional.ofNullable;
 
 @Component
@@ -23,12 +27,16 @@ public class FeedService {
     private final UserInterestRepository userInterestService;
     private final NewsAdapter newsAdapter;
 
+    private final DistributionSummary summaryFeedRecommendedNewsSize;
+
     public FeedService(@Autowired final FeedProperties feedProperties,
                        @Autowired final UserInterestRepository userInterestRepository,
-                       @Autowired final NewsAdapter newsAdapter) {
+                       @Autowired final NewsAdapter newsAdapter,
+                       @Autowired final MeterRegistry meterRegistry, @Autowired final MetricsProperties metricsProperties) {
         this.feedProperties = feedProperties;
         this.userInterestService = userInterestRepository;
         this.newsAdapter = newsAdapter;
+        this.summaryFeedRecommendedNewsSize = meterRegistry.summary("feed.recommended.news.size", toTags(metricsProperties.getTags()));
     }
 
     @Timed
@@ -37,6 +45,7 @@ public class FeedService {
         final var interests = userInterestService.getInterestsByUser(user);
         final var fromDate = date.minus(feedProperties.getPeriod());
         feed.addAll(toFeed(newsAdapter.getRecommendedNews(interests, fromDate, date, feedProperties.getLimit())));
+        summaryFeedRecommendedNewsSize.record(feed.size());
         if (feed.size() < feedProperties.getLimit()) {
             feed.addAll(toFeed(newsAdapter.getLatestNews(date, feedProperties.getLimit() - feed.size())));
         }

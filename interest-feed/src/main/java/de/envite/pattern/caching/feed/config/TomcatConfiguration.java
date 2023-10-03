@@ -1,8 +1,6 @@
 package de.envite.pattern.caching.feed.config;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,12 +8,11 @@ import org.springframework.boot.web.embedded.tomcat.TomcatProtocolHandlerCustomi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import static java.util.stream.Collectors.toSet;
+import static de.envite.pattern.caching.feed.support.MetricsSupport.toTags;
 
 @Configuration(proxyBeanMethods = false)
 public class TomcatConfiguration {
@@ -46,9 +43,4 @@ public class TomcatConfiguration {
         return ExecutorServiceMetrics.monitor(meterRegistry, scheduledExecutorService, name, toTags(properties.getTags()));
     }
 
-    private static Tags toTags(final Map<String, String> tags) {
-        return Tags.of(tags.entrySet().stream()
-                .map(e -> Tag.of(e.getKey(), e.getValue()))
-                .collect(toSet()));
-    }
 }

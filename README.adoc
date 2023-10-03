@@ -83,7 +83,6 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/
 == ToDos
 
 * [ ] Configuration options for: use recommended news for feed = true; use latest news for feed = true
-* [ ] Metrics to capture feed size based on recommended news
 
 * [x] Feed should always contain news (use latest feeds API)
 * [x] API to show all users (and maybe their interests)
