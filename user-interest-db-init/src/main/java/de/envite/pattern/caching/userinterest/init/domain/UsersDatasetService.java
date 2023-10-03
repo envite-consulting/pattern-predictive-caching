@@ -44,25 +44,28 @@ public class UsersDatasetService {
         final var startTimeMs = System.currentTimeMillis();
         try (final var reader = new CSVReader(new FileReader(appProperties.getUsersDatasetCsvFile()))) {
             reader.skip(1 + users.size()); // skip header and already parsed lines
-            while (users.size() < limit) {
-                try {
-                    final var lineInArray = reader.readNext();
-                    if (lineInArray == null) {
-                        break;
-                    }
-                    users.add(lineInArray[0]);
-                } catch (final CsvValidationException e) {
-                    log.warn(String.format("Line %d of users dataset file %s is invalid. Skipping line and continue.",
-                            e.getLineNumber(), appProperties.getUsersDatasetCsvFile().toString()), e);
-                    reader.skip(1);
-                }
-            }
+            while (users.size() < limit && readNextUser(reader));
         } catch (final IOException e) {
             throw new DatasetException(String.format("Error parsing users dataset file %s.", appProperties.getUsersDatasetCsvFile()), e);
         }
         log.info("Completed parsing user dataset from file {} in {} ms",
                 appProperties.getUsersDatasetCsvFile().getAbsolutePath(),
                 (System.currentTimeMillis() - startTimeMs));
+    }
+
+    private boolean readNextUser(final CSVReader reader) throws IOException {
+        try {
+            final var lineInArray = reader.readNext();
+            if (lineInArray == null) {
+                return false;
+            }
+            users.add(lineInArray[0]);
+        } catch (final CsvValidationException e) {
+            log.warn(String.format("Line %d of users dataset file %s is invalid. Skipping line and continue.",
+                    e.getLineNumber(), appProperties.getUsersDatasetCsvFile().toString()), e);
+            reader.skip(1);
+        }
+        return true;
     }
 
 }

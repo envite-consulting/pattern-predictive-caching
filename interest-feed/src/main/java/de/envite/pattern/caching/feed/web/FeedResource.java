@@ -20,8 +20,9 @@ public class FeedResource {
         this.feedService = feedService;
     }
 
-    @GetMapping(path = "/{username}")
-    public List<FeedEntry> getFeedByUser(@PathVariable final String username, @RequestParam(name = "date", required = false) final LocalDate date) {
-        return feedService.getFeedByUser(username, ofNullable(date).orElseGet(LocalDate::now));
+    @GetMapping(path = {"/{username}", "/", ""})
+    public List<FeedEntry> getFeedByUser(@PathVariable(name = "username", required = false) final String username,
+                                         @RequestParam(name = "date", required = false) final LocalDate date) {
+        return feedService.getFeedByUser(ofNullable(username).orElse(""), ofNullable(date).orElseGet(LocalDate::now));
     }
 }

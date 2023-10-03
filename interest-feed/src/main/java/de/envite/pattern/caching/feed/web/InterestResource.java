@@ -25,7 +25,7 @@ public class InterestResource {
     }
 
     @GetMapping(path = "/{username}")
-    public Set<String> getInterestsByUser(@PathVariable final String username) {
+    public Set<String> getInterestsByUser(@PathVariable(name = "username") final String username) {
         return userInterestRepository.getInterestsByUser(username);
     }
 }

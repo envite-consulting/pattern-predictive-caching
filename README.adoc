@@ -59,7 +59,7 @@ curl -XGET 'http://localhost:8081/latestNews?untilDate=2022-02-10&limit=3'
 .Test curl request to get feed for a user:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/ILiveInACup?date=2013-08-05'
+curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/mariameyer000?date=2013-08-05'
 ----
 
 .Test curl request to get usernames:
@@ -77,10 +77,13 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests?
 .Test curl request to get interests by user:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/ILiveInACup'
+curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/mariameyer000'
 ----
 
 == ToDos
+
+* [ ] Configuration options for: use recommended news for feed = true; use latest news for feed = true
+* [ ] Metrics to capture feed size based on recommended news
 
 * [x] Feed should always contain news (use latest feeds API)
 * [x] API to show all users (and maybe their interests)

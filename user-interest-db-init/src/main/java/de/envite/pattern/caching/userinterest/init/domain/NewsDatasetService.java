@@ -13,9 +13,10 @@ import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import static java.util.stream.Collectors.toUnmodifiableSet;
+import static java.util.stream.Collectors.toCollection;
 
 @Component
 public class NewsDatasetService {
@@ -30,17 +31,17 @@ public class NewsDatasetService {
         this.appProperties = appProperties;
     }
 
-    public Set<String> getCategories() {
+    public SortedSet<String> getCategories() {
         return newsEntries.stream()
                 .map(NewsEntry::getCategory)
-                .collect(toUnmodifiableSet());
+                .collect(toCollection(TreeSet::new));
     }
 
-    public Set<String> getCategories(final LocalDate fromDate, final LocalDate untilDate) {
+    public SortedSet<String> getCategories(final LocalDate fromDate, final LocalDate untilDate) {
         return newsEntries.stream()
                 .filter(newsEntry -> isWithinTimeInterval(newsEntry.getDate(), fromDate, untilDate))
                 .map(NewsEntry::getCategory)
-                .collect(toUnmodifiableSet());
+                .collect(toCollection(TreeSet::new));
     }
 
     @PostConstruct

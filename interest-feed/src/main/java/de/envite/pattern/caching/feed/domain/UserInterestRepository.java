@@ -6,11 +6,10 @@ import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
 import static org.springframework.data.redis.core.ScanOptions.scanOptions;
 
 @Component
@@ -23,20 +22,22 @@ public class UserInterestRepository {
     }
 
     @Timed
-    public Set<String> getInterestsByUser(final String username) {
-        return redisTemplate.opsForValue().get(username);
+    public SortedSet<String> getInterestsByUser(final String username) {
+        return ofNullable(redisTemplate.opsForValue().get(username)).map(TreeSet::new).orElseGet(TreeSet::new);
     }
 
     @Timed
-    public Set<String> getUsernames(final int limit) {
+    public SortedSet<String> getUsernames(final int limit) {
         try(final var keyCursor = redisTemplate.scan(scanOptions().type(DataType.STRING).build())) {
-            return keyCursor.stream().limit(limit).collect(toSet());
+            return keyCursor
+                    .stream().collect(toCollection(TreeSet::new))
+                    .stream().limit(limit).collect(toCollection(TreeSet::new));
         }
     }
 
     @Timed
-    public Map<String,Set<String>> getInterests(final int limit) {
-        final var interests = new HashMap<String,Set<String>>();
+    public SortedMap<String,Set<String>> getInterests(final int limit) {
+        final var interests = new TreeMap<String,Set<String>>();
         final var usernames = getUsernames(limit);
         for(final var username : usernames) {
             interests.put(username, getInterestsByUser(username));

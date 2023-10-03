@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
 @ConfigurationProperties("app")
@@ -19,6 +20,8 @@ public class AppProperties {
 
     private LocalDate newsFromDate = LocalDate.parse("2012-01-01");
     private LocalDate newsUntilDate = LocalDate.parse("2022-09-23");
+
+    private long randomSeed = ThreadLocalRandom.current().nextLong();
 
     public File getUsersDatasetCsvFile() {
         return usersDatasetCsvFile;
@@ -74,5 +77,13 @@ public class AppProperties {
 
     public void setNewsUntilDate(LocalDate newsUntilDate) {
         this.newsUntilDate = newsUntilDate;
+    }
+
+    public long getRandomSeed() {
+        return randomSeed;
+    }
+
+    public void setRandomSeed(long randomSeed) {
+        this.randomSeed = randomSeed;
     }
 }

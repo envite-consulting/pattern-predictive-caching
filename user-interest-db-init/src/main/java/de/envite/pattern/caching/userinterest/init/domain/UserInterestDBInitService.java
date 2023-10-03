@@ -8,10 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.random.RandomGenerator;
 
 import static java.util.Collections.shuffle;
 import static java.util.stream.Collectors.toSet;
@@ -37,12 +35,11 @@ public class UserInterestDBInitService {
         this.redisTemplate = redisTemplate;
     }
 
-    public void initDB() {
+    public void initDB(final RandomGenerator random) {
         log.info("Start initializing user interest db");
         final var startTimeMs = System.currentTimeMillis();
         final var users = usersDatasetService.getUsers(appProperties.getUsersCount());
-        final var categories = new LinkedList<>(newsDatasetService.getCategories(appProperties.getNewsFromDate(), appProperties.getNewsUntilDate()));
-        final Random random = ThreadLocalRandom.current();
+        final var categories = new ArrayList<>(newsDatasetService.getCategories(appProperties.getNewsFromDate(), appProperties.getNewsUntilDate()));
         for (final var user : users) {
             shuffle(categories, random);
             final var limit = random.nextInt(appProperties.getMinInterests(), appProperties.getMaxInterests() + 1);
