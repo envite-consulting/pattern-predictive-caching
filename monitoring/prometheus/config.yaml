@@ -31,6 +31,14 @@ scrape_configs:
       - source_labels: [job]
         action: replace
         target_label: service
+  - job_name: 'benchmark'
+    static_configs:
+      - targets: ['host.docker.internal:8183']
+    metrics_path: '/actuator/prometheus'
+    relabel_configs:
+      - source_labels: [job]
+        action: replace
+        target_label: service
 
   - job_name: 'redis'
     static_configs:

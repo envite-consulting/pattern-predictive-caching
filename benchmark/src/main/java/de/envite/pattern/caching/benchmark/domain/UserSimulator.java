@@ -37,12 +37,17 @@ public class UserSimulator implements Runnable {
         while(!stopCondition.getAsBoolean() && !Thread.currentThread().isInterrupted()) {
             try {
                 feedAdapter.getFeedByUser(username, dateSupplier.get());
-                Thread.sleep(requestWaitingPeriod.toMillis());
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
             } catch (final RuntimeException e) {
                 log.warn(String.format("Requesting feed for user '%s' failed: %s", username, e.getMessage()), e);
+            }
+            try {
+                Thread.sleep(requestWaitingPeriod.toMillis());
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
             }
         }
         feedAdapter.close();

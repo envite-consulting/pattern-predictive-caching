@@ -126,8 +126,8 @@ public class BenchmarkService implements DisposableBean {
     public void destroy() throws InterruptedException {
         log.info("Closing Benchmark service ...");
         final var startTimeMillis = System.currentTimeMillis();
-        destroySignal.stop();
-        executorService.shutdown();
+        //destroySignal.stop();
+        executorService.shutdownNow();
         final var gracefulTimeoutMs = lifecycleProperties.getTimeoutPerShutdownPhase().toMillis() * 3 / 4;
         if (!executorService.awaitTermination(gracefulTimeoutMs, MILLISECONDS)) {
             log.warn("Could not gracefully stop running benchmarks within {} ms. Execution will be interrupted.", gracefulTimeoutMs);

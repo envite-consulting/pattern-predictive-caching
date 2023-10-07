@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import static de.envite.pattern.caching.feed.support.MetricsSupport.toTags;
@@ -23,7 +24,9 @@ public class RestTemplateConfiguration {
 
     @Bean
     public RestTemplate restTemplate(final RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder.build();
+        return restTemplateBuilder
+                .requestFactory(SimpleClientHttpRequestFactory::new) // request factory which is also  used by default if no client library is in classpath
+                .build();
     }
 
     @Bean

@@ -3,7 +3,7 @@ package de.envite.pattern.caching.benchmark.config;
 import de.envite.pattern.caching.benchmark.adapter.FeedAdapterFactory;
 import de.envite.pattern.caching.benchmark.adapter.RestOperationsFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,9 +17,9 @@ public class BenchmarkConfiguration {
     }
 
     @Bean
-    public RestOperationsFactory restOperationsFactory(final OkHttpClientProperties okHttpclientProperties,
-                                                       final HttpMessageConverters messageConverters) {
-        return new RestOperationsFactory(okHttpclientProperties, messageConverters);
+    public RestOperationsFactory restOperationsFactory(final RestTemplateBuilder restTemplateBuilder,
+                                                       final OkHttpClientProperties okHttpclientProperties) {
+        return new RestOperationsFactory(restTemplateBuilder, okHttpclientProperties);
     }
 
 }

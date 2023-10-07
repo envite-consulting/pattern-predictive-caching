@@ -6,8 +6,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 
-import java.io.InterruptedIOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +49,15 @@ public class FeedAdapter implements AutoCloseable {
         restOperations.close();
     }
 
-    private <T> ResponseEntity<T> exchange(String uriTemplate, HttpMethod method, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType, Map<String, ?> uriVariables) throws InterruptedException {
+    private <T> ResponseEntity<T> exchange(String uriTemplate, HttpMethod method, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType, Map<String, ?> uriVariables) throws InterruptedException, RestClientException {
         try {
             return restOperations.exchange(uriTemplate, method, requestEntity, responseType, uriVariables);
         } catch (final ResourceAccessException e) {
-            if (e.getCause() instanceof InterruptedIOException) {
-                Thread.currentThread().interrupt();
-                throw new InterruptedException(String.format("Interrupted during calling %s %s", method, uriTemplate));
+            if (Thread.currentThread().isInterrupted()) {
+                // There are multiple exceptions which may be thrown if the thread has been interrupted.
+                // In addition, for some of those exceptions, there are other causes than an interrupt of the thread.
+                // Therefor it is better to just check if the thread has been interrupted.
+                throw new InterruptedException(e.getMessage());
             }
             throw e;
         }
