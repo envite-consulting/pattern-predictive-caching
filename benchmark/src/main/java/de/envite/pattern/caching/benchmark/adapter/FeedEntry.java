@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.benchmark.domain;
+package de.envite.pattern.caching.benchmark.adapter;
 
 import java.io.Serializable;
 import java.time.LocalDate;

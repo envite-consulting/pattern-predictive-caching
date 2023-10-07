@@ -6,10 +6,25 @@ benchmark:
   initialWaitingPeriod: 'PT5S'
   numberOfUsers: 100
   date: '2013-08-05'
-  testDuration: 'PT5M'
+  testDuration: 'PT1M'
   requestWaitingPeriod: 'PT1S'
 
 spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+okhttp:
+  client:
+    enabled: true
+#    protocols: h2_prior_knowledge
+#    connect-timeout: 10s
+#    read-timeout: 10s
+#    write-timeout: 10s
+    call-timeout: 30s
+#    pool:
+#      max-idle-connections: 5
+#      keep-alive-duration: 5m
+

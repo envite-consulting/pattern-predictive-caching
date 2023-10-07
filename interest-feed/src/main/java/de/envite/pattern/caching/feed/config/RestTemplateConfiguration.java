@@ -10,6 +10,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -31,15 +32,13 @@ public class RestTemplateConfiguration {
         return restTemplate -> restTemplate.setRequestFactory(httpRequestFactory);
     }
 
-    @Bean
+    @Bean @Lazy
     public ClientHttpRequestFactory httpRequestFactory(final OkHttpClient httpClient) {
         return new OkHttp3ClientHttpRequestFactory(httpClient);
     }
 
-    @Bean
-    public OkHttpClient httpClient(final OkHttpClientProperties clientProperties, final MeterRegistry meterRegistry, final MetricsProperties properties) {
-        final var connectionPool = new ConnectionPool(clientProperties.getPool().getMaxIdleConnections(), clientProperties.getPool().getKeepAliveDuration().toMillis(), MILLISECONDS);
-        new OkHttpConnectionPoolMetrics(connectionPool, "okhttp.pool", toTags(properties.getTags())).bindTo(meterRegistry);
+    @Bean @Lazy
+    public OkHttpClient httpClient(final OkHttpClientProperties clientProperties, final ConnectionPool connectionPool) {
         return new OkHttpClient.Builder()
                 .protocols(clientProperties.getProtocols())
                 .connectTimeout(clientProperties.getConnectTimeout())
@@ -50,6 +49,13 @@ public class RestTemplateConfiguration {
                 .followRedirects(false)
                 .retryOnConnectionFailure(true)
                 .build();
+    }
+
+    @Bean(destroyMethod = "evictAll") @Lazy
+    public ConnectionPool connectionPool(final OkHttpClientProperties clientProperties, final MeterRegistry meterRegistry, final MetricsProperties properties) {
+        final var connectionPool = new ConnectionPool(clientProperties.getPool().getMaxIdleConnections(), clientProperties.getPool().getKeepAliveDuration().toMillis(), MILLISECONDS);
+        new OkHttpConnectionPoolMetrics(connectionPool, "okhttp.pool", toTags(properties.getTags())).bindTo(meterRegistry);
+        return connectionPool;
     }
 
 }

@@ -16,11 +16,10 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
 #  jmx:
 #    enabled: true
-
-#thread:
-#  virtual: true
 
 server:
   port: 8082
@@ -35,6 +34,7 @@ server:
 #    max-connections: 8192
 #    connection-timeout: 20000
 #    threads:
+#      executor: virtual # platform
 #      max: 200
 #      min-spare: 10
   error:

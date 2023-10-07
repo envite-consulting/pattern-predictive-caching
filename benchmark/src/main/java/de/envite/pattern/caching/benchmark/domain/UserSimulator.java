@@ -1,46 +1,53 @@
 package de.envite.pattern.caching.benchmark.domain;
 
-import de.envite.pattern.caching.benchmark.adapter.FeedAdapter;
-import de.envite.pattern.caching.benchmark.config.BenchmarkProperties;
+import de.envite.pattern.caching.benchmark.adapter.FeedAdapterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 public class UserSimulator implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(UserSimulator.class);
-    private final BenchmarkProperties benchmarkProperties;
-    private final FeedAdapter feedAdapter;
-    private final String username;
-    private final AtomicBoolean stop;
 
-    public UserSimulator(BenchmarkProperties benchmarkProperties,
-                         FeedAdapter feedAdapter,
-                         String username,
-                         AtomicBoolean stop) {
-        this.benchmarkProperties = benchmarkProperties;
-        this.feedAdapter = feedAdapter;
-        this.username = username;
-        this.stop = stop;
+    private final FeedAdapterFactory feedAdapterFactory;
+    private final String username;
+    private final Supplier<LocalDate> dateSupplier;
+    private final Duration requestWaitingPeriod;
+    private final BooleanSupplier stopCondition;
+
+    public UserSimulator(final FeedAdapterFactory feedAdapterFactory,
+                         final String username, final Supplier<LocalDate> dateSupplier, final Duration requestWaitingPeriod,
+                         final BooleanSupplier stopCondition) {
+        this.feedAdapterFactory = requireNonNull(feedAdapterFactory);
+        this.username = requireNonNull(username);
+        this.dateSupplier = requireNonNull(dateSupplier);
+        this.requestWaitingPeriod = requireNonNull(requestWaitingPeriod);
+        this.stopCondition = requireNonNull(stopCondition);
     }
 
     @Override
     public void run() {
-        while(!stop.get()) {
+        final var feedAdapter = feedAdapterFactory.createFeedAdapter();
+        while(!stopCondition.getAsBoolean() && !Thread.currentThread().isInterrupted()) {
             try {
-                feedAdapter.getFeedByUser(username, benchmarkProperties.getDate());
-            }catch (Exception e) {
-                log.warn(String.format("Benchmark is cancelled because error occurred at retrieving feed for user %s because of exception: %s", username, e.getMessage()), e);
-                throw new RuntimeException(e);
+                feedAdapter.getFeedByUser(username, dateSupplier.get());
+                Thread.sleep(requestWaitingPeriod.toMillis());
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            } catch (final RuntimeException e) {
+                log.warn(String.format("Requesting feed for user '%s' failed: %s", username, e.getMessage()), e);
             }
-
-            try {
-                Thread.sleep(benchmarkProperties.getRequestWaitingPeriod().toMillis());
-            } catch (InterruptedException e) {
-                log.warn(String.format("Benchmark is cancelled for user %s because of thread was interrupted: %s", username, e.getMessage()), e);
-                throw new RuntimeException(e);
-            }
+        }
+        feedAdapter.close();
+        if (Thread.currentThread().isInterrupted()) {
+            throw new BenchmarkException("User simulation has been interrupted.");
         }
     }
 }
