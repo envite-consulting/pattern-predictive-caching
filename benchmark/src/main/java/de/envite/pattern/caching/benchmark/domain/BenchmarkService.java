@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -100,13 +102,14 @@ public class BenchmarkService implements DisposableBean {
         log.info("Starting Benchmark ...");
         final var startTimeMillis = System.currentTimeMillis();
         final var timer = new Timer(benchmarkProperties.getTestDuration(), System::currentTimeMillis);
-        final var stopCondition = new OrExpression(timer.expired(), stopSignal, destroySignal);
+        final var exceptionSignal = new StopSignal();
+        final var stopCondition = new OrExpression(timer.expired(), stopSignal, exceptionSignal, destroySignal);
         final var userSimulations = new ArrayList<CompletableFuture<Void>>(usernames.size());
         try (final var destroyLock = destroySignal.readLock(); final var stopLock = stopSignal.readLock()) {
             if (!destroySignal.getAsBoolean() && !stopSignal.getAsBoolean()) {
                 for (final var username : usernames) {
                     var userSimulator = new UserSimulator(feedAdapterFactory, username, benchmarkProperties::getDate, benchmarkProperties.getRequestWaitingPeriod(), stopCondition);
-                    userSimulations.add(runAsync(userSimulator, executorService));
+                    userSimulations.add(runAsync(userSimulator, executorService).whenComplete(stopOnException(exceptionSignal)));
                 }
             }
         }
@@ -140,18 +143,6 @@ public class BenchmarkService implements DisposableBean {
         log.info("Benchmark service closed after {} ms.", (System.currentTimeMillis() - startTimeMillis));
     }
 
-    private void sleep(final Duration duration, final StopSignal stopSignal, final Consumer<Duration> logger) throws BenchmarkException {
-        logger.accept(duration);
-        try {
-            if (new StopSignal().adapt(destroySignal, stopSignal).await(duration)) {
-                throw new BenchmarkException("Benchmark has been aborted during sleep.");
-            }
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new BenchmarkException("Benchmark has been interrupted during sleep.");
-        }
-    }
-
     private void awaitCompletion(final CompletableFuture<?> benchmarkExecution) throws BenchmarkException, InterruptedException {
         try {
             benchmarkExecution.get();
@@ -174,4 +165,19 @@ public class BenchmarkService implements DisposableBean {
         }
     }
 
+    private void sleep(final Duration duration, final StopSignal stopSignal, final Consumer<Duration> logger) throws BenchmarkException {
+        logger.accept(duration);
+        try {
+            if (new StopSignal().adapt(destroySignal, stopSignal).await(duration)) {
+                throw new BenchmarkException("Benchmark has been aborted during sleep.");
+            }
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new BenchmarkException("Benchmark has been interrupted during sleep.");
+        }
+    }
+
+    private <T> BiConsumer<? super T, ? super Throwable> stopOnException(final StopSignal stopSignal) {
+        return (unused, throwable) -> ofNullable(throwable).ifPresent(t -> stopSignal.stop());
+    }
 }
