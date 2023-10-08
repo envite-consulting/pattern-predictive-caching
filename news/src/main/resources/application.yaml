@@ -16,8 +16,12 @@ spring:
 #  jmx:
 #    enabled: true
 
-#thread:
-#  virtual: true
+web-resource:
+  news:
+    cache-control:
+      enabled: true
+      recommended-news: 1m
+      latest-news: 1m
 
 server:
   port: 8081
@@ -32,6 +36,7 @@ server:
   #    max-connections: 8192
   #    connection-timeout: 20000
   #    threads:
+  #      executor: virtual # platform
   #      max: 200
   #      min-spare: 10
   error:

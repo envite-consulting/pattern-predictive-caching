@@ -58,7 +58,7 @@ Websites:
 .Test curl request to get recommended news:
 [source,bash]
 ----
-curl -s -XGET -H "Accept: application/json" 'http://localhost:8081/recommendedNews?topics=HOME%20%26%20LIVING,COMEDY&fromDate=2013-07-29&untilDate=2013-08-05&limit=20'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8081/news/recommended?topics=HOME%20%26%20LIVING,COMEDY&fromDate=2013-07-29&untilDate=2013-08-05&limit=20'
 ----
 
 Hint: In a previous version we used a POST request for the `/recommendedNews` endpoint to simplify specification of parameters.
@@ -67,7 +67,7 @@ However, Http client-side cache is not possible for POST requests. Therefore, we
 .Test curl request to get latest news:
 [source,bash]
 ----
-curl -s -XGET -H "Accept: application/json" 'http://localhost:8081/latestNews?untilDate=2013-08-05&limit=3'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8081/news/latest?untilDate=2013-08-05&limit=3'
 ----
 
 == Interest Feed Service

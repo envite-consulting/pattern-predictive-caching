@@ -93,7 +93,7 @@ class FeedApplicationIntTest {
         redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
 
         wireMock.stubFor(
-                get(urlPathEqualTo("/recommendedNews"))
+                get(urlPathEqualTo("/news/recommended"))
                         .withQueryParam("topics", equalTo(String.join(",", List.of("U.S. NEWS"))))
                         .withQueryParam("fromDate", equalTo(LocalDate.parse("2022-09-23").minus(feedPeriod).toString())).withQueryParam("untilDate", equalTo("2022-09-23"))
                         .withQueryParam("limit", equalTo(Integer.toString(feedLimit)))
@@ -144,7 +144,7 @@ class FeedApplicationIntTest {
         redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
 
         wireMock.stubFor(
-                get(urlPathEqualTo("/recommendedNews"))
+                get(urlPathEqualTo("/news/recommended"))
                         .withQueryParam("topics", equalTo(String.join(",", List.of("U.S. NEWS"))))
                         .withQueryParam("fromDate", equalTo(LocalDate.parse("2022-09-23").minus(feedPeriod).toString())).withQueryParam("untilDate", equalTo("2022-09-23"))
                         .withQueryParam("limit", equalTo(Integer.toString(feedLimit)))
@@ -159,7 +159,7 @@ class FeedApplicationIntTest {
                                         "2022-09-23")
                         ))))));
         wireMock.stubFor(
-                get(urlPathEqualTo("/latestNews"))
+                get(urlPathEqualTo("/news/latest"))
                         .withQueryParam("untilDate", equalTo("2022-09-23")).withQueryParam("limit", equalTo("1"))
                         .willReturn(okJson(om.writeValueAsString(new NewsResponse(List.of(
                                 new NewsEntry(

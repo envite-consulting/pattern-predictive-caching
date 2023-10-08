@@ -25,11 +25,11 @@ public class NewsAdapter {
             @Autowired final RestTemplate restTemplate,
             @Value("${service.news.url}") final String newsServiceUrl) {
         this.restTemplate = restTemplate;
-        this.recommendedNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("recommendedNews")
+        this.recommendedNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("news/recommended")
                 .queryParam("topics","{topics}")
                 .queryParam("fromDate","{fromDate}").queryParam("untilDate","{untilDate}")
                 .queryParam("limit", "{limit}").build().toUriString();
-        this.latestNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("latestNews")
+        this.latestNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("news/latest")
                 .queryParam("untilDate","{untilDate}")
                 .queryParam("limit", "{limit}").build().toUriString();
     }
