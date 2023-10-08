@@ -6,7 +6,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -18,16 +18,17 @@ import java.util.TreeSet;
 
 import static java.util.stream.Collectors.toCollection;
 
-@Component
-public class NewsDatasetService {
+@Repository
+public class NewsDatasetRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(NewsDatasetService.class);
+    private static final Logger log = LoggerFactory.getLogger(NewsDatasetRepository.class);
 
     private final AppProperties appProperties;
 
     private List<NewsEntry> newsEntries;
 
-    public NewsDatasetService(@Autowired final AppProperties appProperties) {
+    @Autowired
+    public NewsDatasetRepository(final AppProperties appProperties) {
         this.appProperties = appProperties;
     }
 

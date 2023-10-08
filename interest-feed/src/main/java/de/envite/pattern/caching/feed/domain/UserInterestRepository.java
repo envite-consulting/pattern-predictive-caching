@@ -4,7 +4,7 @@ import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
@@ -12,12 +12,13 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static org.springframework.data.redis.core.ScanOptions.scanOptions;
 
-@Component
+@Repository
 public class UserInterestRepository {
 
     private final RedisTemplate<String, Set<String>> redisTemplate;
 
-    public UserInterestRepository(@Autowired final RedisTemplate<String, Set<String>> redisTemplate) {
+    @Autowired
+    public UserInterestRepository(final RedisTemplate<String, Set<String>> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

@@ -24,8 +24,9 @@ public class BenchmarkApplication implements CommandLineRunner, DisposableBean {
     private final StopSignal destroySignal = new StopSignal();
     private final CountDownLatch terminationSignal = new CountDownLatch(1);
 
-    public BenchmarkApplication(@Autowired final BenchmarkService benchmarkService,
-                                @Autowired final ExitCodeHolder exitCodeHolder) {
+    @Autowired
+    public BenchmarkApplication(final BenchmarkService benchmarkService,
+                                final ExitCodeHolder exitCodeHolder) {
         this.benchmarkService = benchmarkService;
         this.exitCodeHolder = exitCodeHolder;
     }

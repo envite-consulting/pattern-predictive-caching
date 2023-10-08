@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -14,32 +14,33 @@ import java.util.random.RandomGenerator;
 import static java.util.Collections.shuffle;
 import static java.util.stream.Collectors.toSet;
 
-@Component
+@Service
 public class UserInterestDBInitService {
 
     private static final Logger log = LoggerFactory.getLogger(UserInterestDBInitService.class);
 
     private final AppProperties appProperties;
-    private final UsersDatasetService usersDatasetService;
-    private final NewsDatasetService newsDatasetService;
+    private final UsersDatasetRepository usersDatasetRepository;
+    private final NewsDatasetRepository newsDatasetRepository;
     private final RedisTemplate<String, Set<String>> redisTemplate;
 
+    @Autowired
     public UserInterestDBInitService(
-            @Autowired final AppProperties appProperties,
-            @Autowired final UsersDatasetService usersDatasetService,
-            @Autowired final NewsDatasetService newsDatasetService,
-            @Autowired final RedisTemplate<String, Set<String>> redisTemplate) {
+            final AppProperties appProperties,
+            final UsersDatasetRepository usersDatasetRepository,
+            final NewsDatasetRepository newsDatasetRepository,
+            final RedisTemplate<String, Set<String>> redisTemplate) {
         this.appProperties = appProperties;
-        this.usersDatasetService = usersDatasetService;
-        this.newsDatasetService = newsDatasetService;
+        this.usersDatasetRepository = usersDatasetRepository;
+        this.newsDatasetRepository = newsDatasetRepository;
         this.redisTemplate = redisTemplate;
     }
 
     public void initDB(final RandomGenerator random) {
         log.info("Start initializing user interest db");
         final var startTimeMs = System.currentTimeMillis();
-        final var users = usersDatasetService.getUsers(appProperties.getUsersCount());
-        final var categories = new ArrayList<>(newsDatasetService.getCategories(appProperties.getNewsFromDate(), appProperties.getNewsUntilDate()));
+        final var users = usersDatasetRepository.getUsers(appProperties.getUsersCount());
+        final var categories = new ArrayList<>(newsDatasetRepository.getCategories(appProperties.getNewsFromDate(), appProperties.getNewsUntilDate()));
         for (final var user : users) {
             shuffle(categories, random);
             final var limit = random.nextInt(appProperties.getMinInterests(), appProperties.getMaxInterests() + 1);
@@ -50,7 +51,7 @@ public class UserInterestDBInitService {
     }
 
     public void logCategories() {
-        final var categories = new ArrayList<>(newsDatasetService.getCategories(appProperties.getNewsFromDate(), appProperties.getNewsUntilDate()));
+        final var categories = new ArrayList<>(newsDatasetRepository.getCategories(appProperties.getNewsFromDate(), appProperties.getNewsUntilDate()));
         categories.sort(String::compareTo);
         log.info("Categories in interval {}/{}: {} ({})", appProperties.getNewsFromDate(), appProperties.getNewsUntilDate(), categories, categories.size());
     }

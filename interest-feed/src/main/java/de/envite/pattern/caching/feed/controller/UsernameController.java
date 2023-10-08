@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.feed.web;
+package de.envite.pattern.caching.feed.controller;
 
 import de.envite.pattern.caching.feed.domain.UserInterestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,12 @@ import static java.util.Optional.ofNullable;
 
 @RestController
 @RequestMapping("/usernames")
-public class UsernameResource {
+public class UsernameController {
 
     private final UserInterestRepository userInterestRepository;
 
-    public UsernameResource(@Autowired final UserInterestRepository userInterestRepository) {
+    @Autowired
+    public UsernameController(final UserInterestRepository userInterestRepository) {
         this.userInterestRepository = userInterestRepository;
     }
 

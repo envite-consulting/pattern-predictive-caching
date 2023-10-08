@@ -45,10 +45,10 @@ public class BenchmarkService implements DisposableBean {
     private final AtomicInteger currentUserSimulationCount = new AtomicInteger(0);
 
     @Autowired
-    public BenchmarkService(@Autowired final BenchmarkProperties benchmarkProperties,
-                            @Autowired final LifecycleProperties lifecycleProperties,
-                            @Autowired final FeedAdapterFactory feedAdapterFactory,
-                            @Autowired final MeterRegistry meterRegistry, @Autowired final MetricsProperties metricsProperties) {
+    public BenchmarkService(final BenchmarkProperties benchmarkProperties,
+                            final LifecycleProperties lifecycleProperties,
+                            final FeedAdapterFactory feedAdapterFactory,
+                            final MeterRegistry meterRegistry, final MetricsProperties metricsProperties) {
         this(benchmarkProperties, lifecycleProperties, feedAdapterFactory,
                 Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("benchmark-", 0).factory()),
                 meterRegistry, metricsProperties);

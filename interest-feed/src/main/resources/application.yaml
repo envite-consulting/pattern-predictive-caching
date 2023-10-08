@@ -53,7 +53,7 @@ okhttp:
 #      max-idle-connections: 5
 #      keep-alive-duration: 5m
 #    cache:
-#      enabled: true
+#      enabled: false
 #      directory: "/home/cnb/.cache/http_cache"
 #      max-size: 10MB
 

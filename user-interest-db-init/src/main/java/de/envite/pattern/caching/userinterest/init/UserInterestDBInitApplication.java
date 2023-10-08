@@ -15,8 +15,9 @@ public class UserInterestDBInitApplication implements CommandLineRunner {
     private final AppProperties appProperties;
     private final UserInterestDBInitService userInterestDbInitService;
 
-    public UserInterestDBInitApplication(@Autowired final AppProperties appProperties,
-                                         @Autowired final UserInterestDBInitService userInterestDbInitService) {
+    @Autowired
+    public UserInterestDBInitApplication(final AppProperties appProperties,
+                                         final UserInterestDBInitService userInterestDbInitService) {
         this.appProperties = appProperties;
         this.userInterestDbInitService = userInterestDbInitService;
     }

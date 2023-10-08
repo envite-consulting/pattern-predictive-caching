@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.feed.web;
+package de.envite.pattern.caching.feed.controller;
 
 import de.envite.pattern.caching.feed.domain.FeedEntry;
 import de.envite.pattern.caching.feed.domain.FeedService;
@@ -12,15 +12,16 @@ import static java.util.Optional.ofNullable;
 
 @RestController
 @RequestMapping("/feed")
-public class FeedResource {
+public class FeedController {
 
     private final FeedService feedService;
 
-    public FeedResource(@Autowired final FeedService feedService) {
+    @Autowired
+    public FeedController(final FeedService feedService) {
         this.feedService = feedService;
     }
 
-    @GetMapping(path = {"/{username}", "/", ""})
+    @GetMapping({"/{username}", "/", ""})
     public List<FeedEntry> getFeedByUser(@PathVariable(name = "username", required = false) final String username,
                                          @RequestParam(name = "date", required = false) final LocalDate date) {
         return feedService.getFeedByUser(ofNullable(username).orElse(""), ofNullable(date).orElseGet(LocalDate::now));

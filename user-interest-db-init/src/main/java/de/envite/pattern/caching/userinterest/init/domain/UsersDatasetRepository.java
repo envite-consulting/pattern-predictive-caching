@@ -6,7 +6,7 @@ import de.envite.pattern.caching.userinterest.init.config.AppProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,16 +15,16 @@ import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 
-@Component
-public class UsersDatasetService {
+@Repository
+public class UsersDatasetRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(UsersDatasetService.class);
+    private static final Logger log = LoggerFactory.getLogger(UsersDatasetRepository.class);
 
     private final AppProperties appProperties;
 
     private final List<String> users = new LinkedList<>();
 
-    public UsersDatasetService(@Autowired final AppProperties appProperties) {
+    public UsersDatasetRepository(@Autowired final AppProperties appProperties) {
         this.appProperties = appProperties;
     }
 

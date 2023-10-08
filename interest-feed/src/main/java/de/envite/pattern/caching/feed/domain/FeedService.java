@@ -8,7 +8,7 @@ import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
 import static de.envite.pattern.caching.feed.support.MetricsSupport.toTags;
 import static java.util.Optional.ofNullable;
 
-@Component
+@Service
 public class FeedService {
 
     private static final Comparator<FeedEntry> FEED_COMPARATOR = Comparator.comparing(FeedEntry::releaseDate).reversed().thenComparing(FeedEntry::topic);
@@ -29,13 +29,15 @@ public class FeedService {
 
     private final DistributionSummary summaryFeedRecommendedNewsSize;
 
-    public FeedService(@Autowired final FeedProperties feedProperties,
-                       @Autowired final UserInterestRepository userInterestRepository,
-                       @Autowired final NewsAdapter newsAdapter,
-                       @Autowired final MeterRegistry meterRegistry, @Autowired final MetricsProperties metricsProperties) {
+    @Autowired
+    public FeedService(final FeedProperties feedProperties,
+                       final UserInterestRepository userInterestRepository,
+                       final NewsAdapter newsAdapter,
+                       final MeterRegistry meterRegistry, @Autowired final MetricsProperties metricsProperties) {
         this.feedProperties = feedProperties;
         this.userInterestService = userInterestRepository;
         this.newsAdapter = newsAdapter;
+
         this.summaryFeedRecommendedNewsSize = meterRegistry.summary("feed.recommended.news.size", toTags(metricsProperties.getTags()));
     }
 

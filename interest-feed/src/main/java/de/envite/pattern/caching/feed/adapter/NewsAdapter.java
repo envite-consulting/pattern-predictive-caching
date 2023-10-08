@@ -21,8 +21,9 @@ public class NewsAdapter {
     private final String recommendedNewsUriTemplate;
     private final String latestNewsUriTemplate;
 
+    @Autowired
     public NewsAdapter(
-            @Autowired final RestTemplate restTemplate,
+            final RestTemplate restTemplate,
             @Value("${service.news.url}") final String newsServiceUrl) {
         this.restTemplate = restTemplate;
         this.recommendedNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("news/recommended")
