@@ -81,7 +81,7 @@ curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/feed/mariamey
 .Test curl request to get usernames:
 [source,bash]
 ----
-curl -s -XGET -H "Content-type: application/json" 'http://localhost:8082/usernames?limit=10'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/usernames?limit=10'
 ----
 
 .Test curl request to get interests:
@@ -93,7 +93,7 @@ curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/interests?lim
 .Test curl request to get interests by user:
 [source,bash]
 ----
-curl -s -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/mariameyer000'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/interests/mariameyer000'
 ----
 
 == ToDos
