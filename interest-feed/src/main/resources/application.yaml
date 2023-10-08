@@ -43,7 +43,7 @@ server:
 
 okhttp:
   client:
-    enabled: false
+    enabled: true
 #    protocols: h2_prior_knowledge
 #    connect-timeout: 10s
 #    read-timeout: 10s
@@ -52,6 +52,10 @@ okhttp:
 #    pool:
 #      max-idle-connections: 5
 #      keep-alive-duration: 5m
+#    cache:
+#      enabled: true
+#      directory: "/home/cnb/.cache/http_cache"
+#      max-size: 10MB
 
 management:
   server:

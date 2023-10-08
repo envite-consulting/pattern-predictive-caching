@@ -3,9 +3,12 @@ package de.envite.pattern.caching.feed.config;
 import okhttp3.Protocol;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.unit.DataSize;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 
 @Configuration
 @ConfigurationProperties("okhttp.client")
@@ -55,6 +58,11 @@ public class OkHttpClientProperties {
      * of which connections to keep open for future use.
      */
     private Pool pool = new Pool();
+
+    /**
+     * Sets the response cache to be used to read and write cached responses.
+     */
+    private Cache cache = new Cache();
 
     public boolean isEnabled() {
         return enabled;
@@ -112,6 +120,14 @@ public class OkHttpClientProperties {
         this.pool = pool;
     }
 
+    public Cache getCache() {
+        return cache;
+    }
+
+    public void setCache(Cache cache) {
+        this.cache = cache;
+    }
+
     public static class Pool {
 
         /**
@@ -140,4 +156,45 @@ public class OkHttpClientProperties {
         }
     }
 
+    public static class Cache {
+
+        /**
+         * Defines if a cache should be used for OkHttp.
+         */
+        private boolean enabled = false;
+
+        /**
+         * Cache directory which is being exclusively owned by a single instance.
+         */
+        private File directory = new File(System.getProperty("java.io.tmpdir"), "http_cache-" + UUID.randomUUID());
+
+        /**
+         * The maximum size of the cache in bytes.
+         */
+        private DataSize maxSize = DataSize.ofMegabytes(10);
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public File getDirectory() {
+            return directory;
+        }
+
+        public void setDirectory(File directory) {
+            this.directory = directory;
+        }
+
+        public DataSize getMaxSize() {
+            return maxSize;
+        }
+
+        public void setMaxSize(DataSize maxSize) {
+            this.maxSize = maxSize;
+        }
+    }
 }

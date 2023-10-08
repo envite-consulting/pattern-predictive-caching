@@ -7,7 +7,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import de.envite.pattern.caching.feed.adapter.NewsEntry;
 import de.envite.pattern.caching.feed.adapter.NewsResponse;
-import de.envite.pattern.caching.feed.adapter.RecommendedNewsQuery;
 import de.envite.pattern.caching.feed.domain.FeedEntry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @WireMockTest
-class FeedApplicationIntTests {
+class FeedApplicationIntTest {
 
     static int feedLimit = 2;
     static Period feedPeriod = Period.ofMonths(1);
@@ -94,8 +93,10 @@ class FeedApplicationIntTests {
         redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
 
         wireMock.stubFor(
-                post(urlEqualTo("/recommendedNews"))
-                        .withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), LocalDate.parse("2022-09-23").minus(feedPeriod), LocalDate.parse("2022-09-23"), feedLimit))))
+                get(urlPathEqualTo("/recommendedNews"))
+                        .withQueryParam("topics", equalTo(String.join(",", List.of("U.S. NEWS"))))
+                        .withQueryParam("fromDate", equalTo(LocalDate.parse("2022-09-23").minus(feedPeriod).toString())).withQueryParam("untilDate", equalTo("2022-09-23"))
+                        .withQueryParam("limit", equalTo(Integer.toString(feedLimit)))
                         .willReturn(okJson(om.writeValueAsString(new NewsResponse(List.of(
                                 new NewsEntry(
                                         1234,
@@ -143,8 +144,10 @@ class FeedApplicationIntTests {
         redisTemplate.opsForValue().set("ada", Set.of("U.S. NEWS"));
 
         wireMock.stubFor(
-                post(urlEqualTo("/recommendedNews"))
-                        .withRequestBody(equalToJson(om.writeValueAsString(new RecommendedNewsQuery(Set.of("U.S. NEWS"), LocalDate.parse("2022-09-23").minus(feedPeriod), LocalDate.parse("2022-09-23"), feedLimit))))
+                get(urlPathEqualTo("/recommendedNews"))
+                        .withQueryParam("topics", equalTo(String.join(",", List.of("U.S. NEWS"))))
+                        .withQueryParam("fromDate", equalTo(LocalDate.parse("2022-09-23").minus(feedPeriod).toString())).withQueryParam("untilDate", equalTo("2022-09-23"))
+                        .withQueryParam("limit", equalTo(Integer.toString(feedLimit)))
                         .willReturn(okJson(om.writeValueAsString(new NewsResponse(List.of(
                                 new NewsEntry(
                                         1234,
@@ -156,7 +159,8 @@ class FeedApplicationIntTests {
                                         "2022-09-23")
                         ))))));
         wireMock.stubFor(
-                get(urlPathEqualTo("/latestNews")).withQueryParam("untilDate", equalTo("2022-09-23")).withQueryParam("limit", equalTo("1"))
+                get(urlPathEqualTo("/latestNews"))
+                        .withQueryParam("untilDate", equalTo("2022-09-23")).withQueryParam("limit", equalTo("1"))
                         .willReturn(okJson(om.writeValueAsString(new NewsResponse(List.of(
                                 new NewsEntry(
                                         1456,

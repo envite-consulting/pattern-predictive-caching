@@ -9,7 +9,7 @@ The required steps are described in the link:datasource/README.adoc[Datasources 
 .Build container images:
 [source,bash]
 ----
-./gradlew bootBuildImage
+./gradlew clean build bootBuildImage
 ----
 
 .Provide read permissions to those files to anyone to allow access within container:
@@ -58,13 +58,16 @@ Websites:
 .Test curl request to get recommended news:
 [source,bash]
 ----
-curl -XPOST -H "Content-type: application/json" -d '{"topics" : ["U.S. NEWS"], "fromDate":"2012-02-03", "untilDate":"2022-02-10", "limit":10}' 'http://localhost:8081/recommendedNews'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8081/recommendedNews?topics=HOME%20%26%20LIVING,COMEDY&fromDate=2013-07-29&untilDate=2013-08-05&limit=20'
 ----
+
+Hint: In a previous version we used a POST request for the `/recommendedNews` endpoint to simplify specification of parameters.
+However, Http client-side cache is not possible for POST requests. Therefore, we switched to a GET request.
 
 .Test curl request to get latest news:
 [source,bash]
 ----
-curl -XGET 'http://localhost:8081/latestNews?untilDate=2022-02-10&limit=3'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8081/latestNews?untilDate=2013-08-05&limit=3'
 ----
 
 == Interest Feed Service
@@ -72,25 +75,25 @@ curl -XGET 'http://localhost:8081/latestNews?untilDate=2022-02-10&limit=3'
 .Test curl request to get feed for a user:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/feed/mariameyer000?date=2013-08-05'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/feed/mariameyer000?date=2013-08-05'
 ----
 
 .Test curl request to get usernames:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/usernames?limit=10'
+curl -s -XGET -H "Content-type: application/json" 'http://localhost:8082/usernames?limit=10'
 ----
 
 .Test curl request to get interests:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests?limit=10'
+curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/interests?limit=10'
 ----
 
 .Test curl request to get interests by user:
 [source,bash]
 ----
-curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/mariameyer000'
+curl -s -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/mariameyer000'
 ----
 
 == ToDos
@@ -102,6 +105,11 @@ curl -XGET -H "Content-type: application/json" 'http://localhost:8082/interests/
 * [x] Metrics for service and db internals like http connections, ...
 * [ ] UI for Feeds and Usernames (Micha)
 * [ ] Implementation of simple Feed caching (enable via config) (Uwe)
+** [x] Http client cache in Interest-Feed service for News service endpoints
+** [ ] Http client cache in Benchmark for Interest-Feed service endpoints
+** [ ] Redis client-side cache in Interest-Feed service
+** [ ] MariaDB client-side cache in News service
+** [ ] Http independent cache for Interest-Feed and News service
 * [ ] Monitoring for Watt and CO2e (Micha)
 * [ ] Implementation of predictive caching
 * [ ] Setup for Kubernetes

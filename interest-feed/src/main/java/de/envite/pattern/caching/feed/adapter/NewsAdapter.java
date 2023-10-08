@@ -25,12 +25,22 @@ public class NewsAdapter {
             @Autowired final RestTemplate restTemplate,
             @Value("${service.news.url}") final String newsServiceUrl) {
         this.restTemplate = restTemplate;
-        this.recommendedNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("recommendedNews").build().toUriString();
-        this.latestNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("latestNews").queryParam("untilDate","{untilDate}").queryParam("limit", "{limit}").build().toUriString();
+        this.recommendedNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("recommendedNews")
+                .queryParam("topics","{topics}")
+                .queryParam("fromDate","{fromDate}").queryParam("untilDate","{untilDate}")
+                .queryParam("limit", "{limit}").build().toUriString();
+        this.latestNewsUriTemplate = fromHttpUrl(newsServiceUrl).path("latestNews")
+                .queryParam("untilDate","{untilDate}")
+                .queryParam("limit", "{limit}").build().toUriString();
     }
 
     public List<NewsEntry> getRecommendedNews(final Set<String> topics, final LocalDate fromDate, final LocalDate untilDate, final Integer limit) {
-        final var newsResponse = restTemplate.postForObject(recommendedNewsUriTemplate, new RecommendedNewsQuery(topics, fromDate, untilDate, limit), NewsResponse.class);
+        final var uriVariables = new HashMap<String, String>();
+        ofNullable(topics).ifPresent(v -> uriVariables.put("topics", String.join(",", v)));
+        ofNullable(fromDate).ifPresent(v -> uriVariables.put("fromDate", v.toString()));
+        ofNullable(untilDate).ifPresent(v -> uriVariables.put("untilDate", v.toString()));
+        ofNullable(limit).ifPresent(v -> uriVariables.put("limit", Integer.toString(v)));
+        final var newsResponse = restTemplate.getForObject(recommendedNewsUriTemplate, NewsResponse.class, uriVariables);
         return ofNullable(newsResponse).map(NewsResponse::newsEntries).orElseGet(Collections::emptyList);
     }
 

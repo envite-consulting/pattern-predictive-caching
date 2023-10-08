@@ -1,9 +1,12 @@
 package de.envite.pattern.caching.feed.config;
 
+import de.envite.pattern.caching.feed.support.OkHttpCacheMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
+import okhttp3.Cache;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -41,7 +44,8 @@ public class RestTemplateConfiguration {
     }
 
     @Bean @Lazy
-    public OkHttpClient httpClient(final OkHttpClientProperties clientProperties, final ConnectionPool connectionPool) {
+    public OkHttpClient httpClient(@Autowired final OkHttpClientProperties clientProperties,
+                                   @Autowired final ConnectionPool connectionPool, @Autowired(required = false) final Cache cache) {
         return new OkHttpClient.Builder()
                 .protocols(clientProperties.getProtocols())
                 .connectTimeout(clientProperties.getConnectTimeout())
@@ -49,6 +53,7 @@ public class RestTemplateConfiguration {
                 .writeTimeout(clientProperties.getWriteTimeout())
                 .callTimeout(clientProperties.getCallTimeout())
                 .connectionPool(connectionPool)
+                .cache(cache)
                 .followRedirects(false)
                 .retryOnConnectionFailure(true)
                 .build();
@@ -61,4 +66,11 @@ public class RestTemplateConfiguration {
         return connectionPool;
     }
 
+    @Bean @Lazy
+    @ConditionalOnProperty(name = "okhttp.client.cache.enabled", havingValue = "true")
+    public Cache cache(final OkHttpClientProperties clientProperties, final MeterRegistry meterRegistry, final MetricsProperties properties) {
+        final var cache = new Cache(clientProperties.getCache().getDirectory(), clientProperties.getCache().getMaxSize().toBytes());
+        new OkHttpCacheMetrics(cache, "okhttp.cache", toTags(properties.getTags())).bindTo(meterRegistry);
+        return cache;
+    }
 }
