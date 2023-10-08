@@ -44,8 +44,9 @@ user-interest-db              Up 16 seconds
 redis-prometheus-exporter     Up 16 seconds
 node_exporter                 Up 17 seconds
 cadvisor                      Up 17 seconds
-
 ----
+
+Hint: The setup only works with `Docker` and has only been tested on `Linux`.
 
 Websites:
 
