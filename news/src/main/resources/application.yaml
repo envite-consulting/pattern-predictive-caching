@@ -16,12 +16,12 @@ spring:
 #  jmx:
 #    enabled: true
 
-web-resource:
-  news:
-    cache-control:
-      enabled: true
-      recommended-news: 1m
-      latest-news: 1m
+#web-resource:
+#  news:
+#    cache-control:
+#      enabled: true
+#      recommended-news: 1m
+#      latest-news: 1m
 
 server:
   port: 8081

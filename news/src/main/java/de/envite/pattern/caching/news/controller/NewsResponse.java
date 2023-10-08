@@ -1,4 +1,4 @@
-package de.envite.pattern.caching.news.web;
+package de.envite.pattern.caching.news.controller;
 
 import de.envite.pattern.caching.news.domain.NewsEntry;
 
