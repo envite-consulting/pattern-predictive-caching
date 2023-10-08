@@ -42,7 +42,7 @@ public class NewsController {
                 ofNullable(fromDate).orElseGet(LocalDate::now), ofNullable(untilDate).orElseGet(LocalDate::now),
                 ofNullable(limit).orElse(Integer.MAX_VALUE));
         return ok(new NewsResponse(news),
-                entry(cacheControlProperties::isEnabled, builder -> builder.cacheControl(maxAge(cacheControlProperties.getRecommendedNews()))));
+                entry(cacheControlProperties::isEnabled, builder -> builder.cacheControl(maxAge(cacheControlProperties.getRecommended()))));
     }
 
     @GetMapping("/latest")
@@ -50,7 +50,7 @@ public class NewsController {
                                                       @RequestParam(name = "limit", required = false) final Integer limit) {
         final var news = newsService.getLatestNews(ofNullable(untilDate).orElseGet(LocalDate::now), ofNullable(limit).orElse(Integer.MAX_VALUE));
         return ok(new NewsResponse(news),
-                entry(cacheControlProperties::isEnabled, builder -> builder.cacheControl(maxAge(cacheControlProperties.getLatestNews()))));
+                entry(cacheControlProperties::isEnabled, builder -> builder.cacheControl(maxAge(cacheControlProperties.getLatest()))));
     }
 
 }

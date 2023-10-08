@@ -21,6 +21,21 @@ spring:
 #  jmx:
 #    enabled: true
 
+#web-resource:
+#  feed:
+#    cache-control:
+#      enabled: true
+#      by-user: 1m
+#  interests:
+#    cache-control:
+#      enabled: true
+#      all: 1m
+#      by-user: 1m
+#  usernames:
+#    cache-control:
+#      enabled: true
+#      all: 1m
+
 server:
   port: 8082
   shutdown: graceful
@@ -41,9 +56,9 @@ server:
     include-exception: true
     include-stacktrace: never
 
-okhttp:
-  client:
-    enabled: true
+#okhttp:
+#  client:
+#    enabled: false
 #    protocols: h2_prior_knowledge
 #    connect-timeout: 10s
 #    read-timeout: 10s

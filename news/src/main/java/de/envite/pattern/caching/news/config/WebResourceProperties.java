@@ -35,8 +35,8 @@ public class WebResourceProperties {
 
             private boolean enabled = true;
 
-            private Duration recommendedNews = Duration.ofMinutes(1);
-            private Duration latestNews = Duration.ofMinutes(1);
+            private Duration recommended = Duration.ofMinutes(1);
+            private Duration latest = Duration.ofMinutes(1);
 
             public boolean isEnabled() {
                 return enabled;
@@ -46,20 +46,20 @@ public class WebResourceProperties {
                 this.enabled = enabled;
             }
 
-            public Duration getRecommendedNews() {
-                return recommendedNews;
+            public Duration getRecommended() {
+                return recommended;
             }
 
-            public void setRecommendedNews(Duration recommendedNews) {
-                this.recommendedNews = recommendedNews;
+            public void setRecommended(Duration recommended) {
+                this.recommended = recommended;
             }
 
-            public Duration getLatestNews() {
-                return latestNews;
+            public Duration getLatest() {
+                return latest;
             }
 
-            public void setLatestNews(Duration latestNews) {
-                this.latestNews = latestNews;
+            public void setLatest(Duration latest) {
+                this.latest = latest;
             }
         }
 
