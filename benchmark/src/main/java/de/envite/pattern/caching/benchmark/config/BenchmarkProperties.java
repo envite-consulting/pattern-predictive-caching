@@ -13,7 +13,6 @@ public class BenchmarkProperties {
     private Duration initialWaitingPeriod;
     private int numberOfUsers;
     private LocalDate date;
-    private int numberOfConcurrentRequests;
     private Duration testDuration;
     private Duration requestWaitingPeriod;
 
@@ -39,14 +38,6 @@ public class BenchmarkProperties {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public int getNumberOfConcurrentRequests() {
-        return numberOfConcurrentRequests;
-    }
-
-    public void setNumberOfConcurrentRequests(int numberOfConcurrentRequests) {
-        this.numberOfConcurrentRequests = numberOfConcurrentRequests;
     }
 
     public Duration getTestDuration() {
