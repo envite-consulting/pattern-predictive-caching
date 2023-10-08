@@ -43,11 +43,13 @@ public class UserSimulator implements Runnable {
             } catch (final RuntimeException e) {
                 log.warn(String.format("Requesting feed for user '%s' failed: %s", username, e.getMessage()), e);
             }
-            try {
-                Thread.sleep(requestWaitingPeriod.toMillis());
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+            if (requestWaitingPeriod.isPositive()) {
+                try {
+                    Thread.sleep(requestWaitingPeriod.toMillis());
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             }
         }
         feedAdapter.close();

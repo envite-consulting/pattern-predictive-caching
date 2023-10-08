@@ -6,10 +6,13 @@ import de.envite.pattern.caching.benchmark.config.BenchmarkProperties;
 import de.envite.pattern.caching.benchmark.support.OrExpression;
 import de.envite.pattern.caching.benchmark.support.StopSignal;
 import de.envite.pattern.caching.benchmark.support.Timer;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 import org.springframework.boot.autoconfigure.context.LifecycleProperties;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static de.envite.pattern.caching.benchmark.support.MetricsSupport.toTags;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -37,22 +42,31 @@ public class BenchmarkService implements DisposableBean {
 
     private final StopSignal destroySignal = new StopSignal();
 
+    private final AtomicInteger currentUserSimulationCount = new AtomicInteger(0);
+
     @Autowired
     public BenchmarkService(@Autowired final BenchmarkProperties benchmarkProperties,
                             @Autowired final LifecycleProperties lifecycleProperties,
-                            @Autowired final FeedAdapterFactory feedAdapterFactory) {
+                            @Autowired final FeedAdapterFactory feedAdapterFactory,
+                            @Autowired final MeterRegistry meterRegistry, @Autowired final MetricsProperties metricsProperties) {
         this(benchmarkProperties, lifecycleProperties, feedAdapterFactory,
-                Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("benchmark-", 0).factory()));
+                Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("benchmark-", 0).factory()),
+                meterRegistry, metricsProperties);
     }
 
     BenchmarkService(final BenchmarkProperties benchmarkProperties,
                      final LifecycleProperties lifecycleProperties,
                      final FeedAdapterFactory feedAdapterFactory,
-                     final ExecutorService userSimulatorExecutor) {
+                     final ExecutorService userSimulatorExecutor,
+                     final MeterRegistry meterRegistry, final MetricsProperties metricsProperties) {
         this.benchmarkProperties = benchmarkProperties;
         this.lifecycleProperties = lifecycleProperties;
         this.feedAdapterFactory = feedAdapterFactory;
         this.executorService = userSimulatorExecutor;
+
+        Gauge.builder("benchmark.user.simulations.current", currentUserSimulationCount, AtomicInteger::get)
+                .tags(toTags(metricsProperties.getTags()))
+                .register(meterRegistry);
     }
 
     public void runBenchmark(final StopSignal stopSignal) throws BenchmarkException, InterruptedException {
@@ -108,8 +122,9 @@ public class BenchmarkService implements DisposableBean {
         try (final var destroyLock = destroySignal.readLock(); final var stopLock = stopSignal.readLock()) {
             if (!destroySignal.getAsBoolean() && !stopSignal.getAsBoolean()) {
                 for (final var username : usernames) {
+                    currentUserSimulationCount.incrementAndGet();
                     var userSimulator = new UserSimulator(feedAdapterFactory, username, benchmarkProperties::getDate, benchmarkProperties.getRequestWaitingPeriod(), stopCondition);
-                    userSimulations.add(runAsync(userSimulator, executorService).whenComplete(stopOnException(exceptionSignal)));
+                    userSimulations.add(runAsync(userSimulator, executorService).whenComplete(stopOnException(exceptionSignal)).whenComplete((unused, throwable) -> currentUserSimulationCount.decrementAndGet()));
                 }
             }
         }
