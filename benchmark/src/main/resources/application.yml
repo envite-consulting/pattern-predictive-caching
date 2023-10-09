@@ -3,11 +3,15 @@ service:
     url: http://localhost:8082
 
 benchmark:
-  initialWaitingPeriod: 'PT5S'
-  numberOfUsers: 100
+  initial-delay: 30s
+  intermediate-delay: 30s
+  shutdown-delay: 15s
+  number-of-users: 100
   date: '2013-08-05'
-  testDuration: 'PT5M'
-  requestWaitingPeriod: 'PT1S'
+  request-delay: 1s
+  completion-condition: 'requests-per-user' # 'duration'
+  test-duration: 1m
+  requests-per-user: 250
 
 spring:
   jackson:

@@ -92,9 +92,8 @@ public class BenchmarkService implements DisposableBean {
     }
 
     private CompletableFuture<Void> runBenchmarkAsyncInternal(final StopSignal stopSignal) throws BenchmarkException {
-        sleep(benchmarkProperties.getInitialWaitingPeriod(), stopSignal, duration -> log.info("Waiting {} seconds until all applications are ready ...", duration.toSeconds()));
         final var usernames = fetchUsernames(benchmarkProperties.getNumberOfUsers());
-        sleep(benchmarkProperties.getInitialWaitingPeriod(), stopSignal, duration -> log.info("Benchmark is ready. Waiting for {} seconds until start of benchmark ...", duration.toSeconds()));
+        sleep(benchmarkProperties.getIntermediateDelay(), stopSignal, duration -> log.info("Benchmark is ready. Waiting for {} seconds until start of benchmark ...", duration.toSeconds()));
         return runBenchmarkAsync(usernames, stopSignal);
     }
 
@@ -123,7 +122,7 @@ public class BenchmarkService implements DisposableBean {
             if (!destroySignal.getAsBoolean() && !stopSignal.getAsBoolean()) {
                 for (final var username : usernames) {
                     currentUserSimulationCount.incrementAndGet();
-                    var userSimulator = new UserSimulator(feedAdapterFactory, username, benchmarkProperties::getDate, benchmarkProperties.getRequestWaitingPeriod(), stopCondition);
+                    var userSimulator = new UserSimulator(feedAdapterFactory, username, benchmarkProperties::getDate, benchmarkProperties.getRequestDelay(), stopCondition);
                     userSimulations.add(runAsync(userSimulator, executorService).whenComplete(stopOnException(exceptionSignal)).whenComplete((unused, throwable) -> currentUserSimulationCount.decrementAndGet()));
                 }
             }
@@ -181,6 +180,9 @@ public class BenchmarkService implements DisposableBean {
     }
 
     private void sleep(final Duration duration, final StopSignal stopSignal, final Consumer<Duration> logger) throws BenchmarkException {
+        if (duration.isZero() || duration.isNegative()) {
+            return;
+        }
         logger.accept(duration);
         try {
             if (new StopSignal().adapt(destroySignal, stopSignal).await(duration)) {
