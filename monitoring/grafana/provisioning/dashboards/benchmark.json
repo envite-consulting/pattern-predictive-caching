@@ -22,14 +22,16 @@
   "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 9,
-      "title": "Overview",
+      "id": 28,
+      "panels": [],
+      "title": "Simulations",
       "type": "row"
     },
     {
@@ -159,7 +161,7 @@
         "x": 12,
         "y": 1
       },
-      "id": 19,
+      "id": 21,
       "options": {
         "calculate": false,
         "cellGap": 1,
@@ -294,10 +296,9 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max",
+            "firstNotNull",
             "lastNotNull",
-            "delta"
+            "diff"
           ],
           "displayMode": "table",
           "placement": "bottom",
@@ -395,10 +396,9 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max",
+            "firstNotNull",
             "lastNotNull",
-            "delta"
+            "diff"
           ],
           "displayMode": "table",
           "placement": "bottom",
@@ -496,10 +496,9 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max",
+            "firstNotNull",
             "lastNotNull",
-            "delta"
+            "diff"
           ],
           "displayMode": "table",
           "placement": "bottom",
@@ -597,10 +596,9 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max",
+            "firstNotNull",
             "lastNotNull",
-            "delta"
+            "diff"
           ],
           "displayMode": "table",
           "placement": "bottom",
@@ -711,6 +709,7 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
             "max",
             "lastNotNull"
@@ -811,6 +810,7 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
             "max",
             "lastNotNull"
@@ -911,6 +911,7 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
             "max",
             "lastNotNull"
@@ -1124,6 +1125,7 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
             "max",
             "lastNotNull"
@@ -1238,6 +1240,7 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
             "max",
             "lastNotNull"
@@ -1542,6 +1545,6 @@
   "timezone": "",
   "title": "Benchmark",
   "uid": "a13b00f6-5ecc-4ecf-a3d1-3f0ec028658b",
-  "version": 1,
+  "version": 15,
   "weekStart": ""
 }

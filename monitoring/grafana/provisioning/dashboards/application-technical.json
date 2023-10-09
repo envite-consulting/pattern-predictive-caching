@@ -547,8 +547,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -558,33 +557,7 @@
               },
               "unit": "short"
             },
-            "overrides": [
-              {
-                "__systemRef": "hideSeriesFrom",
-                "matcher": {
-                  "id": "byNames",
-                  "options": {
-                    "mode": "exclude",
-                    "names": [
-                      "news: GET /latestNews (200)",
-                      "news: GET /recommendedNews (200)"
-                    ],
-                    "prefix": "All except:",
-                    "readOnly": true
-                  }
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": true
-                    }
-                  }
-                ]
-              }
-            ]
+            "overrides": []
           },
           "gridPos": {
             "h": 9,
@@ -597,12 +570,15 @@
             "legend": {
               "calcs": [
                 "min",
+                "mean",
                 "max",
                 "lastNotNull"
               ],
               "displayMode": "table",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "Mean",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
@@ -659,7 +635,7 @@
                 "lineWidth": 1,
                 "pointSize": 5,
                 "scaleDistribution": {
-                  "log": 10,
+                  "log": 2,
                   "type": "log"
                 },
                 "showPoints": "never",
@@ -677,8 +653,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -701,6 +676,7 @@
             "legend": {
               "calcs": [
                 "min",
+                "mean",
                 "max",
                 "lastNotNull"
               ],
@@ -736,10 +712,10 @@
               },
               "editorMode": "code",
               "expr": "http_server_requests_seconds_max{service=~\"$service\"}",
-              "hide": false,
+              "hide": true,
               "instant": false,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (max per request)",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (max)",
               "range": true,
               "refId": "C"
             },
@@ -753,7 +729,7 @@
               "expr": "irate(http_server_requests_seconds_sum{service=~\"$service\"}[15s]) / irate(http_server_requests_seconds_count{service=~\"$service\"}[15s])",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (avg per request)",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (avg)",
               "range": true,
               "refId": "A"
             }
@@ -822,7 +798,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 12
+            "y": 3
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -941,7 +917,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 12
+            "y": 3
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -1098,8 +1074,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1115,7 +1090,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 4
           },
           "id": 103,
           "options": {
@@ -1223,8 +1198,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1338,8 +1312,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1471,8 +1444,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1494,13 +1466,16 @@
           "options": {
             "legend": {
               "calcs": [
+                "min",
                 "mean",
                 "max",
                 "lastNotNull"
               ],
               "displayMode": "table",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "Mean",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
@@ -1575,8 +1550,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1598,6 +1572,7 @@
           "options": {
             "legend": {
               "calcs": [
+                "min",
                 "mean",
                 "max",
                 "lastNotNull"
@@ -1634,10 +1609,10 @@
               },
               "editorMode": "code",
               "expr": "http_client_requests_seconds_max{service=~\"$service\"}",
-              "hide": false,
+              "hide": true,
               "instant": false,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (max per request)",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (ma)",
               "range": true,
               "refId": "C"
             },
@@ -1651,7 +1626,7 @@
               "expr": "irate(http_client_requests_seconds_sum{service=~\"$service\"}[15s]) / irate(http_client_requests_seconds_count{service=~\"$service\"}[15s])",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (avg per request)",
+              "legendFormat": "{{service}}: {{method}} {{uri}} ({{status}}) (avg)",
               "range": true,
               "refId": "A"
             }
@@ -1720,7 +1695,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 39
+            "y": 16
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -1838,7 +1813,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 39
+            "y": 16
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -1995,8 +1970,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2012,7 +1986,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 34
+            "y": 8
           },
           "id": 3,
           "options": {
@@ -2097,8 +2071,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2114,7 +2087,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 34
+            "y": 8
           },
           "id": 16,
           "options": {
@@ -2199,8 +2172,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2216,7 +2188,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 34
+            "y": 8
           },
           "id": 21,
           "options": {
@@ -2301,8 +2273,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2318,7 +2289,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 43
+            "y": 17
           },
           "id": 17,
           "options": {
@@ -2403,8 +2374,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2420,7 +2390,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 43
+            "y": 17
           },
           "id": 18,
           "options": {
@@ -2505,8 +2475,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2522,7 +2491,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 43
+            "y": 17
           },
           "id": 19,
           "options": {
@@ -2608,8 +2577,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2625,7 +2593,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 52
+            "y": 26
           },
           "id": 20,
           "options": {
@@ -2725,8 +2693,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2742,7 +2709,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 52
+            "y": 26
           },
           "id": 23,
           "options": {
@@ -2843,8 +2810,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2860,7 +2826,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 61
+            "y": 35
           },
           "id": 22,
           "options": {
@@ -2960,8 +2926,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2977,7 +2942,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 61
+            "y": 35
           },
           "id": 24,
           "options": {
@@ -3100,8 +3065,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3117,12 +3081,13 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 35
+            "y": 18
           },
           "id": 144,
           "options": {
             "legend": {
               "calcs": [
+                "min",
                 "mean",
                 "max",
                 "lastNotNull"
@@ -3148,7 +3113,7 @@
               "expr": "irate(method_timed_seconds_count{service=~\"$service\"}[15s])",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}})",
+              "legendFormat": "{{service}}: {{method}} ({{exception}})",
               "range": true,
               "refId": "B"
             }
@@ -3204,8 +3169,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3221,12 +3185,13 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 35
+            "y": 18
           },
           "id": 149,
           "options": {
             "legend": {
               "calcs": [
+                "min",
                 "mean",
                 "max",
                 "lastNotNull"
@@ -3250,9 +3215,9 @@
               "editorMode": "code",
               "exemplar": true,
               "expr": "irate(method_timed_seconds_sum{service=~\"$service\"}[15s])",
-              "hide": false,
+              "hide": true,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}}) (rate)",
+              "legendFormat": "{{service}}: {{method}} ({{exception}}) (rate)",
               "range": true,
               "refId": "B"
             },
@@ -3263,10 +3228,10 @@
               },
               "editorMode": "code",
               "expr": "method_timed_seconds_max{service=~\"$service\"}",
-              "hide": false,
+              "hide": true,
               "instant": false,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}}) (max per request)",
+              "legendFormat": "{{service}}: {{method}} ({{exception}}) (max)",
               "range": true,
               "refId": "C"
             },
@@ -3280,7 +3245,7 @@
               "expr": "irate(method_timed_seconds_sum{service=~\"$service\"}[15s]) / irate(method_timed_seconds_count{service=~\"$service\"}[15s])",
               "hide": false,
               "interval": "5s",
-              "legendFormat": "{{service}}: {{class}} {{method}} ({{exception}}) (avg per request)",
+              "legendFormat": "{{service}}: {{method}} ({{exception}}) (avg)",
               "range": true,
               "refId": "A"
             }
@@ -3336,7 +3301,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 33
+            "y": 28
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -3455,7 +3420,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 33
+            "y": 28
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -3601,8 +3566,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3618,7 +3582,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 37
+            "y": 11
           },
           "id": 111,
           "options": {
@@ -3705,8 +3669,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3722,7 +3685,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 37
+            "y": 11
           },
           "id": 112,
           "options": {
@@ -3996,8 +3959,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4013,7 +3975,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 39
+            "y": 13
           },
           "id": 6,
           "links": [],
@@ -4111,8 +4073,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4128,7 +4089,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 39
+            "y": 13
           },
           "id": 150,
           "links": [],
@@ -4225,8 +4186,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4242,7 +4202,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 39
+            "y": 13
           },
           "id": 8,
           "links": [],
@@ -4356,8 +4316,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4373,7 +4332,7 @@
             "h": 11,
             "w": 16,
             "x": 0,
-            "y": 40
+            "y": 14
           },
           "id": 151,
           "links": [],
@@ -4497,8 +4456,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4514,7 +4472,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 40
+            "y": 14
           },
           "id": 13,
           "links": [],
@@ -4611,8 +4569,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4628,7 +4585,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 47
+            "y": 21
           },
           "id": 152,
           "links": [],
@@ -4686,7 +4643,7 @@
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "drawStyle": "line",
-                "fillOpacity": 10,
+                "fillOpacity": 0,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -4716,8 +4673,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4733,7 +4689,7 @@
             "h": 10,
             "w": 16,
             "x": 0,
-            "y": 51
+            "y": 25
           },
           "id": 154,
           "links": [],
@@ -4741,6 +4697,7 @@
             "legend": {
               "calcs": [
                 "min",
+                "mean",
                 "max",
                 "lastNotNull"
               ],
@@ -4857,8 +4814,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4874,7 +4830,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 54
+            "y": 28
           },
           "id": 153,
           "links": [],
@@ -4971,7 +4927,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 62
+            "y": 15
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -5090,7 +5046,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 62
+            "y": 15
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -5209,7 +5165,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 62
+            "y": 15
           },
           "heatmap": {},
           "hideZeroBuckets": false,
@@ -5429,8 +5385,8 @@
       {
         "current": {
           "selected": false,
-          "text": "user-interest-db/172.20.0.8:6379",
-          "value": "user-interest-db/172.20.0.8:6379"
+          "text": "user-interest-db/172.20.0.7:6379",
+          "value": "user-interest-db/172.20.0.7:6379"
         },
         "datasource": {
           "type": "prometheus",
@@ -5520,6 +5476,6 @@
   "timezone": "",
   "title": "Application (Technical)",
   "uid": "7V26irrMz",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
