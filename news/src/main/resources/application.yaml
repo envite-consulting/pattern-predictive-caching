@@ -57,9 +57,9 @@ management:
   metrics:
     distribution:
       slo:
-        http.server.requests: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
-        method.timed:         10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
-        hikaricp.connections: 10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
+        http.server.requests: 10ms,25ms,50ms,100ms,200ms,300ms,400ms,500ms,600ms,700ms,800ms,900ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,13s,14s,15s,16s,17s,18s,19s,20s,25s
+        method.timed:         10ms,25ms,50ms,100ms,200ms,300ms,400ms,500ms,600ms,700ms,800ms,900ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,13s,14s,15s,16s,17s,18s,19s,20s,25s
+        hikaricp.connections: 10ms,25ms,50ms,100ms,200ms,300ms,400ms,500ms,600ms,700ms,800ms,900ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,13s,14s,15s,16s,17s,18s,19s,20s,25s
     data:
       repository:
         autotime:

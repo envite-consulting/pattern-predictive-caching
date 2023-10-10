@@ -86,10 +86,10 @@ management:
   metrics:
     distribution:
       slo:
-        http.server.requests:       10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
-        http.client.requests:       10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
-        method.timed:               10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,15s,20s,25s,30s
-        lettuce.command:            50us,100us,250us,500us,1ms,2ms,5ms,10ms,50ms,100ms,250ms,750ms,1s,5s
+        http.server.requests:       10ms,25ms,50ms,100ms,200ms,300ms,400ms,500ms,600ms,700ms,800ms,900ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,13s,14s,15s,16s,17s,18s,19s,20s,25s
+        http.client.requests:       10ms,25ms,50ms,100ms,200ms,300ms,400ms,500ms,600ms,700ms,800ms,900ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,13s,14s,15s,16s,17s,18s,19s,20s,25s
+        method.timed:               10ms,25ms,50ms,100ms,200ms,300ms,400ms,500ms,600ms,700ms,800ms,900ms,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,13s,14s,15s,16s,17s,18s,19s,20s,25s
+        lettuce.command:            50us,100us,250us,500us,1ms,2ms,5ms,10ms,50ms,100ms,250ms,500ms,750ms,1s,2s,5s
         feed.recommended.news.size: 0.1,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0
 
 #  jmx:

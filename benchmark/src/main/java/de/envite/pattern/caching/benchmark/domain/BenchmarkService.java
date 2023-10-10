@@ -3,10 +3,8 @@ package de.envite.pattern.caching.benchmark.domain;
 import de.envite.pattern.caching.benchmark.adapter.FeedAdapter;
 import de.envite.pattern.caching.benchmark.adapter.FeedAdapterFactory;
 import de.envite.pattern.caching.benchmark.config.BenchmarkProperties;
-import de.envite.pattern.caching.benchmark.support.Counter;
-import de.envite.pattern.caching.benchmark.support.OrExpression;
-import de.envite.pattern.caching.benchmark.support.StopSignal;
-import de.envite.pattern.caching.benchmark.support.Timer;
+import de.envite.pattern.caching.benchmark.support.*;
+import io.micrometer.core.instrument.FunctionCounter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
@@ -21,6 +19,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -30,6 +29,7 @@ import static de.envite.pattern.caching.benchmark.support.MetricsSupport.toTags;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Service
 public class BenchmarkService implements DisposableBean {
@@ -44,6 +44,8 @@ public class BenchmarkService implements DisposableBean {
     private final StopSignal destroySignal = new StopSignal();
 
     private final AtomicInteger currentUserSimulationCount = new AtomicInteger(0);
+    private final Set<Stopwatch> userSimulationTimeStopwatches = new CopyOnWriteArraySet<>();
+    private final Set<Stopwatch> benchmarkTimeStopwatches = new CopyOnWriteArraySet<>();
 
     @Autowired
     public BenchmarkService(final BenchmarkProperties benchmarkProperties,
@@ -66,6 +68,18 @@ public class BenchmarkService implements DisposableBean {
         this.executorService = userSimulatorExecutor;
 
         Gauge.builder("benchmark.user.simulations.current", currentUserSimulationCount, AtomicInteger::get)
+                .tags(toTags(metricsProperties.getTags()))
+                .register(meterRegistry);
+        FunctionCounter.builder("benchmark.user.simulations.duration",
+                        userSimulationTimeStopwatches,
+                        value -> value.stream().mapToLong(stopwatch -> stopwatch.elapsedTime(SECONDS)).sum())
+                .baseUnit("seconds")
+                .tags(toTags(metricsProperties.getTags()))
+                .register(meterRegistry);
+        FunctionCounter.builder("benchmark.duration",
+                        benchmarkTimeStopwatches,
+                        value -> value.stream().mapToLong(stopwatch -> stopwatch.elapsedTime(SECONDS)).sum())
+                .baseUnit("seconds")
                 .tags(toTags(metricsProperties.getTags()))
                 .register(meterRegistry);
     }
@@ -114,30 +128,36 @@ public class BenchmarkService implements DisposableBean {
 
     public CompletableFuture<Void> runBenchmarkAsync(final List<String> usernames, final StopSignal stopSignal) {
         log.info("Starting Benchmark ...");
-        final var startTimeMillis = System.currentTimeMillis();
         final var exceptionSignal = new StopSignal();
         final var stopCondition = new OrExpression(stopSignal, exceptionSignal, destroySignal)
                 .with(benchmarkProperties.getTestDuration().isPositive(), () -> new Timer(benchmarkProperties.getTestDuration(), System::currentTimeMillis).expired());
+        final var benchmarkStopwatch = Stopwatch.createAndAdd(System::currentTimeMillis, benchmarkTimeStopwatches);
         final var userSimulations = new ArrayList<CompletableFuture<Void>>(usernames.size());
         try (final var destroyLock = destroySignal.readLock(); final var stopLock = stopSignal.readLock()) {
             if (!destroySignal.getAsBoolean() && !stopSignal.getAsBoolean()) {
+                benchmarkStopwatch.start();
                 for (final var username : usernames) {
                     currentUserSimulationCount.incrementAndGet();
-                    var userSimulator = new UserSimulator(
+                    final var userSimulationStopwatch = new Stopwatch(System::currentTimeMillis);
+                    userSimulationTimeStopwatches.add(userSimulationStopwatch);
+                    final var userSimulator = new UserSimulator(
                             feedAdapterFactory, username, benchmarkProperties::getDate, benchmarkProperties.getRequestDelay(),
-                            stopCondition.with(benchmarkProperties.getRequestsPerUser() > 0, () -> new Counter(benchmarkProperties.getRequestsPerUser()).reached()));
-                    userSimulations.add(runAsync(userSimulator, executorService).whenComplete(stopOnException(exceptionSignal)).whenComplete((unused, throwable) -> currentUserSimulationCount.decrementAndGet()));
+                            stopCondition.with(benchmarkProperties.getRequestsPerUser() > 0, () -> new Counter(benchmarkProperties.getRequestsPerUser()).reached()),
+                            userSimulationStopwatch);
+                    userSimulations.add(runAsync(userSimulator, executorService)
+                                    .whenComplete((unused, throwable) -> currentUserSimulationCount.decrementAndGet())
+                                    .whenComplete(stopAllOnException(exceptionSignal)));
                 }
             }
         }
         return allOf(userSimulations.toArray(CompletableFuture<?>[]::new))
                 .handle((unused, throwable) -> {
-                    final var durationMs = System.currentTimeMillis() - startTimeMillis;
+                    benchmarkStopwatch.stop();
                     if (throwable == null &&!stopSignal.getAsBoolean() && !destroySignal.getAsBoolean()) {
-                        log.info("Finished benchmark successfully after {} ms ...", durationMs);
+                        log.info("Finished benchmark successfully after {} ms ...", benchmarkStopwatch.elapsedTimeMs());
                         return null;
                     } else {
-                        throw new BenchmarkException(String.format("Benchmark aborted after %d ms of %d ms ...", durationMs, benchmarkProperties.getTestDuration().toMillis()));
+                        throw new BenchmarkException(String.format("Benchmark aborted after %d ms of %d ms ...", benchmarkStopwatch.elapsedTimeMs(), benchmarkProperties.getTestDuration().toMillis()));
                     }
                 });
     }
@@ -197,7 +217,7 @@ public class BenchmarkService implements DisposableBean {
         }
     }
 
-    private <T> BiConsumer<? super T, ? super Throwable> stopOnException(final StopSignal stopSignal) {
+    private <T> BiConsumer<? super T, ? super Throwable> stopAllOnException(final StopSignal stopSignal) {
         return (unused, throwable) -> ofNullable(throwable).ifPresent(t -> stopSignal.stop());
     }
 }
