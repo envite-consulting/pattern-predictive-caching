@@ -102,7 +102,6 @@ curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/interests/mar
 * [x] API to show all users (and maybe their interests)
 * [x] Benchmark app
 ** [ ] Metrics for current test duration (like uptime)
-** [ ] Configuration of (successful) request count as alternative for duration (better for comparability)
 * [x] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
 * [x] Metrics for service and db internals like http connections, ...
 * [ ] UI for Feeds and Usernames (Micha)

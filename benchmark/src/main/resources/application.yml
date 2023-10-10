@@ -9,9 +9,8 @@ benchmark:
   number-of-users: 100
   date: '2013-08-05'
   request-delay: 1s
-  completion-condition: 'requests-per-user' # 'duration'
-  test-duration: 1m
-  requests-per-user: 250
+  test-duration: 0s
+  requests-per-user: 0
 
 spring:
   jackson:

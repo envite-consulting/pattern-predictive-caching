@@ -20,9 +20,8 @@ public class BenchmarkProperties {
     private LocalDate date = LocalDate.parse("2013-08-05");
     private Duration requestDelay = Duration.ofSeconds(1);
 
-    private String completionCondition = CompletionCondition.DURATION.getValue();
-    private Duration testDuration = Duration.ofMinutes(5);
-    private int requestsPerUser = 250;
+    private Duration testDuration = Duration.ZERO;
+    private long requestsPerUser = 0;
 
     public Duration getInitialDelay() {
         return initialDelay;
@@ -72,18 +71,6 @@ public class BenchmarkProperties {
         this.requestDelay = requestDelay;
     }
 
-    public CompletionCondition getCompletionConditionEnum() {
-        return CompletionCondition.getByValue(completionCondition);
-    }
-
-    public String getCompletionCondition() {
-        return completionCondition;
-    }
-
-    public void setCompletionCondition(String completionCondition) {
-        this.completionCondition = completionCondition;
-    }
-
     public Duration getTestDuration() {
         return testDuration;
     }
@@ -92,32 +79,12 @@ public class BenchmarkProperties {
         this.testDuration = testDuration;
     }
 
-    public int getRequestsPerUser() {
+    public long getRequestsPerUser() {
         return requestsPerUser;
     }
 
-    public void setRequestsPerUser(int requestsPerUser) {
+    public void setRequestsPerUser(long requestsPerUser) {
         this.requestsPerUser = requestsPerUser;
     }
 
-    public enum CompletionCondition {
-
-        DURATION("duration"), REQUESTS_PER_USER("requests-per-user");
-
-        private final String value;
-
-        CompletionCondition(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public static CompletionCondition getByValue(final String value) {
-            return Arrays.stream(CompletionCondition.values())
-                    .filter(c -> value != null && c.value.equals(value.toLowerCase().trim()))
-                    .findAny().orElse(CompletionCondition.DURATION);
-        }
-    }
 }

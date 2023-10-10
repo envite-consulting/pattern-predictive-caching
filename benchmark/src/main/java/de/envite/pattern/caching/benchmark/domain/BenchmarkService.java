@@ -3,6 +3,7 @@ package de.envite.pattern.caching.benchmark.domain;
 import de.envite.pattern.caching.benchmark.adapter.FeedAdapter;
 import de.envite.pattern.caching.benchmark.adapter.FeedAdapterFactory;
 import de.envite.pattern.caching.benchmark.config.BenchmarkProperties;
+import de.envite.pattern.caching.benchmark.support.Counter;
 import de.envite.pattern.caching.benchmark.support.OrExpression;
 import de.envite.pattern.caching.benchmark.support.StopSignal;
 import de.envite.pattern.caching.benchmark.support.Timer;
@@ -114,15 +115,17 @@ public class BenchmarkService implements DisposableBean {
     public CompletableFuture<Void> runBenchmarkAsync(final List<String> usernames, final StopSignal stopSignal) {
         log.info("Starting Benchmark ...");
         final var startTimeMillis = System.currentTimeMillis();
-        final var timer = new Timer(benchmarkProperties.getTestDuration(), System::currentTimeMillis);
         final var exceptionSignal = new StopSignal();
-        final var stopCondition = new OrExpression(timer.expired(), stopSignal, exceptionSignal, destroySignal);
+        final var stopCondition = new OrExpression(stopSignal, exceptionSignal, destroySignal)
+                .with(benchmarkProperties.getTestDuration().isPositive(), () -> new Timer(benchmarkProperties.getTestDuration(), System::currentTimeMillis).expired());
         final var userSimulations = new ArrayList<CompletableFuture<Void>>(usernames.size());
         try (final var destroyLock = destroySignal.readLock(); final var stopLock = stopSignal.readLock()) {
             if (!destroySignal.getAsBoolean() && !stopSignal.getAsBoolean()) {
                 for (final var username : usernames) {
                     currentUserSimulationCount.incrementAndGet();
-                    var userSimulator = new UserSimulator(feedAdapterFactory, username, benchmarkProperties::getDate, benchmarkProperties.getRequestDelay(), stopCondition);
+                    var userSimulator = new UserSimulator(
+                            feedAdapterFactory, username, benchmarkProperties::getDate, benchmarkProperties.getRequestDelay(),
+                            stopCondition.with(benchmarkProperties.getRequestsPerUser() > 0, () -> new Counter(benchmarkProperties.getRequestsPerUser()).reached()));
                     userSimulations.add(runAsync(userSimulator, executorService).whenComplete(stopOnException(exceptionSignal)).whenComplete((unused, throwable) -> currentUserSimulationCount.decrementAndGet()));
                 }
             }

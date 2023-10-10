@@ -564,7 +564,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "mean"
           ],
           "fields": "",
           "values": false
@@ -633,7 +633,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "mean"
           ],
           "fields": "",
           "values": false
@@ -2359,7 +2359,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -2374,6 +2374,6 @@
   "timezone": "",
   "title": "Benchmark Evaluation",
   "uid": "659db77a-2094-4e6a-8e4f-9b48282fea5b",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }

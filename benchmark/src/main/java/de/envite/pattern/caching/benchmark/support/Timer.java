@@ -11,8 +11,8 @@ public class Timer {
     private final  long deadlineMs;
     private final LongSupplier currentTimeMsSupplier;
 
-    private final BooleanSupplier expiredSupplier;
     private final BooleanSupplier remainingSupplier;
+    private final BooleanSupplier expiredSupplier;
 
     public Timer(final Duration timeout, final LongSupplier currentTimeMsSupplier) {
         this(timeout.toMillis() + currentTimeMsSupplier.getAsLong(), currentTimeMsSupplier);
@@ -21,8 +21,8 @@ public class Timer {
     public Timer(final long deadlineMs, final LongSupplier currentTimeMsSupplier) {
         this.deadlineMs = deadlineMs;
         this.currentTimeMsSupplier = requireNonNull(currentTimeMsSupplier);
-        this.expiredSupplier = this::isExpired;
         this.remainingSupplier = this::isRemaining;
+        this.expiredSupplier = this::isExpired;
     }
 
     public long deadlineMs() {
