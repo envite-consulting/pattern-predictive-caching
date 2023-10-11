@@ -244,3 +244,10 @@ gcloud compute instances stop ${VM_NAME}
 ----
 gcloud compute instances start ${VM_NAME}
 ----
+
+== Destroy the Docker Instance
+
+[source,bash]
+----
+terraform destroy -var-file environments/${ENVIRONMENT}/terraform.tfvars
+----
