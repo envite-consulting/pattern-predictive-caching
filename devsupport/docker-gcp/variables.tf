@@ -26,3 +26,8 @@ variable "image_ubuntu_family" {
   default = "ubuntu-2204-lts"
   # gcloud compute images list --filter ubuntu-os-cloud
 }
+
+variable "image_size_gb" {
+  type = number
+  default = 10
+}

@@ -5,9 +5,12 @@ resource "google_compute_instance" "default" {
   zone         = "${var.region}-a"
   tags         = ["ssh"]
 
+  allow_stopping_for_update = true
+
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/${var.image_ubuntu_family}"
+      size = var.image_size_gb
     }
   }
 
