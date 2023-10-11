@@ -213,6 +213,17 @@ while inotifywait --exclude '\.git|\.idea' -r -e modify,create,delete,move $(pwd
 done
 ----
 
+=== Forward Ports to Client Host
+
+[source,bash]
+----
+ssh -N \
+  -L localhost:3000:localhost:3000 -L localhost:9090:localhost:9090 \
+  -L localhost:8081:localhost:8081 -L localhost:8181:localhost:8181 \
+  -L localhost:8082:localhost:8082 -L localhost:8182:localhost:8182 \
+  $(whoami)@${VM_NAME}
+----
+
 == Start and Stop Instance
 
 Show instances with `gcloud`:
