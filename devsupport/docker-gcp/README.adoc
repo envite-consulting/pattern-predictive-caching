@@ -160,7 +160,7 @@ Hint: Show project public ssh keys:
 gcloud compute project-info describe --format="value(commonInstanceMetadata[items][ssh-keys])"
 ----
 
-== Docker
+== Docker & Docker Compose
 
 === Via SSH
 
@@ -189,6 +189,26 @@ export DOCKER_HOST=unix:///run/user/$(id -u)/${VM_NAME}-docker.sock
 ----
 
 Finally, when you close the ssh connection, delete the forwarded socket again.
+
+=== Directory Sync
+
+To support mounts from local host, you need to use `rsync` to sync the repository directory to the remote host.
+
+[source,bash]
+----
+rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd) $(whoami)@${VM_NAME}:$(pwd)
+----
+
+This command only syncs once. If you want to sync changes automatically, the command must be automatically triggered on file change.
+This can be achieved with the tool `inotifywait` which is part of the `inotify-tools` package.
+
+[source,bash]
+----
+rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd) $(whoami)@${VM_NAME}:$(pwd)
+while inotifywait --exclude '\.git|\.idea' -r -e modify,create,delete,move $(pwd); do
+    rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd) $(whoami)@${VM_NAME}:$(pwd)
+done
+----
 
 == Start and Stop Instance
 
