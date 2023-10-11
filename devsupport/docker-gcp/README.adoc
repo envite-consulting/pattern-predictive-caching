@@ -1,0 +1,212 @@
+= GCP Compute Instance as Docker Host
+
+== Prepare
+
+=== Login
+
+First login to GCP with `gcloud` cli tool:
+
+[source,bash]
+----
+gcloud auth login
+gcloud auth application-default login
+----
+
+=== Use or Create GCP Project
+
+Use or create a GCP project with the following service APIs enabled:
+
+* `storage.googleapis.com`
+* `compute.googleapis.com`
+
+Set the following environment variables:
+
+* `PROJECT_ID` -> Id of the GCP project to use
+* `TFSTATE_STORAGE_BUCKET` -> Id of the Blob storage bucket to use for the Terraform state
+
+Hint: Envite can use the _playground_ project of our GCP account:
+
+[source,bash]
+----
+git clone https://gitlab.com/envite-consulting/sustainable-software-architecture/playground-gcp.git
+cd project
+terraform init
+----
+
+Set the output values to environment variables:
+
+[source,bash]
+----
+export PROJECT_ID="$(terraform output --raw project_id)"
+export TFSTATE_STORAGE_BUCKET="$(terraform output --raw tfstate_storage_bucket)"
+----
+
+=== Create Environment
+
+Hint: If you want to use an environment which has already been defined in link:environments/[] you can skip this section.
+
+Hint: It is recommended, that every developer uses its own environment to avoid conflicts.
+
+Create a new directory with the name of your environment in the folder link:environments/[] e.g. link:environments/talk[]
+
+Create a file with the name `backend.config` with the id of blob storage bucket for the Terraform state
+and the unique name of the directory which should be created in the bucket:
+
+[source,hcl]
+----
+prefix = "talk-dev-docker-host"
+bucket = "tfstate-playground-26597"
+----
+
+Create a file with the name `terraform.tfvars` and set the required variables.
+Most important are the `environment` and the `ip_cidr_range` variables which must be unique.
+
+[source,hcl]
+----
+project             = "playground-26597"
+region              = "europe-north1"
+environment         = "talk"
+ip_cidr_range       = "10.0.2.0/24"
+machine_type        = "e2-highcpu-16"
+image_ubuntu_family = "ubuntu-2304-amd64"
+----
+
+=== Use Environment
+
+.Set the project id to the `gcloud` context:
+[source,bash]
+----
+gcloud config set project ${PROJECT_ID}
+gcloud config set compute/region europe-north1
+gcloud config set compute/zone europe-north1-a
+----
+
+.Set the variable `ENVIRONMENT` to the name of the directory in the environment folder which you want to use:
+[source,bash]
+----
+export ENVIRONMENT=talk
+----
+
+== Create Docker Instance
+
+[source,bash]
+----
+terraform init -backend-config environments/${ENVIRONMENT}/backend.config -reconfigure
+terraform plan -var-file environments/${ENVIRONMENT}/terraform.tfvars -out=./.terraform/tf.plan
+terraform apply --auto-approve ./.terraform/tf.plan
+----
+
+Extract variables:
+
+[source,bash]
+----
+export VM_NAME="$(terraform output --raw vm_name)"
+export VM_IP="$(terraform output --raw vm_ip)"
+----
+
+If the instance is running, you could also set the IP with:
+[source,bash]
+----
+export VM_IP="$(gcloud compute instances describe ${VM_NAME} --format="value(networkInterfaces[accessConfigs][natIP].map().list())")"
+----
+
+Show instances with `gcloud`:
+
+[source,bash]
+----
+gcloud compute instances list
+----
+
+== SSH
+
+[source,bash]
+----
+gcloud compute ssh $(whoami)@${VM_NAME}
+----
+
+If no ssh key exists, a new one is created. The passphrase can be left empty.
+
+After you logged in, add your user to the `docker` group
+
+[source,bash]
+----
+sudo usermod -a -G docker $(id -un)
+----
+
+Log out again and add the machine to your ssh config to be able to login with Docker.
+
+[source,bash]
+----
+touch ~/.ssh/config
+echo -e "Host ${VM_NAME}\n" \
+  "HostName ${VM_IP}\n" \
+  "User $(whoami)\n" \
+  "IdentityFile ~/.ssh/google_compute_engine\n" \
+  "StrictHostKeyChecking no\n" \
+  "UserKnownHostsFile=/dev/null\n" >> ~/.ssh/config
+----
+
+If you do not want to disable host checking, you can add the ip and hostname to the known hosts file:
+
+[source,bash]
+----
+ssh-keyscan -H ${VM_IP} >> ~/.ssh/known_hosts
+----
+
+Hint: Show project public ssh keys:
+
+[source,bash]
+----
+gcloud compute project-info describe --format="value(commonInstanceMetadata[items][ssh-keys])"
+----
+
+== Docker
+
+=== Via SSH
+
+[source,bash]
+----
+export DOCKER_HOST=ssh://$(whoami)@${VM_NAME}
+docker ps
+----
+
+=== Via Port Forward
+
+Hint: This is required do build the Docker images on the remote host with Gradle.
+
+[source,bash]
+----
+ssh -N -L /run/user/$(id -u)/${VM_NAME}-docker.sock:/var/run/docker.sock $(whoami)@${VM_NAME}
+----
+
+Hint: Run the ssh command in a separate bash shell, because it is blocking.
+
+Set the `DOCKER_HOST` environment variable to the forwarded Docker socket:
+
+[source,bash]
+----
+export DOCKER_HOST=unix:///run/user/$(id -u)/${VM_NAME}-docker.sock
+----
+
+Finally, when you close the ssh connection, delete the forwarded socket again.
+
+== Start and Stop Instance
+
+Show instances with `gcloud`:
+
+[source,bash]
+----
+gcloud compute instances list
+----
+
+Stop instance:
+
+[source,bash]
+----
+gcloud compute instances stop ${VM_NAME}
+----
+
+[source,bash]
+----
+gcloud compute instances start ${VM_NAME}
+----

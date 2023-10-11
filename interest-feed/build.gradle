@@ -39,8 +39,5 @@ tasks.named('test') {
 }
 
 tasks.named("bootBuildImage") {
-	docker {
-		bindHostToBuilder = true // required for podman
-	}
 	buildpacks = ["docker.io/paketobuildpacks/java:10"]
 }

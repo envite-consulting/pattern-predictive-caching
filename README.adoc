@@ -20,6 +20,12 @@ chmod -R g+r,o+r news-db/
 chmod -R g+r,o+r monitoring/
 ----
 
+.If you first want to pull all images, run the following command (not required):
+[source,bash]
+----
+docker-compose pull --ignore-pull-failures
+----
+
 .Run demo environment:
 [source,bash]
 ----

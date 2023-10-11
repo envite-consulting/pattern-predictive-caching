@@ -127,12 +127,13 @@ services:
   prometheus:
     container_name: prometheus
     hostname: prometheus
-    image: prom/prometheus:v2.47.0
+    image: prom/prometheus:v2.47.1
     restart: on-failure
     ports:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yml:roz
+      - prometheus-data:/prometheus
     extra_hosts:
       - host.docker.internal:host-gateway
     networks:
@@ -141,7 +142,7 @@ services:
   grafana:
     container_name: grafana
     hostname: grafana
-    image: grafana/grafana:10.1.2
+    image: grafana/grafana:10.1.4
     restart: on-failure
     ports:
       - "3000:3000"
@@ -217,3 +218,7 @@ services:
 networks:
   envite:
     driver: bridge
+
+volumes:
+  prometheus-data:
+    name: prometheus-data
