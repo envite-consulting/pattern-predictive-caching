@@ -195,6 +195,8 @@ Finally, when you close the ssh connection, delete the forwarded socket again.
 
 To support mounts from local host, you need to use `rsync` to sync the repository directory to the remote host.
 
+Run the following command from the repository root directory you want to sync:
+
 [source,bash]
 ----
 rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd) $(whoami)@${VM_NAME}:$(pwd)
@@ -205,9 +207,9 @@ This can be achieved with the tool `inotifywait` which is part of the `inotify-t
 
 [source,bash]
 ----
-rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd) $(whoami)@${VM_NAME}:$(pwd)
+rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd)/ $(whoami)@${VM_NAME}:$(pwd)
 while inotifywait --exclude '\.git|\.idea' -r -e modify,create,delete,move $(pwd); do
-    rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd) $(whoami)@${VM_NAME}:$(pwd)
+    rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' $(pwd)/ $(whoami)@${VM_NAME}:$(pwd)
 done
 ----
 
