@@ -128,7 +128,10 @@ Configuration:
 
 ==== 100 Users and 250 Requests Per User
 
-* Without optimization: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&from=1697134774812&to=1697135177289&var-variant=default
+* Without optimization:
+** 2023-10-12 20:19:34 - 2023-10-12 20:26:17
+** Benchmark: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&from=1697134774812&to=1697135177289&var-variant=default
+** Technical:
 * With Http client-side cache:
 
 ==== 200 Users and 125 Requests Per User
