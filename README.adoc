@@ -59,7 +59,7 @@ Websites:
 * Grafana Dashboards: http://localhost:3000/dashboards
 * Prometheus Targets: http://localhost:9090/targets
 
-== Evaluation Setup
+== Benchmark Evaluation Setup
 
 .Create shared Docker network:
 [source,bash]
@@ -118,6 +118,28 @@ Websites:
 
 * Grafana Dashboards: http://localhost:3000/dashboards
 * Prometheus Targets: http://localhost:9090/targets
+
+=== Benchmark Runs
+
+Configuration:
+
+* 25000 requests in total
+* 1s delay after each request
+
+==== 100 Users and 250 Requests Per User
+
+* Without optimization: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&from=1697134774812&to=1697135177289&var-variant=default
+* With Http client-side cache:
+
+==== 200 Users and 125 Requests Per User
+
+* Without optimization:
+* With Http client-side cache:
+
+==== 1000 Users and 25 Requests Per User
+
+* Without optimization:
+* With Http client-side cache:
 
 == News Service
 
