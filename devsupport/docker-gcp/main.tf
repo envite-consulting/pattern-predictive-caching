@@ -2,7 +2,7 @@
 resource "google_compute_instance" "default" {
   name         = "${var.environment}-dev-docker-host"
   machine_type = var.machine_type
-  zone         = "${var.region}-a"
+  zone         = "${var.region}-${var.zone}"
   tags         = ["ssh"]
 
   allow_stopping_for_update = true
@@ -20,7 +20,7 @@ resource "google_compute_instance" "default" {
 
     sudo apt-get install -y \
       ca-certificates curl gnupg lsb-release \
-      btop
+      btop glances
 
     sudo mkdir -p /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg

@@ -5,6 +5,13 @@ variable "project" {
 variable "region" {
   type = string
   default = "europe-north1"
+  # gcloud compute zones list
+}
+
+variable "zone" {
+  type = string
+  default = "a"
+  # gcloud compute zones list
 }
 
 variable "environment" {

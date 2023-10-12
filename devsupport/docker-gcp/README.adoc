@@ -24,7 +24,19 @@ Set the following environment variables:
 * `PROJECT_ID` -> Id of the GCP project to use
 * `TFSTATE_STORAGE_BUCKET` -> Id of the Blob storage bucket to use for the Terraform state
 
-Hint: Envite can use the _playground_ project of our GCP account:
+==== Use Envite GCP Playground
+
+Envite can use the _playground_ project of our GCP account.
+
+For the current GCP _playground_ project just use the following variables:
+
+[source,bash]
+----
+export PROJECT_ID="playground-26597"
+export TFSTATE_STORAGE_BUCKET="tfstate-playground-26597"
+----
+
+Alternatively, you can derive these variables from the Terraform state of the project:
 
 [source,bash]
 ----
@@ -65,30 +77,53 @@ Most important are the `environment` and the `ip_cidr_range` variables which mus
 ----
 project             = "playground-26597"
 region              = "europe-north1"
+zone                = "a"
 environment         = "talk"
 ip_cidr_range       = "10.0.2.0/24"
-machine_type        = "e2-highcpu-16"
+machine_type        = "e2-custom-24-24576"
 image_ubuntu_family = "ubuntu-2304-amd64"
 image_size_gb       = "50"
 ----
 
 === Use Environment
 
-.Set the project id to the `gcloud` context:
+Set the variable `ENVIRONMENT` to the name of the directory in the environment folder which you want to use:
+
+[source,bash]
+----
+export ENVIRONMENT="talk"
+----
+
+Set region and the zone part as variables accordingly to  the configuration of the selected environment:
+
+* `REGION` -> The region to use (default of Terraform project is europe-north1)
+* `ZONE` -> The zone part of the regen to use, e.g. _a_ (default of Terraform zone is a)
+
+[source,bash]
+----
+export REGION="europe-north1"
+export ZONE="a"
+----
+
+Set the project id to the `gcloud` context:
+
 [source,bash]
 ----
 gcloud config set project ${PROJECT_ID}
-gcloud config set compute/region europe-north1
-gcloud config set compute/zone europe-north1-a
-----
-
-.Set the variable `ENVIRONMENT` to the name of the directory in the environment folder which you want to use:
-[source,bash]
-----
-export ENVIRONMENT=talk
+gcloud config set compute/region ${REGION-"europe-north1"}
+gcloud config set compute/zone ${REGION-"europe-north1"}-${ZONE-"a"}
 ----
 
 == Create Docker Instance
+
+Change to the Terraform project directory:
+
+[source,bash]
+----
+cd devsupport/docker-gcp
+----
+
+Init and apply the Terraform project to create the instance:
 
 [source,bash]
 ----
@@ -224,7 +259,7 @@ ssh -N \
   $(whoami)@${VM_NAME}
 ----
 
-== Start and Stop Instance
+== Work with the Instance
 
 Show instances with `gcloud`:
 
@@ -233,7 +268,7 @@ Show instances with `gcloud`:
 gcloud compute instances list
 ----
 
-Stop instance:
+Start and stop the instance:
 
 [source,bash]
 ----
@@ -245,7 +280,7 @@ gcloud compute instances stop ${VM_NAME}
 gcloud compute instances start ${VM_NAME}
 ----
 
-== Destroy the Docker Instance
+Destroy the instance:
 
 [source,bash]
 ----
