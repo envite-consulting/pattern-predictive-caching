@@ -3959,7 +3959,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4073,7 +4074,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4186,7 +4188,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4316,7 +4319,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4349,7 +4353,7 @@
             },
             "tooltip": {
               "mode": "multi",
-              "sort": "none"
+              "sort": "desc"
             }
           },
           "pluginVersion": "10.1.2",
@@ -4456,7 +4460,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4569,7 +4574,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4673,7 +4679,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4707,7 +4714,7 @@
             },
             "tooltip": {
               "mode": "multi",
-              "sort": "none"
+              "sort": "desc"
             }
           },
           "pluginVersion": "10.1.2",
@@ -4814,7 +4821,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4975,7 +4983,7 @@
               "unit": "s"
             }
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "repeat": "hikari_pool",
           "repeatDirection": "v",
           "reverseYBuckets": false,
@@ -5094,7 +5102,7 @@
               "unit": "s"
             }
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "repeat": "hikari_pool",
           "repeatDirection": "v",
           "reverseYBuckets": false,
@@ -5213,7 +5221,7 @@
               "unit": "s"
             }
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "repeat": "hikari_pool",
           "repeatDirection": "v",
           "reverseYBuckets": false,
@@ -5385,8 +5393,8 @@
       {
         "current": {
           "selected": false,
-          "text": "user-interest-db/172.20.0.7:6379",
-          "value": "user-interest-db/172.20.0.7:6379"
+          "text": "user-interest-db/172.18.0.8:6379",
+          "value": "user-interest-db/172.18.0.8:6379"
         },
         "datasource": {
           "type": "prometheus",
@@ -5476,6 +5484,6 @@
   "timezone": "",
   "title": "Application (Technical)",
   "uid": "7V26irrMz",
-  "version": 3,
+  "version": 1,
   "weekStart": ""
 }

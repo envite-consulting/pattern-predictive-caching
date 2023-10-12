@@ -123,7 +123,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance) (benchmark_user_simulations_current{service=\"benchmark\"})",
+          "expr": "sum by (instance) (benchmark_user_simulations_current{service=~\"benchmark-${variant}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}",
@@ -195,7 +195,7 @@
           "reverse": false
         }
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -316,7 +316,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance) (http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"})",
+          "expr": "sum by (instance) (http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}",
@@ -416,7 +416,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance,outcome,status,exception) (http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"})",
+          "expr": "sum by (instance,outcome,status,exception) (http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}: {{outcome}} ({{state}}) ({{exception}})",
@@ -516,7 +516,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance) (http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}) / sum by (instance) (benchmark_user_simulations_current{service=\"benchmark\"})",
+          "expr": "sum by (instance) (http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}) / sum by (instance) (benchmark_user_simulations_current{service=~\"benchmark-${variant}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}",
@@ -616,7 +616,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance,outcome,status,exception) (http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}) / on (instance) group_left() (sum by (instance) (benchmark_user_simulations_current{service=\"benchmark\"}))",
+          "expr": "sum by (instance,outcome,status,exception) (http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}) / on (instance) group_left() (sum by (instance) (benchmark_user_simulations_current{service=~\"benchmark-${variant}\"}))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}: {{outcome}} ({{status}}) ({{exception}})",
@@ -730,7 +730,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance) (irate(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "sum by (instance) (irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[15s]))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -831,7 +831,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance, outcome, status, exception) (irate(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "sum by (instance, outcome, status, exception) (irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[15s]))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}: {{outcome}} ({{status}}) ({{exception}})",
@@ -932,7 +932,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance) (irate(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s])) / sum by (instance) (benchmark_user_simulations_current{service=\"benchmark\"})",
+          "expr": "sum by (instance) (irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[15s])) / sum by (instance) (benchmark_user_simulations_current{service=~\"benchmark-${variant}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -1032,7 +1032,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (instance, outcome, status, exception) (irate(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s])) / on (instance) group_left() (sum by (instance) (benchmark_user_simulations_current{service=\"benchmark\"}))",
+          "expr": "sum by (instance, outcome, status, exception) (irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[15s])) / on (instance) group_left() (sum by (instance) (benchmark_user_simulations_current{service=~\"benchmark-${variant}\"}))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}: {{outcome}} ({{status}}) ({{exception}})",
@@ -1146,7 +1146,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "avg by (instance) (irate(http_client_requests_seconds_sum{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"}[15s]) / irate(http_client_requests_seconds_count{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "avg by (instance) (irate(http_client_requests_seconds_sum{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"}[15s]) / irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"}[15s]))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}: Average",
@@ -1159,7 +1159,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "max by (instance) (http_client_requests_seconds_max{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"})",
+          "expr": "max by (instance) (http_client_requests_seconds_max{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"})",
           "hide": false,
           "instant": false,
           "interval": "5s",
@@ -1261,7 +1261,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "avg by (instance,outcome,status,exception) (irate(http_client_requests_seconds_sum{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"}[15s]) / irate(http_client_requests_seconds_count{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "avg by (instance,outcome,status,exception) (irate(http_client_requests_seconds_sum{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"}[15s]) / irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"}[15s]))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{instance}}: {{outcome}} ({{status}}) ({{exception}}) Average",
@@ -1274,7 +1274,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "max by (instance,outcome,status,exception) (http_client_requests_seconds_max{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"})",
+          "expr": "max by (instance,outcome,status,exception) (http_client_requests_seconds_max{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"})",
           "hide": false,
           "instant": false,
           "interval": "5s",
@@ -1355,7 +1355,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le)",
+          "expr": "sum(increase(http_client_requests_seconds_bucket{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -1436,7 +1436,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\",outcome=\"SUCCESS\"}[$__interval])) by (le)",
+          "expr": "sum(increase(http_client_requests_seconds_bucket{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\",outcome=\"SUCCESS\"}[$__interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -1517,7 +1517,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\",outcome!=\"SUCCESS\"}[$__interval])) by (le)",
+          "expr": "sum(increase(http_client_requests_seconds_bucket{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\",outcome!=\"SUCCESS\"}[$__interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -1535,7 +1535,32 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "default",
+          "value": "default"
+        },
+        "definition": "label_values(up,variant)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "variant",
+        "multi": false,
+        "name": "variant",
+        "options": [],
+        "query": {
+          "query": "label_values(up,variant)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 2,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-30m",
@@ -1545,6 +1570,6 @@
   "timezone": "",
   "title": "Benchmark",
   "uid": "a13b00f6-5ecc-4ecf-a3d1-3f0ec028658b",
-  "version": 15,
+  "version": 1,
   "weekStart": ""
 }

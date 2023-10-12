@@ -1,0 +1,103 @@
+version: "3.8"
+
+services:
+
+  prometheus:
+    container_name: prometheus
+    hostname: prometheus
+    image: prom/prometheus:v2.47.1
+    restart: on-failure
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yml:roz
+      - prometheus-data:/prometheus
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - envite
+
+  grafana:
+    container_name: grafana
+    hostname: grafana
+    image: grafana/grafana:10.1.4
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning/:/etc/grafana/provisioning:roz
+    environment:
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+    networks:
+      - envite
+
+  cadvisor:
+    container_name: cadvisor
+    hostname: cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    restart: on-failure
+    ports:
+      - "9400:8080"
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /dev/disk/:/dev/disk:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    devices:
+      - /dev/kmsg
+    command:
+      - "--store_container_labels=false"
+      - "--docker_only=true"
+    networks:
+      - envite
+
+  node_exporter:
+    container_name: node_exporter
+    hostname: node_exporter
+    image: quay.io/prometheus/node-exporter:v1.6.1
+    restart: on-failure
+    network_mode: host
+    pid: host
+    volumes:
+      - /:/rootfs:ro,rslave
+    command:
+      - '--path.rootfs=/rootfs'
+
+  redis-prometheus-exporter:
+    container_name: redis-prometheus-exporter
+    hostname: redis-prometheus-exporter
+    image: oliver006/redis_exporter:v1.54.0-alpine
+    restart: on-failure
+    ports:
+      - "9121:9121"
+    command:
+      - '--redis.addr='
+    networks:
+      - envite
+
+  mariadb-prometheus-exporter:
+    container_name: mariadb-prometheus-exporter
+    hostname: mariadb-prometheus-exporter
+    image: prom/mysqld-exporter:v0.15.0
+    restart: on-failure
+    ports:
+      - "9104:9104"
+    environment:
+      MYSQLD_EXPORTER_PASSWORD: password
+    command:
+      - '--mysqld.username=user'
+    networks:
+      - envite
+
+volumes:
+  prometheus-data:
+    name: prometheus-data
+
+networks:
+  envite:
+    name: envite
+    external: true

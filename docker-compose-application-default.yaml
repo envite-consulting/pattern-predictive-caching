@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+
+  news-default:
+    container_name: news-default
+    hostname: news-default
+    image: news:1.0.0
+    restart: on-failure
+    ports:
+      - "8081:8081"
+      - "8181:8181"
+    environment:
+      SERVER_PORT: 8081
+      MANAGEMENT_SERVER_PORT: 8181
+      SPRING_DATASOURCE_URL: jdbc:mariadb://news-db:3306/newsdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - envite
+
+  interest-feed-default:
+    container_name: interest-feed-default
+    hostname: interest-feed-default
+    image: interest-feed:1.0.0
+    restart: on-failure
+    ports:
+      - "8082:8082"
+      - "8182:8182"
+    environment:
+      SERVER_PORT: 8082
+      MANAGEMENT_SERVER_PORT: 8182
+      SPRING_DATA_REDIS_HOST: user-interest-db
+      SPRING_DATA_REDIS_PORT: 6379
+      SERVICE_NEWS_URL: http://news-default:8081
+      FEED_LIMIT: 20
+      FEED_PERIOD: P1W
+    networks:
+      - envite
+
+networks:
+  envite:
+    name: envite
+    external: true

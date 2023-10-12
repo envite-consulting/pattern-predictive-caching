@@ -1208,8 +1208,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1312,8 +1311,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1414,8 +1412,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1586,15 +1583,17 @@
         "current": {
           "selected": true,
           "text": [
-            "interest-feed",
-            "news",
+            "interest-feed-default",
+            "benchmark-default",
             "user-interest-db",
+            "news-default",
             "news-db"
           ],
           "value": [
-            "interest-feed",
-            "news",
+            "interest-feed-default",
+            "benchmark-default",
             "user-interest-db",
+            "news-default",
             "news-db"
           ]
         },

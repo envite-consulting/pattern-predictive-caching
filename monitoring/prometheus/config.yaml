@@ -15,23 +15,27 @@ scrape_configs:
     static_configs:
       - targets: ['cadvisor:8080']
 
-  - job_name: 'news'
+  - job_name: 'news-default'
     static_configs:
-      - targets: ['news:8181']
+      - targets: ['news-default:8181']
     metrics_path: '/actuator/prometheus'
     relabel_configs:
       - source_labels: [job]
         action: replace
         target_label: service
-  - job_name: 'interest-feed'
+      - target_label: variant
+        replacement: default
+  - job_name: 'interest-feed-default'
     static_configs:
-      - targets: ['interest-feed:8182']
+      - targets: ['interest-feed-default:8182']
     metrics_path: '/actuator/prometheus'
     relabel_configs:
       - source_labels: [job]
         action: replace
         target_label: service
-  - job_name: 'benchmark'
+      - target_label: variant
+        replacement: default
+  - job_name: 'benchmark-default'
     static_configs:
       - targets: ['host.docker.internal:8183']
     metrics_path: '/actuator/prometheus'
@@ -39,6 +43,39 @@ scrape_configs:
       - source_labels: [job]
         action: replace
         target_label: service
+      - target_label: variant
+        replacement: default
+
+  - job_name: 'news-cache'
+    static_configs:
+      - targets: ['news-cache:9181']
+    metrics_path: '/actuator/prometheus'
+    relabel_configs:
+      - source_labels: [job]
+        action: replace
+        target_label: service
+      - target_label: variant
+        replacement: cache
+  - job_name: 'interest-feed-cache'
+    static_configs:
+      - targets: ['interest-feed-cache:9182']
+    metrics_path: '/actuator/prometheus'
+    relabel_configs:
+      - source_labels: [job]
+        action: replace
+        target_label: service
+      - target_label: variant
+        replacement: cache
+  - job_name: 'benchmark-cache'
+    static_configs:
+      - targets: ['host.docker.internal:9183']
+    metrics_path: '/actuator/prometheus'
+    relabel_configs:
+      - source_labels: [job]
+        action: replace
+        target_label: service
+      - target_label: variant
+        replacement: cache
 
   - job_name: 'redis'
     static_configs:

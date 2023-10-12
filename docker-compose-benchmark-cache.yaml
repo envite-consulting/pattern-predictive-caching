@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+
+  benchmark-cache:
+    container_name: benchmark-cache
+    hostname: benchmark-cache
+    image: benchmark:1.0.0
+    restart: on-failure
+    ports:
+      - "9183:9183"
+    environment:
+      SERVER_PORT: 9183
+      MANAGEMENT_SERVER_PORT: 9183
+      SERVICE_INTERESTFEED_URL: http://interest-feed-cache:9082
+      BENCHMARK_INITIALDELAY: '0s'
+      BENCHMARK_INTERMEDIATEDELAY: '15s'
+      BENCHMARK_SHUTDOWNDELAY: '15s'
+      BENCHMARK_NUMBEROFUSERS: 200
+      BENCHMARK_DATE: '2013-08-05'
+      BENCHMARK_REQUESTDELAY: '1s'
+      BENCHMARK_TESTDURATION: '0s'
+      BENCHMARK_REQUESTSPERUSER: 125
+    networks:
+      - envite
+
+networks:
+  envite:
+    name: envite
+    external: true

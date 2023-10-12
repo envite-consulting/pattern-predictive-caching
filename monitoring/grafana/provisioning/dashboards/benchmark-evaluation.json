@@ -80,7 +80,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -88,7 +88,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(benchmark_user_simulations_current{service=\"benchmark\"})",
+          "expr": "sum(benchmark_user_simulations_current{service=~\"benchmark-${variant}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -182,7 +182,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(benchmark_user_simulations_current{service=\"benchmark\"})",
+          "expr": "sum(benchmark_user_simulations_current{service=~\"benchmark-${variant}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "Active",
@@ -240,7 +240,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -248,7 +248,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(benchmark_duration_seconds_total{service=\"benchmark\"})",
+          "expr": "sum(benchmark_duration_seconds_total{service=~\"benchmark-${variant}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -306,7 +306,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -314,7 +314,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(benchmark_user_simulations_duration_seconds_total{service=\"benchmark\"})",
+          "expr": "sum(benchmark_user_simulations_duration_seconds_total{service=~\"benchmark-${variant}\"})",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -375,7 +375,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -383,7 +383,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(feed_recommended_news_size_bucket{service=\"interest-feed\"}[$__interval])) by (le))",
+          "expr": "histogram_quantile(0.50, sum(rate(feed_recommended_news_size_bucket{service=~\"interest-feed-${variant}\"}[$__interval])) by (le))",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -444,7 +444,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -452,7 +452,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.25, sum(rate(feed_recommended_news_size_bucket{service=\"interest-feed\"}[$__interval])) by (le))",
+          "expr": "histogram_quantile(0.25, sum(rate(feed_recommended_news_size_bucket{service=~\"interest-feed-${variant}\"}[$__interval])) by (le))",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -513,7 +513,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -521,7 +521,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}) or vector(0)",
+          "expr": "sum(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}) or vector(0)",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -597,7 +597,7 @@
         "showUnfilled": true,
         "valueMode": "color"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -605,7 +605,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (outcome) (\n    http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"} \n    or clamp_max(absent(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\",outcome=\"UNKNOWN\"}),0)\n)",
+          "expr": "sum by (outcome) (\n    http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"} \n    or clamp_max(absent(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\",outcome=\"UNKNOWN\"}),0)\n)",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -664,7 +664,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -672,7 +672,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"}) or vector(0)",
+          "expr": "sum(http_client_requests_seconds_sum{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"}) or vector(0)",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -748,7 +748,7 @@
         "showUnfilled": true,
         "valueMode": "color"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -756,7 +756,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (outcome) (\n    http_client_requests_seconds_sum{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"} \n    or clamp_max(absent(http_client_requests_seconds_sum{service=\"benchmark\",uri=\"/feed/{username}?date={date}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_sum{service=\"benchmark\",uri=\"/feed/{username}?date={date}\",outcome=\"UNKNOWN\"}),0)\n)",
+          "expr": "sum by (outcome) (\n    http_client_requests_seconds_sum{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"} \n    or clamp_max(absent(http_client_requests_seconds_sum{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_sum{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\",outcome=\"UNKNOWN\"}),0)\n)",
           "hide": false,
           "instant": false,
           "interval": "5s",
@@ -818,7 +818,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -826,7 +826,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(irate(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "sum(irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[15s]))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "__auto",
@@ -943,7 +943,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(irate(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "sum(irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[15s]))",
           "hide": true,
           "instant": false,
           "interval": "5s",
@@ -957,7 +957,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (outcome) (irate(http_client_requests_seconds_count{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "sum by (outcome) (irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[15s]))",
           "hide": false,
           "instant": false,
           "interval": "5s",
@@ -1020,7 +1020,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -1028,7 +1028,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le))",
+          "expr": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le))",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -1049,7 +1049,7 @@
                     "value": 0
                   }
                 },
-                "fieldName": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s])) by (le))"
+                "fieldName": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=~\"benchmark-default\",uri=\"/feed/{username}?date={date}\"}[15s])) by (le))"
               }
             ],
             "match": "any",
@@ -1118,7 +1118,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -1126,7 +1126,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le))",
+          "expr": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le))",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -1147,7 +1147,7 @@
                     "value": 0
                   }
                 },
-                "fieldName": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[15s])) by (le))"
+                "fieldName": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=~\"benchmark-default\",uri=\"/feed/{username}?date={date}\"}[15s])) by (le))"
               }
             ],
             "match": "any",
@@ -1227,7 +1227,7 @@
           "unit": "s"
         }
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -1235,7 +1235,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_client_requests_seconds_bucket{service=\"benchmark\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le)",
+          "expr": "sum(increase(http_client_requests_seconds_bucket{service=~\"benchmark-${variant}\",uri=\"/feed/{username}?date={date}\"}[$__interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -1352,7 +1352,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "avg by (outcome) (irate(http_client_requests_seconds_sum{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"}[15s]) / irate(http_client_requests_seconds_count{service=\"benchmark\", uri=\"/feed/{username}?date={date}\"}[15s]))",
+          "expr": "avg by (outcome) (irate(http_client_requests_seconds_sum{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"}[15s]) / irate(http_client_requests_seconds_count{service=~\"benchmark-${variant}\", uri=\"/feed/{username}?date={date}\"}[15s]))",
           "instant": false,
           "interval": "5s",
           "legendFormat": "{{outcome}}",
@@ -1420,7 +1420,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -1429,7 +1429,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(container_cpu_usage_seconds_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\",name=~\".+\"})",
+              "expr": "sum(container_cpu_usage_seconds_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -1491,7 +1491,7 @@
             },
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -1500,7 +1500,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum by (name) (container_cpu_usage_seconds_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"})",
+              "expr": "sum by (name) (container_cpu_usage_seconds_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -1605,7 +1605,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"}[15s])) by (name)",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"}[15s])) by (name)",
               "hide": false,
               "interval": "5s",
               "legendFormat": "{{name}}",
@@ -1667,7 +1667,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -1675,7 +1675,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_memory_rss{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"})",
+              "expr": "sum(container_memory_rss{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"})",
               "hide": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -1740,7 +1740,7 @@
             },
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -1749,7 +1749,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum by (name) (container_memory_rss{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"})",
+              "expr": "sum by (name) (container_memory_rss{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"})",
               "hide": false,
               "instant": false,
               "interval": "5s",
@@ -1855,7 +1855,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_memory_rss{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"}) by (name)",
+              "expr": "sum(container_memory_rss{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"}) by (name)",
               "hide": false,
               "interval": "5s",
               "legendFormat": "{{name}}",
@@ -1917,7 +1917,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -1925,7 +1925,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_network_receive_bytes_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"})",
+              "expr": "sum(container_network_receive_bytes_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"})",
               "hide": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -1991,7 +1991,7 @@
             },
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -1999,7 +1999,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_network_receive_bytes_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"}) by (name)",
+              "expr": "sum(container_network_receive_bytes_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"}) by (name)",
               "hide": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2104,7 +2104,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(rate(container_network_receive_bytes_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"}[15s])) by (name)",
+              "expr": "sum(rate(container_network_receive_bytes_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"}[15s])) by (name)",
               "hide": false,
               "interval": "5s",
               "legendFormat": "{{name}}",
@@ -2166,7 +2166,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -2174,7 +2174,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_network_transmit_bytes_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"})",
+              "expr": "sum(container_network_transmit_bytes_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"})",
               "hide": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2240,7 +2240,7 @@
             },
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -2248,7 +2248,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_network_transmit_bytes_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"}) by (name)",
+              "expr": "sum(container_network_transmit_bytes_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"}) by (name)",
               "hide": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2353,7 +2353,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(rate(container_network_transmit_bytes_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\"}[15s])) by (name)",
+              "expr": "sum(rate(container_network_transmit_bytes_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\"}[15s])) by (name)",
               "hide": false,
               "interval": "5s",
               "legendFormat": "{{name}}",
@@ -2415,7 +2415,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -2423,7 +2423,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_blkio_device_usage_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\",operation=\"Read\"})",
+              "expr": "sum(container_blkio_device_usage_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\",operation=\"Read\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2489,7 +2489,7 @@
             },
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -2497,7 +2497,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (name) (container_blkio_device_usage_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\",operation=\"Read\"})",
+              "expr": "sum by (name) (container_blkio_device_usage_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\",operation=\"Read\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2602,7 +2602,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (name) (irate(container_blkio_device_usage_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\",operation=\"Read\"}[15s]))",
+              "expr": "sum by (name) (irate(container_blkio_device_usage_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\",operation=\"Read\"}[15s]))",
               "instant": false,
               "interval": "5s",
               "legendFormat": "{{name}}",
@@ -2664,7 +2664,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -2672,7 +2672,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(container_blkio_device_usage_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\",operation=\"Write\"})",
+              "expr": "sum(container_blkio_device_usage_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\",operation=\"Write\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2738,7 +2738,7 @@
             },
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -2746,7 +2746,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (name) (container_blkio_device_usage_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\",operation=\"Write\"})",
+              "expr": "sum by (name) (container_blkio_device_usage_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\",operation=\"Write\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2851,7 +2851,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (name) (irate(container_blkio_device_usage_total{name=~\"news|news-db|interest-feed|user-interest-db|benchmark\",operation=\"Write\"}[15s]))",
+              "expr": "sum by (name) (irate(container_blkio_device_usage_total{name=~\"news-${variant}|news-db|interest-feed-${variant}|user-interest-db|benchmark-${variant}\",operation=\"Write\"}[15s]))",
               "instant": false,
               "interval": "5s",
               "legendFormat": "{{name}}",
@@ -2909,7 +2909,7 @@
             "h": 8,
             "w": 3,
             "x": 0,
-            "y": 75
+            "y": 27
           },
           "id": 60,
           "options": {
@@ -2926,7 +2926,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -2934,7 +2934,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"})",
+              "expr": "sum(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -2991,7 +2991,7 @@
             "h": 8,
             "w": 3,
             "x": 3,
-            "y": 75
+            "y": 27
           },
           "id": 61,
           "options": {
@@ -3009,7 +3009,7 @@
             "showUnfilled": true,
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3017,7 +3017,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (outcome) (\n    http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
+              "expr": "sum by (outcome) (\n    http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
               "hide": false,
               "instant": false,
               "interval": "5s",
@@ -3059,7 +3059,7 @@
             "h": 8,
             "w": 3,
             "x": 6,
-            "y": 75
+            "y": 27
           },
           "id": 62,
           "options": {
@@ -3076,7 +3076,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3084,7 +3084,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"})",
+              "expr": "sum(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -3142,7 +3142,7 @@
             "h": 8,
             "w": 3,
             "x": 9,
-            "y": 75
+            "y": 27
           },
           "id": 63,
           "options": {
@@ -3160,7 +3160,7 @@
             "showUnfilled": true,
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3168,7 +3168,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (outcome) (\n    http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
+              "expr": "sum by (outcome) (\n    http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
               "hide": false,
               "instant": false,
               "interval": "5s",
@@ -3213,7 +3213,7 @@
             "h": 8,
             "w": 3,
             "x": 12,
-            "y": 75
+            "y": 27
           },
           "id": 64,
           "options": {
@@ -3230,7 +3230,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3238,7 +3238,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "sum(irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -3326,7 +3326,7 @@
             "h": 8,
             "w": 9,
             "x": 15,
-            "y": 75
+            "y": 27
           },
           "id": 65,
           "options": {
@@ -3355,7 +3355,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "sum(irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
               "hide": true,
               "instant": false,
               "interval": "5s",
@@ -3369,7 +3369,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (outcome) (irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "sum by (outcome) (irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
               "hide": false,
               "instant": false,
               "interval": "5s",
@@ -3415,7 +3415,7 @@
             "h": 8,
             "w": 3,
             "x": 0,
-            "y": 83
+            "y": 35
           },
           "id": 66,
           "options": {
@@ -3432,7 +3432,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3440,7 +3440,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "__auto",
@@ -3461,7 +3461,7 @@
                         "value": 0
                       }
                     },
-                    "fieldName": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
+                    "fieldName": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-default\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
                   }
                 ],
                 "match": "any",
@@ -3513,7 +3513,7 @@
             "h": 8,
             "w": 3,
             "x": 3,
-            "y": 83
+            "y": 35
           },
           "id": 67,
           "options": {
@@ -3530,7 +3530,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3538,7 +3538,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
+              "expr": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "__auto",
@@ -3559,7 +3559,7 @@
                         "value": 0
                       }
                     },
-                    "fieldName": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
+                    "fieldName": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-default\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
                   }
                 ],
                 "match": "any",
@@ -3604,7 +3604,7 @@
             "h": 8,
             "w": 9,
             "x": 6,
-            "y": 83
+            "y": 35
           },
           "id": 68,
           "options": {
@@ -3641,7 +3641,7 @@
               "unit": "s"
             }
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3649,7 +3649,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(increase(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le)",
+              "expr": "sum(increase(http_client_requests_seconds_bucket{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le)",
               "format": "heatmap",
               "instant": false,
               "interval": "",
@@ -3739,7 +3739,7 @@
             "h": 8,
             "w": 9,
             "x": 15,
-            "y": 83
+            "y": 35
           },
           "id": 69,
           "options": {
@@ -3766,7 +3766,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "avg by (outcome) (irate(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]) / irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "avg by (outcome) (irate(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]) / irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/recommended?topics={topics}&fromDate={fromDate}&untilDate={untilDate}&limit={limit}\"}[15s]))",
               "instant": false,
               "interval": "5s",
               "legendFormat": "{{outcome}}",
@@ -3824,7 +3824,7 @@
             "h": 8,
             "w": 3,
             "x": 0,
-            "y": 76
+            "y": 28
           },
           "id": 71,
           "options": {
@@ -3841,7 +3841,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3849,7 +3849,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"})",
+              "expr": "sum(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -3906,7 +3906,7 @@
             "h": 8,
             "w": 3,
             "x": 3,
-            "y": 76
+            "y": 28
           },
           "id": 72,
           "options": {
@@ -3924,7 +3924,7 @@
             "showUnfilled": true,
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3932,7 +3932,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (outcome) (\n    http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
+              "expr": "sum by (outcome) (\n    http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
               "hide": false,
               "instant": false,
               "interval": "5s",
@@ -3974,7 +3974,7 @@
             "h": 8,
             "w": 3,
             "x": 6,
-            "y": 76
+            "y": 28
           },
           "id": 73,
           "options": {
@@ -3991,7 +3991,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -3999,7 +3999,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"})",
+              "expr": "sum(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"})",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -4057,7 +4057,7 @@
             "h": 8,
             "w": 3,
             "x": 9,
-            "y": 76
+            "y": 28
           },
           "id": 74,
           "options": {
@@ -4075,7 +4075,7 @@
             "showUnfilled": true,
             "valueMode": "color"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -4083,7 +4083,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (outcome) (\n    http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
+              "expr": "sum by (outcome) (\n    http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"} \n    or clamp_max(absent(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"SUCCESS\"}),0) \n    or clamp_max(absent(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\",outcome=\"UNKNOWN\"}),0)\n)",
               "hide": false,
               "instant": false,
               "interval": "5s",
@@ -4128,7 +4128,7 @@
             "h": 8,
             "w": 3,
             "x": 12,
-            "y": 76
+            "y": 28
           },
           "id": 75,
           "options": {
@@ -4145,7 +4145,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -4153,7 +4153,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "sum(irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
               "instant": false,
               "interval": "5s",
               "legendFormat": "__auto",
@@ -4241,7 +4241,7 @@
             "h": 8,
             "w": 9,
             "x": 15,
-            "y": 76
+            "y": 28
           },
           "id": 76,
           "options": {
@@ -4270,7 +4270,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "sum(irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
               "hide": true,
               "instant": false,
               "interval": "5s",
@@ -4284,7 +4284,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (outcome) (irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "sum by (outcome) (irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
               "hide": false,
               "instant": false,
               "interval": "5s",
@@ -4330,7 +4330,7 @@
             "h": 8,
             "w": 3,
             "x": 0,
-            "y": 84
+            "y": 36
           },
           "id": 77,
           "options": {
@@ -4347,7 +4347,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -4355,7 +4355,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "__auto",
@@ -4376,7 +4376,7 @@
                         "value": 0
                       }
                     },
-                    "fieldName": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
+                    "fieldName": "histogram_quantile(0.95, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-default\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
                   }
                 ],
                 "match": "any",
@@ -4428,7 +4428,7 @@
             "h": 8,
             "w": 3,
             "x": 3,
-            "y": 84
+            "y": 36
           },
           "id": 78,
           "options": {
@@ -4445,7 +4445,7 @@
             },
             "textMode": "auto"
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -4453,7 +4453,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
+              "expr": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "__auto",
@@ -4474,7 +4474,7 @@
                         "value": 0
                       }
                     },
-                    "fieldName": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
+                    "fieldName": "histogram_quantile(0.50, sum(rate(http_client_requests_seconds_bucket{service=~\"interest-feed-default\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s])) by (le))"
                   }
                 ],
                 "match": "any",
@@ -4517,7 +4517,7 @@
             "h": 8,
             "w": 9,
             "x": 6,
-            "y": 84
+            "y": 36
           },
           "id": 79,
           "options": {
@@ -4554,7 +4554,7 @@
               "unit": "s"
             }
           },
-          "pluginVersion": "10.1.2",
+          "pluginVersion": "10.1.4",
           "targets": [
             {
               "datasource": {
@@ -4562,7 +4562,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(increase(http_client_requests_seconds_bucket{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le)",
+              "expr": "sum(increase(http_client_requests_seconds_bucket{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[$__interval])) by (le)",
               "format": "heatmap",
               "instant": false,
               "interval": "",
@@ -4652,7 +4652,7 @@
             "h": 8,
             "w": 9,
             "x": 15,
-            "y": 84
+            "y": 36
           },
           "id": 80,
           "options": {
@@ -4679,7 +4679,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "avg by (outcome) (irate(http_client_requests_seconds_sum{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]) / irate(http_client_requests_seconds_count{service=\"interest-feed\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
+              "expr": "avg by (outcome) (irate(http_client_requests_seconds_sum{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]) / irate(http_client_requests_seconds_count{service=~\"interest-feed-${variant}\",uri=\"/news/latest?untilDate={untilDate}&limit={limit}\"}[15s]))",
               "instant": false,
               "interval": "5s",
               "legendFormat": "{{outcome}}",
@@ -4695,12 +4695,41 @@
       "type": "row"
     }
   ],
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "default",
+          "value": "default"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "P1809F7CD0C75ACF3"
+        },
+        "definition": "label_values(up,variant)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "variant",
+        "multi": false,
+        "name": "variant",
+        "options": [],
+        "query": {
+          "query": "label_values(up,variant)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 2,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-15m",
@@ -4710,6 +4739,6 @@
   "timezone": "",
   "title": "Benchmark Evaluation",
   "uid": "659db77a-2094-4e6a-8e4f-9b48282fea5b",
-  "version": 31,
+  "version": 7,
   "weekStart": ""
 }

@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 8,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -96,7 +95,7 @@
           "reverse": false
         }
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -104,7 +103,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(increase(feed_recommended_news_size_bucket{service=\"interest-feed\"}[$__interval])) by (le)",
+          "expr": "sum(increase(feed_recommended_news_size_bucket{service=~\"interest-feed-${variant}\"}[$__interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "legendFormat": "{{ le }}",
@@ -203,7 +202,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "feed_recommended_news_size_sum{service=\"interest-feed\"} / feed_recommended_news_size_count{service=\"interest-feed\"}",
+          "expr": "feed_recommended_news_size_sum{service=~\"interest-feed-${variant}\"} / feed_recommended_news_size_count{service=~\"interest-feed-${variant}\"}",
           "instant": false,
           "legendFormat": "Avg",
           "range": true,
@@ -215,7 +214,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "feed_recommended_news_size_max{service=\"interest-feed\"}",
+          "expr": "feed_recommended_news_size_max{service=~\"interest-feed-${variant}\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "Max",
@@ -232,7 +231,32 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "default",
+          "value": "default"
+        },
+        "definition": "label_values(up,variant)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "variant",
+        "multi": false,
+        "name": "variant",
+        "options": [],
+        "query": {
+          "query": "label_values(up,variant)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 2,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-30m",

@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+
+  news-db:
+    container_name: news-db
+    hostname: news-db
+    image: mariadb:11.1.2
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: newsdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./news-db/init.sql:/docker-entrypoint-initdb.d/init.sql:z
+      - ./datasource/News_Category_Dataset_v3.csv:/etc/News_Category_Dataset_v3.csv:z
+    networks:
+      - envite
+
+  user-interest-db:
+    container_name: user-interest-db
+    hostname: user-interest-db
+    image: redis:7.2.1-alpine
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    networks:
+      - envite
+
+  user-interest-db-init:
+    container_name: user-interest-db-init
+    hostname: user-interest-db-init
+    image: user-interest-db-init:1.0.0
+    depends_on:
+      - user-interest-db
+    restart: on-failure
+    environment:
+      APP_USERSDATASETCSVFILE: /workspace/datasource/users.csv
+      APP_NEWSDATASETCSVFILE: /workspace/datasource/News_Category_Dataset_v3.csv
+      APP_USERSCOUNT: 10000
+      APP_MININTERESTS: 0
+      APP_MAXINTERESTS: 10
+      APP_NEWSFROMDATE: "2012-01-01"
+      APP_NEWSUNTILDATE: "2018-04-30" #"2018-04-30" #"2022-09-23"
+      APP_RANDOMSEED: 11235813
+      SPRING_DATA_REDIS_HOST: user-interest-db
+      SPRING_DATA_REDIS_PORT: 6379
+    volumes:
+      - ./datasource/users.csv:/workspace/datasource/users.csv:z
+      - ./datasource/News_Category_Dataset_v3.csv:/workspace/datasource/News_Category_Dataset_v3.csv:z
+    networks:
+      - envite
+
+networks:
+  envite:
+    name: envite
+    external: true

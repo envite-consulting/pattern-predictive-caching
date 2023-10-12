@@ -56,14 +56,14 @@ server:
     include-exception: true
     include-stacktrace: never
 
-#okhttp:
-#  client:
-#    enabled: false
+okhttp:
+  client:
+    enabled: true
 #    protocols: h2_prior_knowledge
 #    connect-timeout: 10s
-#    read-timeout: 10s
+    read-timeout: 30s
 #    write-timeout: 10s
-#    call-timeout: 0s
+    call-timeout: 30s
 #    pool:
 #      max-idle-connections: 5
 #      keep-alive-duration: 5m
