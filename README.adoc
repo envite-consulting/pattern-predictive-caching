@@ -131,18 +131,33 @@ Configuration:
 * Without optimization:
 ** 2023-10-12 20:19:34 - 2023-10-12 20:26:17
 ** Benchmark: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&from=1697134774812&to=1697135177289&var-variant=default
-** Technical:
+** Technical: http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697134774000&to=1697135177000
 * With Http client-side cache:
+** 2023-10-12 20:45:08 - 2023-10-12 20:49:34
+** Benchmark: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=cache&from=1697136308551&to=1697136574284
+** Technical: http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697136308000&to=1697136574000
 
 ==== 200 Users and 125 Requests Per User
 
 * Without optimization:
+** 2023-10-12 21:01:47 - 2023-10-12 21:08:01
+** http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=default&from=1697137307587&to=1697137681964
+** http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697137307000&to=1697137681000
 * With Http client-side cache:
+** 2023-10-12 21:19:39 - 2023-10-12 21:21:57
+** Benchmark: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=cache&from=1697138379402&to=1697138517476
+** Technical: http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697138379000&to=1697138517000
 
 ==== 1000 Users and 25 Requests Per User
 
 * Without optimization:
+** 2023-10-12 21:29:48 - 2023-10-12 21:36:01
+** http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=default&from=1697138988819&to=1697139361333
+**
 * With Http client-side cache:
+**
+**
+**
 
 == News Service
 
