@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+GIT_ROOT="$(cd "${SCRIPT_DIR}" && git rev-parse --show-toplevel)"
+
+export VM_NAME="${VM_NAME:-"${ENVIRONMENT:-"talk"}-dev-docker-host"}"
+
+rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' "${GIT_ROOT}/" "$(whoami)@${VM_NAME}:${GIT_ROOT}"
+while inotifywait --exclude '\.git|\.idea' -r -e modify,create,delete,move "${GIT_ROOT}"; do
+    rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' "${GIT_ROOT}/" "$(whoami)@${VM_NAME}:${GIT_ROOT}"
+done
