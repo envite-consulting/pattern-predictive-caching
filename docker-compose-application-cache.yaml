@@ -6,7 +6,7 @@ services:
     container_name: news-cache
     hostname: news-cache
     image: news:1.0.0
-    restart: on-failure
+    restart: always
     ports:
       - "9081:9081"
       - "9181:9181"
@@ -23,7 +23,7 @@ services:
     container_name: interest-feed-cache
     hostname: interest-feed-cache
     image: interest-feed:1.0.0
-    restart: on-failure
+    restart: always
     ports:
       - "9082:9082"
       - "9182:9182"

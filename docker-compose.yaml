@@ -10,7 +10,7 @@ services:
     container_name: news-db
     hostname: news-db
     image: mariadb:11.1.2
-    restart: on-failure
+    restart: always
     ports:
       - "3306:3306"
     environment:
@@ -30,7 +30,7 @@ services:
     image: news:1.0.0
     depends_on:
       - news-db
-    restart: on-failure
+    restart: always
     ports:
       - "8081:8081"
       - "8181:8181"
@@ -47,7 +47,7 @@ services:
     container_name: user-interest-db
     hostname: user-interest-db
     image: redis:7.2.1-alpine
-    restart: on-failure
+    restart: always
     ports:
       - "6379:6379"
     networks:
@@ -83,7 +83,7 @@ services:
     image: interest-feed:1.0.0
     depends_on:
       - user-interest-db
-    restart: on-failure
+    restart: always
     ports:
       - "8082:8082"
       - "8182:8182"
@@ -102,7 +102,7 @@ services:
 #    container_name: benchmark-default
 #    hostname: benchmark-default
 #    image: benchmark:1.0.0
-#    restart: on-failure
+#    restart: always
 #    ports:
 #      - "8183:8183"
 #    environment:
@@ -128,7 +128,7 @@ services:
     container_name: prometheus
     hostname: prometheus
     image: prom/prometheus:v2.47.1
-    restart: on-failure
+    restart: always
     ports:
       - "9090:9090"
     volumes:
@@ -143,7 +143,7 @@ services:
     container_name: grafana
     hostname: grafana
     image: grafana/grafana:10.1.4
-    restart: on-failure
+    restart: always
     ports:
       - "3000:3000"
     volumes:
@@ -159,7 +159,7 @@ services:
     container_name: cadvisor
     hostname: cadvisor
     image: gcr.io/cadvisor/cadvisor:v0.47.2
-    restart: on-failure
+    restart: always
     ports:
       - "9400:8080"
     privileged: true
@@ -181,7 +181,7 @@ services:
     container_name: node_exporter
     hostname: node_exporter
     image: quay.io/prometheus/node-exporter:v1.6.1
-    restart: on-failure
+    restart: always
     network_mode: host
     pid: host
     volumes:
@@ -193,7 +193,7 @@ services:
     container_name: redis-prometheus-exporter
     hostname: redis-prometheus-exporter
     image: oliver006/redis_exporter:v1.54.0-alpine
-    restart: on-failure
+    restart: always
     ports:
       - "9121:9121"
     command:
@@ -205,7 +205,7 @@ services:
     container_name: mariadb-prometheus-exporter
     hostname: mariadb-prometheus-exporter
     image: prom/mysqld-exporter:v0.15.0
-    restart: on-failure
+    restart: always
     ports:
       - "9104:9104"
     environment:

@@ -6,7 +6,7 @@ services:
     container_name: news-db
     hostname: news-db
     image: mariadb:11.1.2
-    restart: on-failure
+    restart: always
     ports:
       - "3306:3306"
     environment:
@@ -24,7 +24,7 @@ services:
     container_name: user-interest-db
     hostname: user-interest-db
     image: redis:7.2.1-alpine
-    restart: on-failure
+    restart: always
     ports:
       - "6379:6379"
     networks:

@@ -6,7 +6,7 @@ services:
     container_name: news-default
     hostname: news-default
     image: news:1.0.0
-    restart: on-failure
+    restart: always
     ports:
       - "8081:8081"
       - "8181:8181"
@@ -23,7 +23,7 @@ services:
     container_name: interest-feed-default
     hostname: interest-feed-default
     image: interest-feed:1.0.0
-    restart: on-failure
+    restart: always
     ports:
       - "8082:8082"
       - "8182:8182"

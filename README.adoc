@@ -59,106 +59,6 @@ Websites:
 * Grafana Dashboards: http://localhost:3000/dashboards
 * Prometheus Targets: http://localhost:9090/targets
 
-== Benchmark Evaluation Setup
-
-.Create shared Docker network:
-[source,bash]
-----
-docker network create envite
-----
-
-.Create monitoring:
-[source,bash]
-----
-docker compose -f docker-compose-monitoring.yaml pull
-docker compose -f docker-compose-monitoring.yaml up -d
-----
-
-.Build container images:
-[source,bash]
-----
-./gradlew bootBuildImage
-----
-
-.Provide read permissions to those files to anyone to allow access within container:
-[source,bash]
-----
-chmod -R g+r,o+r datasource/
-chmod -R g+r,o+r news-db/
-chmod -R g+r,o+r monitoring/
-----
-
-.Create and init databases:
-[source,bash]
-----
-docker compose -f docker-compose-db.yaml pull --ignore-pull-failures
-docker compose -f docker-compose-db.yaml up -d
-----
-
-.Start applications (default and cache):
-[source,bash]
-----
-docker compose -f docker-compose-application-default.yaml up -d
-docker compose -f docker-compose-application-cache.yaml up -d
-----
-
-.Start benchmark (default):
-[source,bash]
-----
-docker compose -f docker-compose-benchmark-default.yaml up -d
-----
-
-.Start benchmark (cache):
-[source,bash]
-----
-docker compose -f docker-compose-benchmark-cache.yaml up -d
-----
-
-Websites:
-
-* Grafana Dashboards: http://localhost:3000/dashboards
-* Prometheus Targets: http://localhost:9090/targets
-
-=== Benchmark Runs
-
-Configuration:
-
-* 25000 requests in total
-* 1s delay after each request
-
-==== 100 Users and 250 Requests Per User
-
-* Without optimization:
-** 2023-10-12 20:19:34 - 2023-10-12 20:26:17
-** Benchmark: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&from=1697134774812&to=1697135177289&var-variant=default
-** Technical: http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697134774000&to=1697135177000
-* With Http client-side cache:
-** 2023-10-12 20:45:08 - 2023-10-12 20:49:34
-** Benchmark: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=cache&from=1697136308551&to=1697136574284
-** Technical: http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697136308000&to=1697136574000
-
-==== 200 Users and 125 Requests Per User
-
-* Without optimization:
-** 2023-10-12 21:01:47 - 2023-10-12 21:08:01
-** http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=default&from=1697137307587&to=1697137681964
-** http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697137307000&to=1697137681000
-* With Http client-side cache:
-** 2023-10-12 21:19:39 - 2023-10-12 21:21:57
-** Benchmark: http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=cache&from=1697138379402&to=1697138517476
-** Technical: http://localhost:3000/d/7V26irrMz/application-technical?orgId=1&from=1697138379000&to=1697138517000
-
-==== 1000 Users and 25 Requests Per User
-
-* Without optimization:
-** 2023-10-12 21:29:48 - 2023-10-12 21:36:01
-** http://localhost:3000/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=default&from=1697138988819&to=1697139361333
-**
-* With Http client-side cache:
-**
-**
-**
-
 == News Service
 
 .Test curl request to get recommended news:
@@ -209,14 +109,14 @@ curl -s -XGET -H "Accept: application/json" 'http://localhost:8082/interests/mar
 * [x] Benchmark app
 * [x] Monitoring setup and metrics for CPU time, CPU usage and memory of services and dbs
 * [x] Metrics for service and db internals like http connections, ...
-* [ ] UI for Feeds and Usernames (Micha)
-* [ ] Implementation of simple Feed caching (enable via config) (Uwe)
+* [ ] UI for Feeds and Usernames
+* [ ] Implementation of simple Feed caching (enable via config)
 ** [x] Http client cache in Interest-Feed service for News service endpoints
 ** [x] Http client cache in Benchmark for Interest-Feed service endpoints
 ** [ ] Redis client-side cache in Interest-Feed service
 ** [ ] MariaDB client-side cache in News service
 ** [ ] Http independent cache for Interest-Feed and News service
-* [ ] Monitoring for Watt and CO2e (Micha)
+* [ ] Monitoring for Watt and CO2e
 * [ ] Implementation of predictive caching
 * [ ] Setup for Kubernetes
 * [ ] Documentation with images
