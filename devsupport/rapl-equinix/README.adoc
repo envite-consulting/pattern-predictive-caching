@@ -1,0 +1,55 @@
+= Equinix Metal RAPL
+
+https://registry.terraform.io/providers/equinix/equinix/latest/docs
+
+== Prepare
+
+Set the environment you want to use:
+
+[source,bash]
+----
+export ENVIRONMENT='talk'
+----
+
+S3 is used as Terraform backend. Therefore, set your AWS credentials to be able to use your configured backend:
+
+[source,bash]
+----
+export AWS_ACCESS_KEY_ID='anaccesskey'
+export AWS_SECRET_ACCESS_KEY='asecretkey'
+export AWS_REGION='eu-north-1'
+----
+
+Set your authentication token for Equinix Metal:
+
+[source,bash]
+----
+export METAL_AUTH_TOKEN='ametaltoken'
+----
+
+== Terraform
+
+[source,bash]
+----
+terraform init -backend-config "environments/${ENVIRONMENT}/backend.config" -reconfigure
+----
+
+[source,bash]
+----
+terraform plan \
+  -var-file "environments/${ENVIRONMENT}/terraform.tfvars" \
+  -var metal_auth_token="${METAL_AUTH_TOKEN}" \
+  -out=./.terraform/tf.plan
+----
+
+[source,bash]
+----
+terraform apply --auto-approve ./.terraform/tf.plan
+----
+
+[source,bash]
+----
+terraform destroy \
+  -var-file "environments/${ENVIRONMENT}/terraform.tfvars" \
+  -var metal_auth_token="${METAL_AUTH_TOKEN}"
+----
