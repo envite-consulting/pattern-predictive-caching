@@ -11,6 +11,8 @@ services:
     hostname: news-db
     image: mariadb:11.1.2
     restart: always
+    networks:
+      - envite
     ports:
       - "3306:3306"
     environment:
@@ -19,10 +21,8 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
-      - ./news-db/init.sql:/docker-entrypoint-initdb.d/init.sql:z
-      - ./datasource/News_Category_Dataset_v3.csv:/etc/News_Category_Dataset_v3.csv:z
-    networks:
-      - envite
+      - ./news-db/init.sql:/docker-entrypoint-initdb.d/init.sql:roz
+      - ./datasource/News_Category_Dataset_v3.csv:/etc/News_Category_Dataset_v3.csv:roz
 
   news-default:
     container_name: news-default
@@ -31,6 +31,8 @@ services:
     depends_on:
       - news-db
     restart: always
+    networks:
+      - envite
     ports:
       - "8081:8081"
       - "8181:8181"
@@ -40,18 +42,16 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mariadb://news-db:3306/newsdb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
-    networks:
-      - envite
 
   user-interest-db:
     container_name: user-interest-db
     hostname: user-interest-db
-    image: redis:7.2.1-alpine
+    image: redis:7.2.3-alpine
     restart: always
-    ports:
-      - "6379:6379"
     networks:
       - envite
+    ports:
+      - "6379:6379"
 
   user-interest-db-init:
     container_name: user-interest-db-init
@@ -60,6 +60,8 @@ services:
     depends_on:
       - user-interest-db
     restart: on-failure
+    networks:
+      - envite
     environment:
       APP_USERSDATASETCSVFILE: /workspace/datasource/users.csv
       APP_NEWSDATASETCSVFILE: /workspace/datasource/News_Category_Dataset_v3.csv
@@ -72,10 +74,8 @@ services:
       SPRING_DATA_REDIS_HOST: user-interest-db
       SPRING_DATA_REDIS_PORT: 6379
     volumes:
-      - ./datasource/users.csv:/workspace/datasource/users.csv:z
-      - ./datasource/News_Category_Dataset_v3.csv:/workspace/datasource/News_Category_Dataset_v3.csv:z
-    networks:
-      - envite
+      - ./datasource/users.csv:/workspace/datasource/users.csv:roz
+      - ./datasource/News_Category_Dataset_v3.csv:/workspace/datasource/News_Category_Dataset_v3.csv:roz
 
   interest-feed-default:
     container_name: interest-feed-default
@@ -84,6 +84,8 @@ services:
     depends_on:
       - user-interest-db
     restart: always
+    networks:
+      - envite
     ports:
       - "8082:8082"
       - "8182:8182"
@@ -95,14 +97,14 @@ services:
       SERVICE_NEWS_URL: http://news-default:8081
       FEED_LIMIT: 20
       FEED_PERIOD: P1W
-    networks:
-      - envite
 
 #  benchmark-default:
 #    container_name: benchmark-default
 #    hostname: benchmark-default
 #    image: benchmark:1.0.0
 #    restart: always
+#    networks:
+#      - envite
 #    ports:
 #      - "8183:8183"
 #    environment:
@@ -117,8 +119,6 @@ services:
 #      BENCHMARK_REQUESTDELAY: '1s'
 #      BENCHMARK_TESTDURATION: '0s'
 #      BENCHMARK_REQUESTSPERUSER: 250
-#    networks:
-#      - envite
 
   ##########################################################
   # Monitoring                                             #
@@ -127,23 +127,29 @@ services:
   prometheus:
     container_name: prometheus
     hostname: prometheus
-    image: prom/prometheus:v2.47.1
+    image: prom/prometheus:v2.47.2
     restart: always
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yml:roz
-      - prometheus-data:/prometheus
-    extra_hosts:
-      - host.docker.internal:host-gateway
     networks:
       - envite
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yaml:roz
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=365d"
 
   grafana:
     container_name: grafana
     hostname: grafana
-    image: grafana/grafana:10.1.4
+    image: grafana/grafana:10.2.0
     restart: always
+    networks:
+      - envite
     ports:
       - "3000:3000"
     volumes:
@@ -152,19 +158,33 @@ services:
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
-    networks:
-      - envite
+
+  node_exporter:
+    container_name: node_exporter
+    hostname: node_exporter
+    image: quay.io/prometheus/node-exporter:v1.6.1
+    restart: always
+    network_mode: host
+    pid: host
+    user: root
+    privileged: true
+    volumes:
+      - /:/rootfs:ro,rslave
+    command:
+      - "--path.rootfs=/rootfs"
 
   cadvisor:
     container_name: cadvisor
     hostname: cadvisor
     image: gcr.io/cadvisor/cadvisor:v0.47.2
     restart: always
+    networks:
+      - envite
     ports:
       - "9400:8080"
     privileged: true
     volumes:
-      - /:/rootfs:ro
+      - /:/rootfs:ro,rslave
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /dev/disk/:/dev/disk:ro
@@ -174,46 +194,50 @@ services:
     command:
       - "--store_container_labels=false"
       - "--docker_only=true"
+
+  scaphandre:
+    container_name: scaphandre
+    hostname: scaphandre
+    image: hubblo/scaphandre:0.5.0
+    restart: always
     networks:
       - envite
-
-  node_exporter:
-    container_name: node_exporter
-    hostname: node_exporter
-    image: quay.io/prometheus/node-exporter:v1.6.1
-    restart: always
-    network_mode: host
-    pid: host
+    ports:
+      - "9500:8080"
+    privileged: true
     volumes:
-      - /:/rootfs:ro,rslave
+      - /proc:/proc:ro
+      - /sys:/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     command:
-      - '--path.rootfs=/rootfs'
+     - "prometheus"
+     - "--containers"
 
   redis-prometheus-exporter:
     container_name: redis-prometheus-exporter
     hostname: redis-prometheus-exporter
-    image: oliver006/redis_exporter:v1.54.0-alpine
+    image: oliver006/redis_exporter:v1.55.0-alpine
     restart: always
+    networks:
+      - envite
     ports:
       - "9121:9121"
     command:
-      - '--redis.addr='
-    networks:
-      - envite
+      - "--redis.addr="
 
   mariadb-prometheus-exporter:
     container_name: mariadb-prometheus-exporter
     hostname: mariadb-prometheus-exporter
     image: prom/mysqld-exporter:v0.15.0
     restart: always
+    networks:
+      - envite
     ports:
       - "9104:9104"
     environment:
       MYSQLD_EXPORTER_PASSWORD: password
     command:
-      - '--mysqld.username=user'
-    networks:
-      - envite
+      - "--mysqld.username=user"
 
 networks:
   envite:

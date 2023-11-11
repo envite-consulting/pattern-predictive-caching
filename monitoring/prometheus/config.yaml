@@ -14,6 +14,9 @@ scrape_configs:
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['cadvisor:8080']
+  - job_name: 'scaphandre'
+    static_configs:
+      - targets: ['scaphandre:8080']
 
   - job_name: 'news-default'
     static_configs:
