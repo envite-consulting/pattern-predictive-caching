@@ -1,7 +1,7 @@
 = Intel RAPL (Running Average Power Limit)
 
 With _Sandy Bridge_, Intel introduced a link:https://en.wikichip.org/wiki/intel/microarchitectures/sandy_bridge_(client)#Power[large number of power features].
-As part of these changes, link:https://en.wikipedia.org/wiki/Model-specific_register[MSRs (model-specific registers)] were allocated for platform-specific power management and allow access to energy measurement and enforcement of power limits. In particular, Intel refers to these registers as the *Running Average Power Limit (RAPL)* interfaces. The RAPL interface exposes multiple domains of power rationing within each processor socket.
+As part of these changes, link:https://en.wikipedia.org/wiki/Model-specific_register[MSRs (model-specific registers)] were allocated for platform-specific power management and allow access to energy measurement and enforcement of power limits. In particular, Intel refers to these registers as the *Running Average Power Limit (RAPL)* interfaces. The RAPL interface exposes *multiple domains of power rationing within each processor socket, DRAM and the entire SoC*.
 
 The *RAPL interface* provides multiple capabilities to *monitor* and *control system power and energy*.
 The two capabilities, which are supported by all models are *Power Limit*, which allows it to specify power limits and time windows, and *Energy Status*, which is the power metering interface, providing energy consumption information.
@@ -9,12 +9,17 @@ For this document, only the _Energy Status_ capability is relevant.
 
 The official _RAPL_ documentation can be found in the link:https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html[Intel 64 and IA-32 Architectures Software Developer Manuals] in _Volume 3B_ section _15.10.1 RAPL Interfaces_.
 
-*Acknowledgments*: The link:https://github.com/hubblo-org/scaphandre[Scaphandre project] mainly driven by link:https://github.com/bpetit[bpetit] and link:https://github.com/uggla[René Ribaud] (based on number of commits), the link:https://github.com/joular[Joular project] led by link:https://www.noureddine.org/[Adel Noureddine] from link:https://www.univ-pau.fr/[University of Pau and Pays de l'Adour],  link:https://web.eece.maine.edu/~vweaver/[Vince Weaver] from link:https://ece.umaine.edu/[Electrical and Computer Engineering Department of the University of Maine], and from link:https://people.eecs.berkeley.edu/~demmel/[James Demmel] from link:https://cs.berkeley.edu/[Electrical Engineering and Computer Engineering Department of the University of California at Berkeley] and link:https://ep.jhu.edu/faculty/andrew-gearhart/[Andrew Gearhart] from link:https://ep.jhu.edu/programs/computer-science/[Johns Hopkins Whiting School of Engineering] already provide a comprehensive documentation of RAPL.
-This documentation is therefore heavily based on link:https://hubblo-org.github.io/scaphandre-documentation[Scaphandre documentation], link:https://joular.github.io/powerjoular/ref/how_it_works.html[PowerJoular documentation], link:https://web.eece.maine.edu/~vweaver/projects/rapl/[RAPL energy measurements from Linux documentation by Vince Weaver] and the paper link:https://www2.eecs.berkeley.edu/Pubs/TechRpts/2012/EECS-2012-168.html[Instrumenting Linear Algebra Energy Consumption via On-chip Energy Counters by James Demmel and Andrew Gearhart].
+image:server_power_consumption.png[]
+
+The image is from the article link:https://www.infoq.com/articles/power-consumption-servers/[The Problem of Power Consumption in Servers] from 2009 and shows a power breakdown of a server by components. Based on this diagram, with RAPL on server platforms, we can measure only the energy consumption of two components illustrated in the diagram, which are CPU and memory. However, multiple papers suggest that energy measures from RAPL strongly correlate with the overall power consumption of the entire system (see link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[RAPL in Action : Experiences in Using RAPL for Power Measurements]).
+Therefore, it seems that with RAPL, we have a tool wich is able to measure energy consumption of CPU and memory with very high accuracy and estimate the energy consumption of the entire server with a low error.
+
+*Acknowledgments*: The link:https://github.com/hubblo-org/scaphandre[Scaphandre project] mainly driven by link:https://github.com/bpetit[bpetit] and link:https://github.com/uggla[René Ribaud] (based on number of commits), the link:https://github.com/joular[Joular project] led by link:https://www.noureddine.org/[Adel Noureddine] from link:https://www.univ-pau.fr/[University of Pau and Pays de l'Adour], link:https://web.eece.maine.edu/~vweaver/[Vince Weaver] from link:https://ece.umaine.edu/[Electrical and Computer Engineering Department of the University of Maine], and from link:https://people.eecs.berkeley.edu/~demmel/[James Demmel] from link:https://cs.berkeley.edu/[Electrical Engineering and Computer Engineering Department of the University of California at Berkeley] and link:https://ep.jhu.edu/faculty/andrew-gearhart/[Andrew Gearhart] from link:https://ep.jhu.edu/programs/computer-science/[Johns Hopkins Whiting School of Engineering], and link:https://fi.linkedin.com/in/kashifnizamkhan[Kashif Nizam Khan] already provide a comprehensive documentation of RAPL.
+This documentation is therefore heavily based on link:https://hubblo-org.github.io/scaphandre-documentation[Scaphandre documentation], link:https://joular.github.io/powerjoular/ref/how_it_works.html[PowerJoular documentation], link:https://web.eece.maine.edu/~vweaver/projects/rapl/[RAPL energy measurements from Linux documentation by Vince Weaver], the paper link:https://www2.eecs.berkeley.edu/Pubs/TechRpts/2012/EECS-2012-168.html[Instrumenting Linear Algebra Energy Consumption via On-chip Energy Counters by James Demmel and Andrew Gearhart], and the paper link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[RAPL in Action : Experiences in Using RAPL for Power Measurements by Khan, Kashif Nizam].
 
 *Hint*: Besides _RAPL_ there are other data sources for energy and power monitoring available. A good overview is provided by the paper link:https://dl.acm.org/doi/10.1145/2950290.2983956[A portable interface for runtime energy monitoring]. The paper is also available at the link:https://newtraell.cs.uchicago.edu/research/publications/techreports/TR-2016-08[Computer Science Department of the University of Chicago]. The general interface for energy and power monitoring they propose is available on the GitHub repository link:https://github.com/energymon/energymon[energymon].
 
-== RAPL Domains
+== Domains
 
 RAPL domains match parts of the _SoC_ as shown in the following images:
 
@@ -24,23 +29,23 @@ The image is from link:https://raw.githubusercontent.com/powerapi-ng/pyJoules/ma
 
 image::rapl_domains_complete.png[]
 
-The image is from the paper link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[RAPL in Action : Experiences in Using RAPL for Power Measurements].
+The image is from the paper link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[RAPL in Action : Experiences in Using RAPL for Power Measurements] and shows all domains supported by RAPL.
 
-* *package*: Sum of the energy consumption of _PP0_ (_CPU cores_) and _PP1_ (may reflect the devices or a single device on the link:https://en.wikipedia.org/wiki/Uncore[uncore]). The latter one for example encompasses _integrated graphics_, _memory controller_ and _last level caches_ per _socket_. Supported since _Intel Sandy Bridge CPUs_. `energy(package)>= energy(PP0) + energy(PP1)`
-** _Power plane PP0_ *(core)*: Sum of the energy consumption of all _CPU cores_ of the corresponding _socket_. This domain is included in the _package_ domain value.
-** _Power plane PP1_ *(uncore)*: Energy consumption of _uncore devices_ of the corresponding _socket_. link:https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html[Intel's Software Developer Manuals] state that the _PP1_
-domain refers to the power plane of a specific device on the _uncore_. Therefore, it is not clear which devices are actually included in PP1. Very often, it was referred to as the energy consumption of the integrated graphics. However, this was not mentioned by Intel. In the paper link:https://www2.eecs.berkeley.edu/Pubs/TechRpts/2012/EECS-2012-168.html[Instrumenting Linear Algebra Energy Consumption via On-chip Energy Counters by James Demmel and Andrew Gearhart] it is stated that on _Sandy Bridge_ platforms _PP1_ measures the energy of the integrated graphics, while on all other platforms it measures the entire _uncore_. This domain is included in the _package_ domain value.
-** *dram*: _RAM_ attached to the memory controller of the corresponding _socket_. This domain is *not* included in the _package_ domain value.
+* *package*: Measures the total energy consumption of the entire _socket_. It includes the consumption of all _CPU cores_, _integrated graphics_ and the _link:https://en.wikipedia.org/wiki/Uncore[uncore]_ components (e.g. last level caches and memory controller). The domains _Power plane PP0_ and _Power Plane PP1_ (may reflect all or a single component of the uncore). Supported since _Intel Sandy Bridge CPUs_. `energy(package)>= energy(PP0) + energy(PP1)`
+** _Power plane PP0_ *(core)*: Measures the total energy consumption of all _CPU cores_ of the corresponding _socket_. RAPL does not support measuring the energy consumption of individual CPU cores. Each core has its own _MSRs_, but all cores show the same values for the RAPL counters. This domain is included in the _package_ domain value.
+** _Power plane PP1_ *(uncore and/or integrated graphics)*: Measures the energy consumption of integrated graphics and/or the _uncore_ components of the corresponding _socket_. link:https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html[Intel's Software Developer Manuals] state that the _PP1_
+domain refers to the power plane of a specific device on the _uncore_. Therefore, it is not clear which devices are actually included in PP1. Very often, it was referred to as the energy consumption of the integrated graphics. However, this was not mentioned by Intel. In the paper link:https://www2.eecs.berkeley.edu/Pubs/TechRpts/2012/EECS-2012-168.html[Instrumenting Linear Algebra Energy Consumption via On-chip Energy Counters by James Demmel and Andrew Gearhart] it is stated that on _Sandy Bridge_ platforms _PP1_ measures the energy of the integrated graphics, while on all other platforms it measures the entire _uncore_. Intel states that _PP1_ domain is only available on desktop models. This domain is included in the _package_ domain value.
+** *dram*: Measures the energy consumption of _RAM_ attached to the integrated memory controller of the corresponding _socket_. Intel states that the _dram_ domain is only supported by platforms targeting the server segment. This domain is *not* included in the _package_ domain value.
 
-* *psys* (power of system): Sum of the energy consumption for the entire _SoC_ (including _package_ along with other components, such as _PCH_ and _eDRAM_). Unfortunately, Intel does not mention *psys* in their manuals, so it is not clear, what is actually included in *psys*. Supported since link:https://en.wikichip.org/wiki/intel/microarchitectures/skylake_(client)#Power_of_System_.28Psys.29[Intel Skylake CPUs]. `energy(psys) >= energy(package) + energy(dram)`
+* *psys* (power of system): Measures the total energy consumption for the entire _SoC_ (including _package_ along with other components, such as _PCH_ and _eDRAM_). Unfortunately, Intel does not mention *psys* in their manuals, so it is not clear, what is actually included in *psys*. Supported since link:https://en.wikichip.org/wiki/intel/microarchitectures/skylake_(client)#Power_of_System_.28Psys.29[Intel Skylake CPUs]. `energy(psys) >= energy(package) + energy(dram)`
 
-The specific RAPL domains available in a platform vary across product segments. Platforms targeting the client segment support the following RAPL domain hierarchy:
+The specific RAPL domains available in a platform vary across product segments. Platforms targeting the *client segment* support the following RAPL domain hierarchy:
 
 * *package*
 ** _Power planes PP0_ (*core*) and _PP1_ (*uncore*)
 * *psys* (assumption, not mentioned in Intel's manual)
 
-Platforms targeting the server segment support the following RAPL domain hierarchy:
+Platforms targeting the *server segment* support the following RAPL domain hierarchy:
 
 * *package*
 ** _Power plane PP0_ (*core*)
@@ -78,6 +83,47 @@ References:
 
 * link:https://web.eece.maine.edu/~vweaver/projects/rapl/rapl_support.html[
 Incomplete list of CPUs and their Linux support for power measurement interfaces]
+
+== Accuracy and Overhead
+
+References:
+
+* link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[RAPL in Action : Experiences in Using RAPL for Power Measurements]
+
+=== Package energy accuracy
+
+In 2015, link:https://ieeexplore.ieee.org/document/7284406/[Hackenberg et al.] studied RAPL on the _Intel Haswell-EP platform_. They compared
+the accuracy of RAPL between _Sandy Bridge-EP_ and _Haswell-EP_ and showed that _Haswell_ has improved RAPL measurements.
+They also showed that *RAPL measurements correlate very well with external power measurements*.
+
+In 2018, also link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[Kashif Nizam Khan] could show a strong correlation between RAPL *package* domain and full system energy consumption from wall socket.
+
+*Remark*: It would be interesting, to see, how *psys* domain energy consumption correlates with full system energy consumption from wall socket.
+
+image:rapl_wall_power_accuracy.png[]
+
+The image is from the paper link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[RAPL in Action : Experiences in Using RAPL for Power Measurements] and shows power usage measurements of RAPL domains _package_ and _dram_ and external power from wall socket for the _Stream_ benchmark on a _Haswell_ machine.
+
+=== DRAM energy accuracy
+
+Initial findings suggested that RAPL DRAM values were unstable and unreliable for earlier versions of processors which included RAPL.
+*Since the introduction of _Haswell_, RAPL DRAM values are now more reliable and follow a strong correlation with AC reference measurements.*
+In 2018, also link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[Kashif Nizam Khan] also showed in their analysis that DRAM measurements clearly improve accuracy.
+Modeling the wall power using only CPU measurements gives 3.1% error, including DRAM measurements reduces this error to 1.7%.
+
+=== Non-atomic register updates
+
+In 2018, link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[Kashif Nizam Khan] could also demonstrate, that there is a time delay between updates to different energy counters. This means, that the *RAPL updates are not atomic*. Therefore, at high sampling rates, it is possible to read both fresh and stale values of different counters.
+
+=== Performance overhead
+
+link:https://dl.acm.org/doi/10.1145/2834800.2834807[Huang et al.] evaluated RAPL for Haswell-EP processors and compared RAPL with traditional power monitoring tools. They showed that *monitoring with RAPL using the _Performance Application Programming Interface (PAPI)_ can consume 28.6% more power than an idle system*.
+This is however when RAPL is monitored with all its 28 attributes and not all of these attributes are related to power or energy monitoring.
+They also claimed that if RAPL is monitored with selected attributes (PKG, PP1, PP0, etc.), this power overhead can be reduced by 90%.
+These measurements however do not account for the PAPI library’s power consumption and different granularities of RAPL measurements will also affect the energy overhead.
+
+In 2018, also link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[Kashif Nizam Khan] evaluated the performance overhead of RAPL measurements. At a sampling rate of the RAPL measurement tool of 1000Hz, the *maximum overhead was 1.2%*.
+This is a much lower overhead as shown by link:https://dl.acm.org/doi/10.1145/2834800.2834807[Huang et al]. One reason for the high overhead could be the usage of _PAPI_. However, further investigations are required. Nevertheless, the low overhead makes sense, because RAPL calculations are implemented in hardware.
 
 == Interfaces
 
@@ -176,7 +222,7 @@ The interface is provided via link:https://en.wikipedia.org/wiki/Device_file[dev
 
 Accessing _MSRs_ requires _root_ permissions.
 
-As the name _MSR (Model-specific register)_ suggests, the registers which must be read are model-specific. In addition, also the unit of measurement depends on the model. Be aware that the unit which is used also is not a typical energy unit like _microjoules_ or _watt-minutes_. The value must be multiplied with another model-specific value to get the actual unit like _microjoules_.
+As the name _MSR (Model-specific register)_ suggests, the registers which must be read are model-specific. In addition, also the unit of measurement depends on the model. Be aware that the unit which is used also is not a typical energy unit like _microjoules_ or _watt-minutes_. The value must be multiplied with another model-specific value to get the actual unit (e.g _Sandy Bridge_ uses energy units of 15.3 μJ, whereas _Haswell_ and _Skylake_ uses units of 61 μJ).
 For this reason higher-level interfaces like _Powercap_ have to add custom implementation for every single supported CPU model (see link:https://github.com/powercap/raplcap/blob/master/msr/raplcap-cpuid.h[raplcap-cpuid.h]).
 
 The MSR interface is described in detail in the official _RAPL_ documentation which can be found in the link:https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html[Intel 64 and IA-32 Architectures Software Developer Manuals] in _Volume 3B_ section _15.10.1 RAPL Interfaces_.
