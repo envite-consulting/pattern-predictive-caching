@@ -56,6 +56,7 @@ References:
 
 * https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
 * https://www2.eecs.berkeley.edu/Pubs/TechRpts/2012/EECS-2012-168.html
+* link:https://helda.helsinki.fi/server/api/core/bitstreams/bdc6c9a5-74d4-494b-ae83-860625a665ce/content[RAPL in Action : Experiences in Using RAPL for Power Measurements]
 * https://github.com/powerapi-ng/pyJoules
 * https://joular.github.io/powerjoular/ref/how_it_works.html
 
