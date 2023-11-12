@@ -1,16 +1,47 @@
-= RAPL
+= Intel RAPL (Running Average Power Limit)
 
-== Overview
+*Acknowledgments*: The link:https://github.com/hubblo-org/scaphandre[Scaphandre project] mainly driven by link:https://github.com/bpetit[bpetit] and link:https://github.com/uggla[René Ribaud] (based on number of commits), the link:https://github.com/joular[Joular project] led by link:https://www.noureddine.org/[Adel Noureddine] from link:https://www.univ-pau.fr/[University of Pau and Pays de l'Adour],  link:https://web.eece.maine.edu/~vweaver/[Vince Weaver] from link:https://ece.umaine.edu/[Electrical and Computer Engineering Department of the University of Maine], and from link:https://people.eecs.berkeley.edu/~demmel/[James Demmel] from link:https://cs.berkeley.edu/[Electrical Engineering and Computer Engineering Department of the University of California at Berkeley] and link:https://ep.jhu.edu/faculty/andrew-gearhart/[Andrew Gearhart] from link:https://ep.jhu.edu/programs/computer-science/[Johns Hopkins Whiting School of Engineering] already provide a comprehensive documentation of RAPL.
+This documentation is therefore heavily based on link:https://hubblo-org.github.io/scaphandre-documentation[Scaphandre documentation], link:https://joular.github.io/powerjoular/ref/how_it_works.html[PowerJoular documentation], link:https://web.eece.maine.edu/~vweaver/projects/rapl/[RAPL energy measurements from Linux documentation by Vince Weaver] and the paper link:https://www2.eecs.berkeley.edu/Pubs/TechRpts/2012/EECS-2012-168.html[Instrumenting Linear Algebra Energy Consumption via On-chip Energy Counters by James Demmel and Andrew Gearhart].
 
-RAPL domains:  https://raw.githubusercontent.com/powerapi-ng/pyJoules/master/rapl_domains.png
+*Hint*: Besides _RAPL_ there are other data sources for energy and power monitoring available. A good overview is provided by the paper link:https://dl.acm.org/doi/10.1145/2950290.2983956[A portable interface for runtime energy monitoring]. The paper is also available at the link:https://newtraell.cs.uchicago.edu/research/publications/techreports/TR-2016-08[Computer Science Department of the University of Chicago]. The general interface for energy and power monitoring they propose is available on the GitHub repository link:https://github.com/energymon/energymon[energymon].
+
+== RAPL Domains
+
+RAPL domains match parts of the _SoC_ as described in this image:
 
 image::rapl_domains.png[]
+
+The image is from link:https://raw.githubusercontent.com/powerapi-ng/pyJoules/master/rapl_domains.png[powerapi-ng/pyJoules] GitHub repository.
+
+* *package*: Sum of the energy consumption for the _CPU cores_, _integrated graphics_, _memory controller_ and _last level caches_ per _socket_. Supported since _Intel Sandy Bridge CPUs_. `package >= core + uncore`
+** *core*: Sum of the energy consumption of all _CPU cores_ of the corresponding _socket_. This domain is included in the _package_ domain value.
+** *uncore*: Energy consumption of _integrated graphics_ of the corresponding _socket_. This domain is included in the _package_ domain value.
+** *dram*: _RAM_ attached to the memory controller of the corresponding _socket_. This domain is *not* included in the _package_ domain value.
+
+* *psys*: Sum of the energy consumption for the entire _SoC_ (including _package_ along with other components, such as _eDRAM_, _PCH_, _System Agent_). Supported since _Intel Skylake CPUs_. `psys >= package + dram`
+
+*Hint*: Not all domains are supported by all CPUs. There may be domains missing even in more recent ones.
+
+*Important*: It is important to be aware of which domain is actually considered by the individual higher level measurement tools. Especially for tools which derives process level or even function level measurements. *_Psys_ is the most comprehensive source for energy measurements provided by RAPL. Therefore, to get the most accurate energy consumption this should be the preferred domain. Nevertheless, it seems that it is more difficult to derive process level measurements for _psys_ than just for _core_.* However, of course, *psys* and *package + dram* values are not comparable. So, be careful in comparing results of different CPU models. For example link:https://github.com/joular/powerjoular[PowerJoular] uses *psys* if available and fallback to *package + dram* otherwise.
+
+References:
+
+* https://github.com/powerapi-ng/pyJoules
+* https://joular.github.io/powerjoular/ref/how_it_works.html
 
 == Supported Platforms
 
 Energy consumption data can be directly collected on a physical machine only.
 
-Intel and AMD x86 CPUs, produced after 2012 are supported. However, the actual support depends on the operating system and used API.
+Intel and AMD x86 CPUs, produced after 2012 are supported. However, the actual support depends on the operating system and used interface.
+
+The _pts_ and _pln_ feature flags ("Intel Package Thermal Status" and "Intel Power Limit Notification" respectively) seem to indicate that RAPL is supported on a CPU.
+On GNU/Linux, you could be sure of their presence, if this command succeeds and matches:
+
+[source,bash]
+----
+egrep "(pts|pln)" /proc/cpuinfo
+----
 
 References:
 
@@ -19,7 +50,7 @@ Incomplete list of CPUs and their Linux support for power measurement interfaces
 
 == Interfaces
 
-There are *three* ways to read RAPL results on Linux.
+There are *three* ways to read _RAPL_ energy consumption values on Linux.
 
 References:
 
@@ -29,9 +60,12 @@ References:
 
 GitHub: https://github.com/powercap/powercap
 
-Reading the files under `/sys/class/powercap/intel-rapl/intel-rapl:0` using the _Powercap_ interface.
+As data source link:https://en.wikipedia.org/wiki/Model-specific_register[Intel MSR] via link:https://github.com/torvalds/linux/blob/master/drivers/powercap/intel_rapl_common.c[intel_rapl_common] and link:https://github.com/torvalds/linux/blob/master/drivers/powercap/intel_rapl_msr.c[intel_rapl_msr] kernel modules is used.
+The data type is link:https://energyeducation.ca/encyclopedia/Energy_vs_power[energy] and the unit of measurement is link:https://en.wikipedia.org/wiki/Joule[microjoules (uJ)].
+The internal refresh interval is 1ms.
+The interface is provided via link:https://en.wikipedia.org/wiki/Sysfs[sysfs] files under the virtual directory _/sys/class/powercap/intel-rapl_.
 
-Since linux kernel package 5.4.0-53.59 in debian/ubuntu, powercap attributes are only accessible by root:
+Since Linux kernel package 5.4.0-53.59 in debian/ubuntu, Powercap attributes are only accessible by root:
 
 ----
 linux (5.4.0-53.59) focal; urgency=medium
@@ -42,26 +76,80 @@ linux (5.4.0-53.59) focal; urgency=medium
 
 https://github.com/mlco2/codecarbon/issues/244
 
+*Important*: Access to the energy consumption values has been restricted since Linux kernel 5.4.0, because it has been discovered by link:https://platypusattack.com/[Platypus] that RAPL can be used for software-based power side-channel attacks. This even allows to extract complete cryptographic keys based on the CPU power consumption. Actually, this is very impressive and fascinating. However, be aware of this when considering to enable unprivileged access to RAPL.
+
 _Powercap_ needs the following kernel modules to be present and running:
 
 * On kernels 5.0 or later: `intel_rapl_common`
-* On kernel prior 5.0: `intel_rapl`
+* On kernels prior 5.0: `intel_rapl`
 
 You can check, if one of the modules is present with the command `lsmod | grep intel_rapl`.
+
+`/sys/class/powercap/intel-rapl`
+
+----
+|-intel-rapl:0 package-0    ->  (CPU socket)
+| |-- intel-rapl:0:0 cores  ->  (CPU cores, per socket)
+| |-- intel-rapl:0:1 uncore ->  (integrated graphics, per socket)
+| |-- intel-rapl:0:2 dram   ->  (memory, per socket, but *not* included in package value above)
+|-intel-rapl:1 psys         ->  (whole system, ie includes package and dram)
+----
+
+https://github.com/powercap/powercap/issues/3
+
+You can print the _Powercap_ domain hierarchy, supported by a system with the following command:
+
+[source,bash]
+----
+sudo cpupower powercap-info
+----
+
+The name of a domain can be read from the file `name`.
+
+[source,bash]
+----
+cat /sys/class/powercap/intel-rapl:0/name
+----
+
+The energy consumption in link:https://en.wikipedia.org/wiki/Joule[microjoules (uJ)] can be read from the file `energy_uj`.
+
+For example, to get the energy consumption of _package-0_, run the following command:
+
+[source,bash]
+----
+sudo cat /sys/class/powercap/intel-rapl:0/energy_uj
+----
+
+*Important*: Be aware that the energy counters in `energy_uj` files will eventually overflow, which means they start again counting from zero. This can happen independently for each RAPL domain. At which value it will overflow can be read from  the file `max_energy_range_uj` in the directory of the corresponding domain. Unfortunately, there is no overflow counter. So, the only way to keep track of the total energy consumption of the _SoC_ since the system has been started is to continuously poll.
 
 === perf_event
 
 Using the _perf_event_ interface with Linux 3.14 or newer.
 
-This requires root or a paranoid less than 1 (as do all system wide measurements with -a)
+This requires _root_ or a _paranoid_ less than 1.
 
-sudo perf stat -a -e "power/energy-cores/" /bin/ls Available events can be found via perf list or under /sys/bus/event_source/devices/power/events/
+[sorce,bash]
+----
+sudo perf stat -a -e "power/energy-cores/" /bin/ls
+----
+
+Available events can be found via `perf list` or under _/sys/bus/event_source/devices/power/events/_.
 
 === Raw-access to the underlying MSRs
 
-Using raw-access to the underlying MSRs under /dev/msr.
+As data source link:https://en.wikipedia.org/wiki/Model-specific_register[Intel MSR] via _msr_ kernel module is used.
+The data type is link:https://energyeducation.ca/encyclopedia/Energy_vs_power[energy] and the unit of measurement is platform-specific.
+The internal refresh interval is 1ms.
+The interface is provided via link:https://en.wikipedia.org/wiki/Device_file[dev] files _/dev/cpu/<CPU_ID>/msr_.
 
-This requires root. Some HPC tools will attempt to use this interface to bypass the kernel, but the kernel developers want to make raw MSR access go away as there are a lot of questionable things you can do to a system with raw MSR access.
+Accessing _MSRs_ requires _root_ permissions.
+
+As the name _MSR (Model-specific register)_ suggests, the registers which must be read are model-specific. In addition, also the unit of measurement depends on the model. Be aware that the unit which is used also is not a typical energy unit like _microjoules_ or _watt-minutes_. The value must be multiplied with another model-specific value to get the actual unit like _microjoules_.
+For this reason higher-level interfaces like _Powercap_ have to add custom implementation for every single supported CPU model (see link:https://github.com/powercap/raplcap/blob/master/msr/raplcap-cpuid.h[raplcap-cpuid.h]).
+
+The demo code link:https://github.com/deater/uarch-configure/blob/master/rapl-read/rapl-read.c[rapl-read.c] from Vince Weaver shows how RAPL values can be read via _Intel MSR_. This code contains registers and units for some CPU models. However, I am not aware of the source (might be some Intel and AMD documentation) of those model-specific values.
+
+*Hint*: To read from _MSR_ on Linux, the tool `rdmsr` can be used. It can be installed on Fedora via the `msr-tools` package.
 
 == CLI
 
@@ -95,10 +183,20 @@ Install:
 
 * Fedora: `dnf install kernel-tools`
 
+=== PowerJoular
 
-== Prometheus Exporters
+_PowerJoular_ is a command line software to monitor, in real time, the power consumption of software and hardware components.
+_PowerJoular_ supports monitoring specific processes based on the _PID_ or its name.
 
-In this section, measurement tools are listed, which can expose measurements as prometheus metrics.
+GitHub: https://github.com/joular/powerjoular
+
+Documentation: https://joular.github.io/powerjoular/ref/how_it_works.html
+
+As data source _PowerJoular_ will exclusively use the *psys* RAPL domain, if *psys* is supported. Otherwise, it will fall back to the *package* and *dram* RAPL domains.
+
+== Exporters
+
+In this section, measurement tools are listed, which can expose measurements as metrics, e.g. Prometheus.
 
 * link:https://github.com/hubblo-org/scaphandre[Scaphandre]
 * link:https://github.com/prometheus/node_exporter[Node Exporter]
@@ -147,11 +245,15 @@ scaphandre:
   command: ["prometheus", "--containers"]
 ----
 
+==== Measurements (0.5.0)
+
+Implementation: https://github.com/hubblo-org/scaphandre/blob/v0.5.0/src/exporters/mod.rs#L410
+
 === Node Exporter
 
 Prometheus exporter for hardware and OS metrics.
 Besides many others, it also exposes various statistics from `/sys/class/powercap`.
-It only exposes power consumption metrics of the overall RAPL domains, but not of the individual processes.
+It only exposes power consumption metrics of the overall RAPL domains (psys, package, core, uncore and dram), but not of the individual processes.
 
 GitHub: https://github.com/prometheus/node_exporter
 
@@ -189,4 +291,14 @@ node_exporter:
 
 === pyJoules
 
-GitHub: https://github.com/powerapi-ng/pyJoules/tree/master
+GitHub: https://github.com/powerapi-ng/pyJoules
+
+=== pyRAPL
+
+GitHub: https://github.com/powerapi-ng/pyRAPL
+
+=== JoularJX
+
+GitHub: https://github.com/joular/joularjx
+
+Documentation: https://joular.github.io/joularjx/ref/how_it_works.html
