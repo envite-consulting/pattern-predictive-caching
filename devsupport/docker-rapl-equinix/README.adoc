@@ -53,3 +53,13 @@ terraform destroy \
   -var-file "environments/${ENVIRONMENT}/terraform.tfvars" \
   -var metal_auth_token="${METAL_AUTH_TOKEN}"
 ----
+
+== Validate
+
+Check if cloud-init is valid:
+
+[source,bash]
+----
+sudo cloud-init schema --system
+cloud-init schema --config-file cloud-init.txt
+----

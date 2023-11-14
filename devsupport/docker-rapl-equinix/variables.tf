@@ -8,7 +8,7 @@ variable "project" {
 }
 
 variable "app" {
-  default = "rapl-test"
+  default = "docker-rapl"
   type = string
 }
 
@@ -22,7 +22,7 @@ variable "plan" {
   type    = string
 }
 
-variable "operating_system" {
-  default = "alma_9"
+variable "terminate_in" {
+  default = "2h"
   type = string
 }
