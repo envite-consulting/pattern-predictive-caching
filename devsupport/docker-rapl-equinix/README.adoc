@@ -8,7 +8,7 @@ Set the environment you want to use:
 
 [source,bash]
 ----
-export ENVIRONMENT='talk'
+export ENVIRONMENT='lecture'
 ----
 
 S3 is used as Terraform backend. Therefore, set your AWS credentials to be able to use your configured backend:
