@@ -5,23 +5,32 @@ services:
   prometheus:
     container_name: prometheus
     hostname: prometheus
-    image: prom/prometheus:v2.47.1
+    image: prom/prometheus:v2.47.2
     restart: always
+    networks:
+      - envite
     ports:
       - "9090:9090"
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yml:roz
       - prometheus-data:/prometheus
-    extra_hosts:
-      - host.docker.internal:host-gateway
-    networks:
-      - envite
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=365d"
+    labels:
+      traefik.enable: "true"
+      traefik.http.middlewares.traefik: "auth-user@file"
 
   grafana:
     container_name: grafana
     hostname: grafana
-    image: grafana/grafana:10.1.4
+    image: grafana/grafana:10.2.0
     restart: always
+    networks:
+      - envite
     ports:
       - "3000:3000"
     volumes:
@@ -30,19 +39,36 @@ services:
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
-    networks:
-      - envite
+    labels:
+      traefik.enable: "true"
+      traefik.http.middlewares.traefik: "auth-user@file"
+
+  node_exporter:
+    container_name: node_exporter
+    hostname: node_exporter
+    image: quay.io/prometheus/node-exporter:v1.6.1
+    restart: always
+    network_mode: host
+    pid: host
+    user: root
+    privileged: true
+    volumes:
+      - /:/rootfs:ro,rslave
+    command:
+      - "--path.rootfs=/rootfs"
 
   cadvisor:
     container_name: cadvisor
     hostname: cadvisor
     image: gcr.io/cadvisor/cadvisor:v0.47.2
     restart: always
+    networks:
+      - envite
     ports:
-      - "9400:8080"
+      - "9338:8080"
     privileged: true
     volumes:
-      - /:/rootfs:ro
+      - /:/rootfs:ro,rslave
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /dev/disk/:/dev/disk:ro
@@ -52,46 +78,50 @@ services:
     command:
       - "--store_container_labels=false"
       - "--docker_only=true"
+
+  scaphandre:
+    container_name: scaphandre
+    hostname: scaphandre
+    image: hubblo/scaphandre:0.5.0
+    restart: always
     networks:
       - envite
-
-  node_exporter:
-    container_name: node_exporter
-    hostname: node_exporter
-    image: quay.io/prometheus/node-exporter:v1.6.1
-    restart: always
-    network_mode: host
-    pid: host
+    ports:
+      - "9500:8080"
+    privileged: true
     volumes:
-      - /:/rootfs:ro,rslave
+      - /proc:/proc:ro
+      - /sys:/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     command:
-      - '--path.rootfs=/rootfs'
+      - "prometheus"
+      - "--containers"
 
   redis-prometheus-exporter:
     container_name: redis-prometheus-exporter
     hostname: redis-prometheus-exporter
-    image: oliver006/redis_exporter:v1.54.0-alpine
+    image: oliver006/redis_exporter:v1.55.0-alpine
     restart: always
+    networks:
+      - envite
     ports:
       - "9121:9121"
     command:
       - '--redis.addr='
-    networks:
-      - envite
 
   mariadb-prometheus-exporter:
     container_name: mariadb-prometheus-exporter
     hostname: mariadb-prometheus-exporter
     image: prom/mysqld-exporter:v0.15.0
     restart: always
+    networks:
+      - envite
     ports:
       - "9104:9104"
     environment:
       MYSQLD_EXPORTER_PASSWORD: password
     command:
       - '--mysqld.username=user'
-    networks:
-      - envite
 
 volumes:
   prometheus-data:

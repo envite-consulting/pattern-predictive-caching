@@ -1,7 +1,8 @@
+host_enabled = false
 hostname     = "docker"
 metro        = "sk"
 plan         = "m3.small.x86"
-terminate_in = "2h"
+terminate_in = "4h"
 
 aws_region               = "eu-north-1"
 route53_public_main_zone = "codelabs.dev"

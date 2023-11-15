@@ -7,6 +7,8 @@ services:
     hostname: news-db
     image: mariadb:11.1.2
     restart: always
+    networks:
+      - envite
     ports:
       - "3306:3306"
     environment:
@@ -17,18 +19,16 @@ services:
     volumes:
       - ./news-db/init.sql:/docker-entrypoint-initdb.d/init.sql:z
       - ./datasource/News_Category_Dataset_v3.csv:/etc/News_Category_Dataset_v3.csv:z
-    networks:
-      - envite
 
   user-interest-db:
     container_name: user-interest-db
     hostname: user-interest-db
-    image: redis:7.2.1-alpine
+    image: redis:7.2.3-alpine
     restart: always
-    ports:
-      - "6379:6379"
     networks:
       - envite
+    ports:
+      - "6379:6379"
 
   user-interest-db-init:
     container_name: user-interest-db-init
@@ -37,6 +37,8 @@ services:
     depends_on:
       - user-interest-db
     restart: on-failure
+    networks:
+      - envite
     environment:
       APP_USERSDATASETCSVFILE: /workspace/datasource/users.csv
       APP_NEWSDATASETCSVFILE: /workspace/datasource/News_Category_Dataset_v3.csv
@@ -51,8 +53,6 @@ services:
     volumes:
       - ./datasource/users.csv:/workspace/datasource/users.csv:z
       - ./datasource/News_Category_Dataset_v3.csv:/workspace/datasource/News_Category_Dataset_v3.csv:z
-    networks:
-      - envite
 
 networks:
   envite:

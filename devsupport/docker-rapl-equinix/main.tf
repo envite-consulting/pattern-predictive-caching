@@ -72,6 +72,62 @@ locals {
   user_ids = [for entry in local.users.users : entry["id"]]
 }
 
+
+#################################
+# Passwords                    #
+#################################
+
+resource "random_password" "web_admin_password" {
+  length           = 16
+  special          = true
+  override_special = "%=?@+#:"
+}
+
+locals {
+  web_admin_username = "admin"
+  web_admin_password = var.web_admin_password != null ? var.web_admin_password : random_password.web_admin_password.result
+}
+
+resource "bcrypt_hash" "web_admin_password" {
+  cleartext = local.web_admin_password
+  cost = 10
+}
+
+locals {
+  web_admin_credentials_crypt = "${local.web_admin_username}:${bcrypt_hash.web_admin_password.id}"
+}
+
+output "web_admin_credentials" {
+  value     = "${local.web_admin_username}:${local.web_admin_password}"
+  sensitive = true
+}
+
+resource "random_password" "web_user_password" {
+  length           = 16
+  special          = true
+  override_special = "%=?@+#:"
+}
+
+locals {
+  web_user_username = var.subdomain
+  web_user_password = var.web_user_password != null ? var.web_user_password : random_password.web_user_password.result
+}
+
+resource "bcrypt_hash" "web_user_password" {
+  cleartext = local.web_user_password
+  cost = 10
+}
+
+locals {
+  web_user_credentials_crypt = "${local.web_user_username}:${bcrypt_hash.web_user_password.id}"
+}
+
+output "web_user_credentials" {
+  value     = "${local.web_user_username}:${local.web_user_password}"
+  sensitive = true
+}
+
+
 #################################
 # Create Node                   #
 #################################
@@ -132,16 +188,27 @@ EOT
     {
       path        = "/etc/pki/tls/private/${local.fqdn}.pem"
       content     = acme_certificate.domain_cert.private_key_pem
-      owner       = "root:root"
-      permissions = "0600"
+      permissions = "0640"
     },
     {
-      path    = "/etc/pki/tls/certs/${local.fqdn}.chained.pem"
-      content = local.domain_cert_certificate_chain
+      path        = "/etc/pki/tls/certs/${local.fqdn}.pem"
+      content     = acme_certificate.domain_cert.certificate_pem
+      permissions = "0644"
     },
     {
-      path    = "/etc/pki/tls/certs/docker.clients.ca.pem"
-      content = tls_self_signed_cert.docker_client_ca.cert_pem
+      path        = "/etc/pki/tls/certs/${local.fqdn}.chained.pem"
+      content     = local.domain_cert_certificate_chain
+      permissions = "0644"
+    },
+    {
+      path        = "/etc/pki/tls/certs/${local.fqdn}.ca.pem"
+      content     = local.domain_cert_ca
+      permissions = "0644"
+    },
+    {
+      path        = "/etc/pki/tls/certs/docker.clients.ca.pem"
+      content     = tls_self_signed_cert.docker_client_ca.cert_pem
+      permissions = "0644"
     }
   ]
 
@@ -153,8 +220,194 @@ EOT
 ExecStart=
 ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock -H fd:// \
   -H tcp://0.0.0.0:2376 --tlsverify \
-  --tlscert=/etc/pki/tls/certs/${local.fqdn}.chained.pem --tlskey=/etc/pki/tls/private/${local.fqdn}.pem \
-  --tlscacert=/etc/pki/tls/certs/ca.clients.docker.pem
+  --tlscert=/etc/pki/tls/certs/${local.fqdn}.pem --tlskey=/etc/pki/tls/private/${local.fqdn}.pem \
+  --tlscacert=/etc/pki/tls/certs/docker.clients.ca.pem
+EOT
+    }
+  ]
+
+  traefik_static_config = {
+    providers = {
+      # https://doc.traefik.io/traefik/providers/file/
+      file = {
+        directory = "/etc/traefik/dynamic/"
+        watch : true
+      }
+      # https://doc.traefik.io/traefik/providers/docker/
+      docker = {
+        exposedByDefault : false
+        defaultRule : "Host(`{{ normalize .Name }}.${local.fqdn}`)"
+      }
+    }
+
+    # https://doc.traefik.io/traefik/routing/entrypoints/
+    entryPoints = {
+      websecure = {
+        address = ":443/tcp"
+        http2   = {
+          maxConcurrentStreams : 250
+        }
+        http = {
+          tls         = {}
+        }
+      }
+      traefik = {
+        address = ":8080/tcp"
+      }
+      metrics = {
+        address = ":9982/tcp"
+      }
+    }
+
+    # https://doc.traefik.io/traefik/operations/api/
+    api = {
+      dashboard = true
+    }
+    # https://doc.traefik.io/traefik/operations/ping/
+    ping = {
+      manualRouting = true
+    }
+    # https://doc.traefik.io/traefik/observability/metrics/prometheus/
+    metrics = {
+      prometheus = {
+        manualRouting = true
+      }
+    }
+  }
+
+  traefik_dynamic_tls_config = {
+    # https://doc.traefik.io/traefik/https/tls/
+    tls = {
+      certificates = [
+        {
+          certFile = "/etc/pki/tls/certs/${local.fqdn}.pem"
+          keyFile  = "/etc/pki/tls/private/${local.fqdn}.pem"
+        }
+      ]
+      options = {
+        default = {
+          sniStrict = true
+          alpnProtocols : ["http/1.1", "h2"]
+        }
+      }
+    }
+  }
+
+  traefik_dynamic_auth_config = {
+    http = {
+      middlewares = {
+        auth-admin = {
+          # https://doc.traefik.io/traefik/middlewares/http/basicauth/
+          basicAuth = {
+            users = [
+              local.web_admin_credentials_crypt
+            ]
+          }
+        }
+        auth-user = {
+          # https://doc.traefik.io/traefik/middlewares/http/basicauth/
+          basicAuth = {
+            users = [
+              local.web_admin_credentials_crypt,
+              local.web_user_credentials_crypt
+            ]
+          }
+        }
+      }
+    }
+  }
+
+  traefik_dynamic_routers_config = {
+    http = {
+      routers = {
+        # https://doc.traefik.io/traefik/operations/api/
+        websecure-api = {
+          entryPoints = ["websecure"]
+          rule        = "Host(`traefik.${local.fqdn}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+          service     = "api@internal"
+          middlewares = ["auth-admin"]
+          tls         = {}
+        }
+        # https://doc.traefik.io/traefik/operations/api/
+        traefik-api = {
+          entryPoints = ["traefik"]
+          rule        = "PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+          service     = "api@internal"
+        }
+        # https://doc.traefik.io/traefik/operations/ping/
+        traefik-ping = {
+          entryPoints = ["traefik"]
+          rule        = "PathPrefix(`/ping`)"
+          service     = "ping@internal"
+        }
+        # https://doc.traefik.io/traefik/observability/metrics/prometheus/
+        traefik-prometheus = {
+          entryPoints = ["traefik", "metrics"]
+          rule        = "PathPrefix(`/metrics`)"
+          service     = "prometheus@internal"
+        }
+      }
+    }
+  }
+
+  traefik_files = [
+    {
+      path        = "/etc/traefik/traefik.yaml"
+      content     = yamlencode(local.traefik_static_config)
+      permissions = "0640"
+    },
+    {
+      path        = "/etc/traefik/dynamic/tls.yaml"
+      content     = yamlencode(local.traefik_dynamic_tls_config)
+      permissions = "0640"
+    },
+    {
+      path        = "/etc/traefik/dynamic/auth.yaml"
+      content     = yamlencode(local.traefik_dynamic_auth_config)
+      permissions = "0640"
+    },
+    {
+      path        = "/etc/traefik/dynamic/routers.yaml"
+      content     = yamlencode(local.traefik_dynamic_routers_config)
+      permissions = "0640"
+    },
+    {
+      path    = "/etc/systemd/system/traefik.service"
+      content = <<-EOT
+[Unit]
+Description=Traefik
+Documentation=https://doc.traefik.io/traefik/
+After=network-online.target
+AssertFileIsExecutable=/usr/bin/traefik
+AssertPathExists=/etc/traefik/traefik.yaml
+
+[Service]
+# Run traefik as its own user
+User=traefik
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+# configure service behavior
+Type=notify
+ExecStart=/usr/bin/traefik --configFile=/etc/traefik/traefik.yaml
+Restart=always
+WatchdogSec=1s
+
+# lock down system access
+# prohibit any operating system and configuration modification
+ProtectSystem=strict
+# create separate, new (and empty) /tmp and /var/tmp filesystems
+PrivateTmp=true
+# make /home directories inaccessible
+ProtectHome=true
+# turns off access to physical devices (/dev/...)
+PrivateDevices=true
+# make kernel settings (procfs and sysfs) read-only
+ProtectKernelTunables=true
+# make cgroups /sys/fs/cgroup read-only
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
 EOT
     }
   ]
@@ -166,6 +419,12 @@ EOT
         groups              = "wheel,docker"
         sudo                = "ALL=(ALL) NOPASSWD:ALL"
         ssh_authorized_keys = local.ssh_authorized_keys
+      },
+      {
+        name   = "traefik"
+        groups = "docker"
+        shell  = "/bin/false"
+        system = true
       }
     ]
 
@@ -176,7 +435,7 @@ EOT
       ]
     }
 
-    write_files = concat(local.yum_repo_files, local.certificate_files, local.docker_files)
+    write_files = concat(local.yum_repo_files, local.certificate_files, local.docker_files, local.traefik_files)
 
     package_upgrade = true
     packages        = [
@@ -186,7 +445,7 @@ EOT
       "docker-ce", "docker-ce-cli", "containerd.io", "docker-compose-plugin", "docker-buildx-plugin",
       "python3", "pip",
       "vim", "tmux",
-      "wget", "telnet", "nc", "openssl",
+      "wget", "telnet", "nc", "openssl", "ca-certificates",
       "gnupg",
       "htop", "btop", "glances",
       "stress-ng"
@@ -203,14 +462,22 @@ EOT
       ["firewall-cmd", "--zone=public", "--permanent", "--add-service=https"],
       ["firewall-cmd", "--zone=public", "--permanent", "--add-port=2376/tcp"],
 
+      ["chown", "root:traefik", "/etc/pki/tls/private/${local.fqdn}.pem"],
+
       ["systemctl", "enable", "docker"],
+
+      "curl -sL --retry 10 --retry-max-time 120 --retry-connrefused https://github.com/traefik/traefik/releases/download/v2.10.5/traefik_v2.10.5_linux_amd64.tar.gz | tar -xz -C /usr/bin/ traefik",
+      ["chown", "-R", "traefik:traefik", "/etc/traefik/"],
+      ["systemctl", "enable", "traefik"],
 
       ["reboot"]
     ]
   }
 }
 
-resource "equinix_metal_device" "create" {
+resource "equinix_metal_device" "host" {
+  count = var.host_enabled ? 1 : 0
+
   project_id          = data.equinix_metal_project.project.id
   project_ssh_key_ids = [equinix_metal_project_ssh_key.ssh.id]
   user_ssh_key_ids    = local.user_ids
@@ -235,14 +502,14 @@ resource "local_sensitive_file" "host_user_data" {
 }
 
 output "host_fqdn" {
-  value = local.host_fqdn
+  value = var.host_enabled ? local.host_fqdn : null
 }
 
 output "host_public_ipv4" {
-  value = equinix_metal_device.create.access_public_ipv4
+  value = var.host_enabled ? equinix_metal_device.host[0].access_public_ipv4 : null
 }
 
 output "host_root_password" {
-  value     = equinix_metal_device.create.root_password
+  value     = var.host_enabled ? equinix_metal_device.host[0].root_password : null
   sensitive = true
 }

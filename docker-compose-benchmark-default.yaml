@@ -7,6 +7,8 @@ services:
     hostname: benchmark-default
     image: benchmark:1.0.0
     restart: on-failure
+    networks:
+      - envite
     ports:
       - "8183:8183"
     environment:
@@ -21,8 +23,6 @@ services:
       BENCHMARK_REQUESTDELAY: '1s'
       BENCHMARK_TESTDURATION: '0s'
       BENCHMARK_REQUESTSPERUSER: 25
-    networks:
-      - envite
 
 networks:
   envite:

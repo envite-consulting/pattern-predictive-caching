@@ -48,17 +48,17 @@ resource "tls_locally_signed_cert" "docker_client_cert" {
 
 resource "local_file" "docker_domain_ca" {
   content  = local.domain_cert_ca
-  filename = "${path.module}/target/certs/docker-client/ca"
+  filename = "${path.module}/target/certs/docker-client/ca.pem"
 }
 
 resource "local_sensitive_file" "docker_client_private_key" {
   content  = tls_private_key.docker_client_cert_key.private_key_pem
-  filename = "${path.module}/target/certs/docker-client/key"
+  filename = "${path.module}/target/certs/docker-client/key.pem"
 }
 
 resource "local_file" "docker_client_cert" {
-  content  = tls_locally_signed_cert.docker_client_cert.ca_cert_pem
-  filename = "${path.module}/target/certs/docker-client/cert"
+  content  = tls_locally_signed_cert.docker_client_cert.cert_pem
+  filename = "${path.module}/target/certs/docker-client/cert.pem"
 }
 
 output "docker_cert_path" {

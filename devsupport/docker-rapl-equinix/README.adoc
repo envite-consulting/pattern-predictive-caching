@@ -60,6 +60,24 @@ Check if cloud-init is valid:
 
 [source,bash]
 ----
-sudo cloud-init schema --system
-cloud-init schema --config-file cloud-init.txt
+cloud-init schema --system
+cloud-init schema --config-file cloud-init.yaml
+less /var/log/cloud-init.log
+less /var/log/cloud-init-output.log
+----
+
+== Use
+
+=== Websites
+
+* https://traefik.lecture.codelabs.dev/dashboard/
+
+=== Docker
+
+[source,bash]
+----
+export DOCKER_HOST=docker.lecture.codelabs.dev:2376
+export DOCKER_CERT_PATH="$(pwd)/target/certs/docker-client/"
+export DOCKER_TLS_VERIFY=1
+docker ps
 ----

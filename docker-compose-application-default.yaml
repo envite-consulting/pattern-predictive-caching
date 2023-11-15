@@ -7,6 +7,8 @@ services:
     hostname: news-default
     image: news:1.0.0
     restart: always
+    networks:
+      - envite
     ports:
       - "8081:8081"
       - "8181:8181"
@@ -16,14 +18,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mariadb://news-db:3306/newsdb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
-    networks:
-      - envite
 
   interest-feed-default:
     container_name: interest-feed-default
     hostname: interest-feed-default
     image: interest-feed:1.0.0
     restart: always
+    networks:
+      - envite
     ports:
       - "8082:8082"
       - "8182:8182"
@@ -35,8 +37,6 @@ services:
       SERVICE_NEWS_URL: http://news-default:8081
       FEED_LIMIT: 20
       FEED_PERIOD: P1W
-    networks:
-      - envite
 
 networks:
   envite:

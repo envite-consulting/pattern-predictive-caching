@@ -6,6 +6,11 @@ variable "metal_auth_token" {
   type = string
 }
 
+variable "host_enabled" {
+  default = true
+  type = bool
+}
+
 variable "project" {
   default = "default"
   type    = string
@@ -55,4 +60,14 @@ variable "subdomain" {
   default = "equinix"
   type = string
   description = "Subdomain which should be created."
+}
+
+variable "web_admin_password" {
+  default = null
+  type = string
+}
+
+variable "web_user_password" {
+  default = null
+  type = string
 }

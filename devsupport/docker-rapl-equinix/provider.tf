@@ -2,13 +2,16 @@ terraform {
   required_providers {
     equinix = {
       source  = "equinix/equinix"
-      version = ">= 1.19.0"
+      version = ">= 1.19"
     }
     acme = {
       source  = "vancluever/acme"
       version = "~> 2.18"
     }
-
+    bcrypt = {
+      source  = "viktorradnai/bcrypt"
+      version = "~> 0.1"
+    }
   }
 }
 

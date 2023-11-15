@@ -23,11 +23,13 @@ resource "aws_route53_record" "public_ns" {
 }
 
 resource "aws_route53_record" "public_wildcard" {
+  count = var.host_enabled ? 1 : 0
+
   zone_id = aws_route53_zone.public.zone_id
   name    = "*.${aws_route53_zone.public.name}"
   type    = "A"
   ttl     = "300"
-  records = [equinix_metal_device.create.access_public_ipv4]
+  records = [equinix_metal_device.host[0].access_public_ipv4]
 }
 
 

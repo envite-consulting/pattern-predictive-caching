@@ -7,6 +7,8 @@ services:
     hostname: news-cache
     image: news:1.0.0
     restart: always
+    networks:
+      - envite
     ports:
       - "9081:9081"
       - "9181:9181"
@@ -16,14 +18,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mariadb://news-db:3306/newsdb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
-    networks:
-      - envite
 
   interest-feed-cache:
     container_name: interest-feed-cache
     hostname: interest-feed-cache
     image: interest-feed:1.0.0
     restart: always
+    networks:
+      - envite
     ports:
       - "9082:9082"
       - "9182:9182"
@@ -38,8 +40,6 @@ services:
       OKHTTP_CLIENT_CACHE_ENABLED: "true"
       OKHTTP_CLIENT_CACHE_DIRECTORY: "/home/cnb/.cache/http_cache"
       OKHTTP_CLIENT_CACHE_MAXSIZE: 25MB
-    networks:
-      - envite
 
 networks:
   envite:
