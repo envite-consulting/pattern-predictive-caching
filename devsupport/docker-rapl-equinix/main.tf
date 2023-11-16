@@ -230,7 +230,7 @@ EOT
 ExecStart=
 ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock -H fd:// \
   -H tcp://0.0.0.0:2376 --tlsverify \
-  --tlscert=/etc/pki/tls/certs/${local.fqdn}.pem --tlskey=/etc/pki/tls/private/${local.fqdn}.pem \
+  --tlscert=/etc/pki/tls/certs/${local.fqdn}.chained.pem --tlskey=/etc/pki/tls/private/${local.fqdn}.pem \
   --tlscacert=/etc/pki/tls/certs/docker.clients.ca.pem
 EOT
     }

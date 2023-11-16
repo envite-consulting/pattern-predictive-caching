@@ -18,6 +18,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mariadb://news-db:3306/newsdb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+    labels:
+      traefik.enable: "true"
+      traefik.http.services.news-cache.loadbalancer.server.port: 9081
+      traefik.http.routers.news-cache.middlewares: "auth-user@file"
 
   interest-feed-cache:
     container_name: interest-feed-cache
@@ -40,6 +44,10 @@ services:
       OKHTTP_CLIENT_CACHE_ENABLED: "true"
       OKHTTP_CLIENT_CACHE_DIRECTORY: "/home/cnb/.cache/http_cache"
       OKHTTP_CLIENT_CACHE_MAXSIZE: 25MB
+    labels:
+      traefik.enable: "true"
+      traefik.http.services.interest-feed-cache.loadbalancer.server.port: 9082
+      traefik.http.routers.interest-feed-cache.middlewares: "auth-user@file"
 
 networks:
   envite:

@@ -42,6 +42,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mariadb://news-db:3306/newsdb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+    labels:
+      traefik.enable: "true"
+      traefik.http.services.news-default.loadbalancer.server.port: 8081
+      traefik.http.routers.news-default.middlewares: "auth-user@file"
 
   user-interest-db:
     container_name: user-interest-db
@@ -97,6 +101,10 @@ services:
       SERVICE_NEWS_URL: http://news-default:8081
       FEED_LIMIT: 20
       FEED_PERIOD: P1W
+    labels:
+      traefik.enable: "true"
+      traefik.http.services.interest-feed-default.loadbalancer.server.port: 8082
+      traefik.http.routers.interest-feed-default.middlewares: "auth-user@file"
 
 #  benchmark-default:
 #    container_name: benchmark-default
