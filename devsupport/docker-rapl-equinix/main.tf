@@ -61,6 +61,11 @@ data "http" "equinix_users" {
   }
 }
 
+data "http" "gh_user_ssh" {
+  for_each = toset(var.host_users_gh)
+  url      = "https://github.com/${each.value}.keys"
+}
+
 locals {
   user_ssh_keys     = jsondecode(data.http.equinix_user_ssh.response_body)
   user_ssh_key_ids  = [for entry in local.user_ssh_keys["ssh_keys"] : entry["id"]]
@@ -70,6 +75,11 @@ locals {
 
   users    = jsondecode(data.http.equinix_users.response_body)
   user_ids = [for entry in local.users.users : entry["id"]]
+
+  gh_user_ssh_keys = {
+    for user, request in data.http.gh_user_ssh : user =>
+    [for line in split("\n", request.response_body) : trimspace(line) if trimspace(line) != ""]
+  }
 }
 
 
@@ -90,7 +100,7 @@ locals {
 
 resource "bcrypt_hash" "web_admin_password" {
   cleartext = local.web_admin_password
-  cost = 10
+  cost      = 10
 }
 
 locals {
@@ -115,7 +125,7 @@ locals {
 
 resource "bcrypt_hash" "web_user_password" {
   cleartext = local.web_user_password
-  cost = 10
+  cost      = 10
 }
 
 locals {
@@ -248,7 +258,7 @@ EOT
           maxConcurrentStreams : 250
         }
         http = {
-          tls         = {}
+          tls = {}
         }
       }
       traefik = {
@@ -413,20 +423,31 @@ EOT
   ]
 
   cloud_config = {
-    users = [
-      {
-        name                = "developer"
-        groups              = "wheel,docker"
-        sudo                = "ALL=(ALL) NOPASSWD:ALL"
-        ssh_authorized_keys = local.ssh_authorized_keys
-      },
-      {
-        name   = "traefik"
-        groups = "docker"
-        shell  = "/bin/false"
-        system = true
-      }
-    ]
+    users = concat(
+      [
+        {
+          name   = "traefik"
+          groups = "docker"
+          shell  = "/bin/false"
+          system = true
+        },
+        {
+          name                = "developer"
+          groups              = "wheel,docker"
+          sudo                = "ALL=(ALL) NOPASSWD:ALL"
+          ssh_authorized_keys = local.ssh_authorized_keys
+        }
+      ],
+      [
+        for user, ssh_authorized_keys in local.gh_user_ssh_keys :
+        {
+          name                = user
+          groups              = "wheel,docker"
+          sudo                = "ALL=(ALL) NOPASSWD:ALL"
+          ssh_authorized_keys = setunion(ssh_authorized_keys, local.ssh_authorized_keys)
+        }
+      ]
+    )
 
     ca_certs = {
       trusted = [

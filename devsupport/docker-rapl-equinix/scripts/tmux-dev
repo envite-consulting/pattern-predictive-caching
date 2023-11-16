@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+GIT_ROOT="$(cd "${SCRIPT_DIR}" && git rev-parse --show-toplevel)"
+
+export ENVIRONMENT="${ENVIRONMENT:-"lecture"}"
+export REMOTE_USERNAME=${REMOTE_USERNAME:-"$(whoami)"}
+export REMOTE_HOSTNAME="${REMOTE_HOSTNAME:-"docker.${ENVIRONMENT:-"lecture"}.codelabs.dev"}"
+
+function finally () {
+  rm -f /run/user/$(id -u)/${REMOTE_HOSTNAME}-docker.sock
+}
+
+trap finally EXIT
+
+tmux new-session -s "${ENVIRONMENT}" -c "${GIT_ROOT}" \; \
+  set-option -g mouse on \; \
+  send-keys "ssh ${REMOTE_USERNAME}@${REMOTE_HOSTNAME}" C-m \; \
+  split-window -v \; \
+  send-keys "export DOCKER_HOST="unix:///run/user/$(id -u)/${REMOTE_HOSTNAME}-docker.sock"" C-m \; \
+  select-pane -t 0 \; \
+  split-window -h \; \
+  send-keys "ssh -N -L "/run/user/$(id -u)/${REMOTE_HOSTNAME}-docker.sock:/var/run/docker.sock" ${REMOTE_USERNAME}@${REMOTE_HOSTNAME}" C-m \; \
+  split-window -v \; \
+  send-keys "${SCRIPT_DIR}/remote-sync" C-m \; \
+  select-pane -t 3

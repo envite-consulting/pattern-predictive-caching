@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+GIT_ROOT="$(cd "${SCRIPT_DIR}" && git rev-parse --show-toplevel)"
+
+export REMOTE_USERNAME=${REMOTE_USERNAME:-"$(whoami)"}
+export REMOTE_HOSTNAME="${REMOTE_HOSTNAME:-"docker.${ENVIRONMENT:-"lecture"}.codelabs.dev"}"
+
+rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' "${GIT_ROOT}/" "${REMOTE_USERNAME}@${REMOTE_HOSTNAME}:${GIT_ROOT}"
+while inotifywait --exclude '\.git|\.idea' -r -e modify,create,delete,move "${GIT_ROOT}"; do
+    rsync -arzP --mkpath --inplace --delete --exclude='.git/' --exclude='.idea/' "${GIT_ROOT}/" "${REMOTE_USERNAME}@${REMOTE_HOSTNAME}:${GIT_ROOT}"
+done

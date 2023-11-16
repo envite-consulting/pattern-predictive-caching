@@ -32,8 +32,13 @@ variable "plan" {
 }
 
 variable "terminate_in" {
-  default = "2h"
+  default = "1h"
   type    = string
+}
+
+variable "host_users_gh" {
+  default = []
+  type = list(string)
 }
 
 
