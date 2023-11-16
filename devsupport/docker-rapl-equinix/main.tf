@@ -246,7 +246,7 @@ EOT
       # https://doc.traefik.io/traefik/providers/docker/
       docker = {
         exposedByDefault : false
-        defaultRule : "Host(`{{ normalize .Name }}.${local.fqdn}`)"
+        defaultRule : "Host(`{{ normalize .ContainerName }}.${local.fqdn}`)"
       }
     }
 
@@ -263,9 +263,6 @@ EOT
       }
       traefik = {
         address = ":8080/tcp"
-      }
-      metrics = {
-        address = ":9982/tcp"
       }
     }
 
@@ -290,7 +287,7 @@ EOT
     tls = {
       certificates = [
         {
-          certFile = "/etc/pki/tls/certs/${local.fqdn}.pem"
+          certFile = "/etc/pki/tls/certs/${local.fqdn}.chained.pem"
           keyFile  = "/etc/pki/tls/private/${local.fqdn}.pem"
         }
       ]
@@ -352,7 +349,7 @@ EOT
         }
         # https://doc.traefik.io/traefik/observability/metrics/prometheus/
         traefik-prometheus = {
-          entryPoints = ["traefik", "metrics"]
+          entryPoints = ["traefik"]
           rule        = "PathPrefix(`/metrics`)"
           service     = "prometheus@internal"
         }

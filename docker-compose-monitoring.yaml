@@ -5,7 +5,7 @@ services:
   prometheus:
     container_name: prometheus
     hostname: prometheus
-    image: prom/prometheus:v2.47.2
+    image: prom/prometheus:v2.48.0
     restart: always
     networks:
       - envite
@@ -14,7 +14,7 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     volumes:
-      - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yml:roz
+      - ./monitoring/prometheus/config.yaml:/etc/prometheus/prometheus.yaml:roz
       - prometheus-data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yaml"
@@ -22,7 +22,7 @@ services:
       - "--storage.tsdb.retention.time=365d"
     labels:
       traefik.enable: "true"
-      traefik.http.middlewares.traefik: "auth-user@file"
+      traefik.http.routers.prometheus.middlewares: "auth-user@file"
 
   grafana:
     container_name: grafana
@@ -41,7 +41,7 @@ services:
       GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
     labels:
       traefik.enable: "true"
-      traefik.http.middlewares.traefik: "auth-user@file"
+      traefik.http.routers.grafana.middlewares: "auth-user@file"
 
   node_exporter:
     container_name: node_exporter
@@ -90,9 +90,9 @@ services:
       - "9500:8080"
     privileged: true
     volumes:
-      - /proc:/proc:ro
-      - /sys:/sys:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc:/proc
+      - /sys:/sys
+      - /var/run/docker.sock:/var/run/docker.sock
     command:
       - "prometheus"
       - "--containers"

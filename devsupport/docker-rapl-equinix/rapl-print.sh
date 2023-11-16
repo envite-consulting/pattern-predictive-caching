@@ -23,8 +23,5 @@ fi
 dram_file="/sys/class/powercap/intel-rapl:0:2/energy_uj"
 if [ -e "${dram_file}" ]; then
   dram="$(sudo cat "${dram_file}")"
-  printf " DRAM:          %12s\n" ${dram}
-fi
-if [ -e "${core_file}" ] && [ -e "${uncore_file}" ]; then
-  printf "  PP0 + PP1:    %12s\n" $(($core + $uncore))
+  printf "  DRAM:         %12s\n" ${dram}
 fi

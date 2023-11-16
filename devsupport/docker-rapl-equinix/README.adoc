@@ -70,6 +70,8 @@ less /var/log/cloud-init-output.log
 
 === Websites
 
+* https://grafana.lecture.codelabs.dev
+* https://prometheus.lecture.codelabs.dev
 * https://traefik.lecture.codelabs.dev/dashboard/
 
 === Docker

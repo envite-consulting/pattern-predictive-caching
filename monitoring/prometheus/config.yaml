@@ -10,7 +10,7 @@ scrape_configs:
 
   - job_name: 'traefik'
     static_configs:
-      - targets: ['host.docker.internal:9982']
+      - targets: ['host.docker.internal:8080']
 
   - job_name: 'node'
     static_configs:
