@@ -717,7 +717,7 @@
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Last *",
+          "sortBy": "Delta",
           "sortDesc": true
         },
         "tooltip": {
