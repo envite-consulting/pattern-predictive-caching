@@ -113,10 +113,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -126,7 +122,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 8,
+        "w": 4,
         "x": 0,
         "y": 1
       },
@@ -182,6 +178,71 @@
           }
         }
       ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "P1809F7CD0C75ACF3"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 42,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "editorMode": "code",
+          "expr": "scaph_host_power_microwatts/1000000",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Host power consumption (Mean)",
       "type": "stat"
     },
     {
@@ -314,7 +375,7 @@
               }
             ]
           },
-          "unit": "watth"
+          "unit": "watt"
         },
         "overrides": []
       },
@@ -324,7 +385,7 @@
         "x": 0,
         "y": 7
       },
-      "id": 28,
+      "id": 41,
       "options": {
         "displayMode": "gradient",
         "minVizHeight": 10,
@@ -333,12 +394,13 @@
         "orientation": "vertical",
         "reduceOptions": {
           "calcs": [
-            "delta"
+            "mean"
           ],
           "fields": "",
           "values": false
         },
         "showUnfilled": true,
+        "text": {},
         "valueMode": "color"
       },
       "pluginVersion": "10.2.0",
@@ -349,7 +411,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "scaph_domain_energy_microjoules/3600000000",
+          "expr": "scaph_domain_power_microwatts/1000000",
           "interval": "",
           "legendFormat": "Socket {{socket_id}} Domain {{domain_name}}",
           "range": true,
@@ -361,7 +423,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "scaph_socket_energy_microjoules/3600000000",
+          "expr": "scaph_socket_power_microwatts/1000000",
           "hide": false,
           "instant": false,
           "legendFormat": "Socket {{socket_id}}",
@@ -369,7 +431,7 @@
           "refId": "B"
         }
       ],
-      "title": "Socket energy consumption",
+      "title": "Socket power consumption (Mean)",
       "type": "bargauge"
     },
     {
@@ -492,12 +554,215 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "P1809F7CD0C75ACF3"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 17
+      },
+      "id": 28,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "delta"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "editorMode": "code",
+          "expr": "scaph_domain_energy_microjoules/3600000000",
+          "interval": "",
+          "legendFormat": "Socket {{socket_id}} Domain {{domain_name}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "editorMode": "code",
+          "expr": "scaph_socket_energy_microjoules/3600000000",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Socket {{socket_id}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Socket energy consumption",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "P1809F7CD0C75ACF3"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 16,
+        "x": 8,
+        "y": 17
+      },
+      "id": 40,
+      "options": {
+        "legend": {
+          "calcs": [
+            "firstNotNull",
+            "lastNotNull",
+            "delta"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Last *",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "editorMode": "code",
+          "expr": "scaph_domain_energy_microjoules/1000000/3600",
+          "interval": "",
+          "legendFormat": "Socket {{socket_id}} Domain {{domain_name}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "editorMode": "code",
+          "expr": "scaph_socket_energy_microjoules/1000000/3600",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Socket {{socket_id}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Socket energy consumption",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 27
       },
       "id": 24,
       "panels": [],
@@ -538,7 +803,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 18
+        "y": 28
       },
       "id": 30,
       "options": {
@@ -655,7 +920,7 @@
         "h": 10,
         "w": 16,
         "x": 8,
-        "y": 18
+        "y": 28
       },
       "id": 37,
       "options": {
@@ -723,7 +988,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 28
+        "y": 38
       },
       "id": 36,
       "options": {
@@ -848,7 +1113,7 @@
         "h": 10,
         "w": 16,
         "x": 8,
-        "y": 28
+        "y": 38
       },
       "id": 38,
       "options": {
@@ -898,7 +1163,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 48
       },
       "id": 13,
       "panels": [],
@@ -948,7 +1213,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 39
+        "y": 49
       },
       "id": 34,
       "options": {
@@ -1065,7 +1330,7 @@
         "h": 10,
         "w": 16,
         "x": 8,
-        "y": 39
+        "y": 49
       },
       "id": 21,
       "options": {
@@ -1133,7 +1398,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 49
+        "y": 59
       },
       "id": 35,
       "options": {
@@ -1260,7 +1525,7 @@
         "h": 10,
         "w": 16,
         "x": 8,
-        "y": 49
+        "y": 59
       },
       "id": 39,
       "options": {
@@ -1319,6 +1584,6 @@
   "timezone": "",
   "title": "Scaphandre",
   "uid": "GOHnbBO7z",
-  "version": 10,
+  "version": 12,
   "weekStart": ""
 }
