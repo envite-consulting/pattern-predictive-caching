@@ -2,7 +2,7 @@ host_enabled = true
 hostname     = "docker"
 metro        = "sk"
 plan         = "m3.small.x86"
-terminate_in = "48h"
+terminate_in = "4h"
 host_users_gh = ["ueisele", "nadjahagen"]
 
 aws_region               = "eu-north-1"
