@@ -231,6 +231,9 @@ spec:
   routes:
     - kind: Rule
       match: Host(`traefik.${local.fqdn}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      middlewares:
+        - name: auth-admin
+          namespace: kube-system
       services:
         - kind: TraefikService
           name: api@internal
