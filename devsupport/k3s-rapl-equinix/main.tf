@@ -369,6 +369,10 @@ resource "equinix_metal_device" "host" {
 
   termination_time = timeadd(timestamp(), var.terminate_in)
 
+  lifecycle {
+    ignore_changes = [user_data]
+  }
+
   tags = [for key, value in local.default_tags : "${key}=${value}"]
 }
 

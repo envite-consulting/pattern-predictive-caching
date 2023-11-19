@@ -17,6 +17,6 @@ ingress:
   ingressClassName: traefik
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: kube-system-auth-admin@kubernetescrd
+#    traefik.ingress.kubernetes.io/router.middlewares: kube-system-auth-admin@kubernetescrd
   hosts:
     - jupyterhub.lecture.codelabs.dev

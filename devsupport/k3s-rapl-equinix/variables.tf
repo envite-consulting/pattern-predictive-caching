@@ -78,3 +78,23 @@ variable "web_admin_password" {
   default = null
   type = string
 }
+
+
+##################################
+# Cognito (AWS)                  #
+##################################
+
+variable "cognito_enabled" {
+  default = true
+  type = bool
+}
+
+variable "admin_email_domain" {
+  default = "envite.de"
+  type = string
+}
+
+variable "auto_verify_email_domain" {
+  default = "hft-stuttgart.de"
+  type = string
+}
