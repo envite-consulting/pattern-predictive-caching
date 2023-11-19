@@ -194,7 +194,7 @@ EOT
 
   traefik_manifest_files = [
     {
-      path        = "/var/lib/rancher/k3s/server/manifests/traefik-tls.yaml"
+      path    = "/var/lib/rancher/k3s/server/manifests/traefik-tls.yaml"
       content = <<-EOT
 ---
 apiVersion: traefik.io/v1alpha1

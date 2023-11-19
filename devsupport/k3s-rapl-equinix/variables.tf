@@ -8,7 +8,7 @@ variable "metal_auth_token" {
 
 variable "host_enabled" {
   default = true
-  type = bool
+  type    = bool
 }
 
 variable "project" {
@@ -39,12 +39,12 @@ variable "terminate_in" {
 
 variable "k3s_channel" {
   default = "stable"
-  type = string
+  type    = string
 }
 
 variable "host_users_gh" {
   default = []
-  type = list(string)
+  type    = list(string)
 }
 
 
@@ -68,15 +68,15 @@ variable "route53_public_main_zone" {
 }
 
 variable "subdomain" {
-  default = "equinix"
-  type = string
+  default     = "equinix"
+  type        = string
   description = "Subdomain which should be created."
 }
 
 
 variable "web_admin_password" {
   default = null
-  type = string
+  type    = string
 }
 
 
@@ -84,17 +84,12 @@ variable "web_admin_password" {
 # Cognito (AWS)                  #
 ##################################
 
-variable "cognito_enabled" {
-  default = true
-  type = bool
-}
-
 variable "admin_email_domain" {
   default = "envite.de"
-  type = string
+  type    = string
 }
 
 variable "auto_verify_email_domain" {
   default = "hft-stuttgart.de"
-  type = string
+  type    = string
 }

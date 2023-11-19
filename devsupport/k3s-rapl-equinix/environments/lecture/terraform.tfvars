@@ -12,3 +12,6 @@ aws_region               = "eu-north-1"
 route53_public_main_zone = "codelabs.dev"
 subdomain                = "lecture"
 acme_email               = "code@uweeisele.eu"
+
+admin_email_domain       = "envite.de"
+auto_verify_email_domain = "hft-stuttgart.de"

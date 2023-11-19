@@ -4,7 +4,7 @@
 
 locals {
   cognito_admin_group_name = "admin"
-  cognito_user_group_name = "user"
+  cognito_user_group_name  = "user"
 }
 
 resource "aws_cognito_user_pool" "main" {
@@ -19,7 +19,7 @@ resource "aws_cognito_user_pool" "main" {
   auto_verified_attributes = ["email"]
 
   lambda_config {
-    custom_message = aws_lambda_function.cognito_email_domain_verify.arn
+    custom_message    = aws_lambda_function.cognito_email_domain_verify.arn
     post_confirmation = aws_lambda_function.cognito_add_user_to_group.arn
   }
 }
@@ -57,7 +57,7 @@ resource "aws_iam_role" "lambda_cognito_email_domain_verify" {
   assume_role_policy = data.aws_iam_policy_document.lambda_cognito_email_domain_verify_assume_role.json
 
   inline_policy {
-    name = "lambda_basic_execution"
+    name   = "lambda_basic_execution"
     policy = data.aws_iam_policy_document.lambda_cognito_email_domain_verify_basic_execution.json
   }
 }
@@ -77,14 +77,16 @@ data "aws_iam_policy_document" "lambda_cognito_email_domain_verify_assume_role" 
 
 data "aws_iam_policy_document" "lambda_cognito_email_domain_verify_basic_execution" {
   statement {
-    effect = "Allow"
-    actions = ["logs:CreateLogGroup"]
+    effect    = "Allow"
+    actions   = ["logs:CreateLogGroup"]
     resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
   }
   statement {
-    effect = "Allow"
-    actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.lambda_cognito_email_domain_verify_name}:*"]
+    effect    = "Allow"
+    actions   = ["logs:CreateLogStream", "logs:PutLogEvents"]
+    resources = [
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.lambda_cognito_email_domain_verify_name}:*"
+    ]
   }
 }
 
@@ -138,7 +140,7 @@ resource "aws_iam_role" "lambda_cognito_add_user_to_group" {
   assume_role_policy = data.aws_iam_policy_document.lambda_cognito_add_user_to_group_assume_role.json
 
   inline_policy {
-    name = "lambda_basic_execution"
+    name   = "lambda_basic_execution"
     policy = data.aws_iam_policy_document.lambda_cognito_add_user_to_group_basic_execution.json
   }
 }
@@ -158,26 +160,28 @@ data "aws_iam_policy_document" "lambda_cognito_add_user_to_group_assume_role" {
 
 data "aws_iam_policy_document" "lambda_cognito_add_user_to_group_basic_execution" {
   statement {
-    effect = "Allow"
-    actions = ["logs:CreateLogGroup"]
+    effect    = "Allow"
+    actions   = ["logs:CreateLogGroup"]
     resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
   }
   statement {
-    effect = "Allow"
-    actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.lambda_cognito_add_user_to_group_name}:*"]
+    effect    = "Allow"
+    actions   = ["logs:CreateLogStream", "logs:PutLogEvents"]
+    resources = [
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.lambda_cognito_add_user_to_group_name}:*"
+    ]
   }
 }
 
 resource "aws_iam_policy" "cognito_add_user_to_group" {
-  name        = local.lambda_cognito_add_user_to_group_name
-  policy      = data.aws_iam_policy_document.cognito_add_user_to_group.json
+  name   = local.lambda_cognito_add_user_to_group_name
+  policy = data.aws_iam_policy_document.cognito_add_user_to_group.json
 }
 
 data "aws_iam_policy_document" "cognito_add_user_to_group" {
   statement {
-    effect = "Allow"
-    actions = ["cognito-idp:AdminAddUserToGroup"]
+    effect    = "Allow"
+    actions   = ["cognito-idp:AdminAddUserToGroup"]
     resources = [aws_cognito_user_pool.main.arn]
   }
 }
