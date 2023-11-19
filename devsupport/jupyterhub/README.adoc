@@ -1,0 +1,98 @@
+= JupyterHub with Kubernetes
+
+== Prepare
+
+Set the environment you want to use:
+
+[source,bash]
+----
+export ENVIRONMENT='lecture'
+----
+
+=== AWS
+
+S3 is used as Terraform backend. Therefore, set your AWS credentials to be able to use your configured backend:
+
+[source,bash]
+----
+export AWS_ACCESS_KEY_ID='anaccesskey'
+export AWS_SECRET_ACCESS_KEY='asecretkey'
+export AWS_REGION='eu-north-1'
+----
+
+=== Kubernetes
+
+[source,bash]
+----
+mkdir target
+scp root@docker.lecture.codelabs.dev:/etc/rancher/k3s/k3s.yaml target/
+export KUBECONFIG="$(pwd)/target/k3s.yaml"
+export KUBE_CONFIG_PATH="${KUBECONFIG}"
+export KUBE_CTX="default"
+----
+
+== Terraform
+
+[source,bash]
+----
+terraform init -backend-config "environments/${ENVIRONMENT}/backend.config" -reconfigure
+----
+
+[source,bash]
+----
+terraform plan \
+  -var-file "environments/${ENVIRONMENT}/terraform.tfvars" \
+  -out=./.terraform/tf.plan
+----
+
+[source,bash]
+----
+terraform apply --auto-approve ./.terraform/tf.plan
+----
+
+[source,bash]
+----
+terraform destroy \
+  -var-file "environments/${ENVIRONMENT}/terraform.tfvars"
+----
+
+== Manual Installation
+
+https://z2jh.jupyter.org/en/stable/jupyterhub/installation.html
+
+.Add Helm chart repository
+[source,bash]
+----
+helm repo add jupyterhub https://hub.jupyter.org/helm-chart/
+helm repo update
+----
+
+.List available version
+[source,bash]
+----
+helm search repo jupyterhub
+----
+
+.Set namespace and chart version
+[source,bash]
+----
+export JH_NAMESPACE="jupyterhub"
+export JH_CHART_VERSION="3.1.0"
+----
+
+.Install JupyterHub
+[source,bash]
+----
+helm upgrade --cleanup-on-fail \
+  --install jupyterhub jupyterhub/jupyterhub \
+  --namespace "${JH_NAMESPACE}" \
+  --create-namespace \
+  --version=${JH_CHART_VERSION} \
+  --values values.yaml
+----
+
+== Use
+
+=== Websites
+
+* https://jupyterhub.lecture.codelabs.dev

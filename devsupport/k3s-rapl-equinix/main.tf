@@ -317,7 +317,7 @@ EOT
     packages        = [
       "kernel-ml", "kernel-ml-tools", "perf",
       "msr-tools", "sysfsutils",
-      "firewalld",
+      "firewalld", "bind-utils",
       "docker-ce", "docker-ce-cli", "containerd.io", "docker-compose-plugin", "docker-buildx-plugin", "fuse-overlayfs",
       "python3", "pip",
       "vim", "tmux", "jq",

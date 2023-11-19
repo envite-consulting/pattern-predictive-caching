@@ -10,7 +10,7 @@ locals {
 resource "aws_cognito_user_pool" "main" {
   name = var.subdomain
 
-  alias_attributes = ["email", "preferred_username"]
+  username_attributes = ["email"]
 
   username_configuration {
     case_sensitive = false
@@ -90,6 +90,14 @@ data "aws_iam_policy_document" "lambda_cognito_email_domain_verify_basic_executi
   }
 }
 
+resource "aws_lambda_permission" "cognito_email_domain_verify" {
+  statement_id  = "AllowExecutionFromCognito"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.cognito_email_domain_verify.function_name
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.main.arn
+}
+
 resource "aws_lambda_function" "cognito_email_domain_verify" {
   filename      = data.archive_file.lambda_cognito_email_domain_verify.output_path
   function_name = local.lambda_cognito_email_domain_verify_name
@@ -101,6 +109,7 @@ resource "aws_lambda_function" "cognito_email_domain_verify" {
   runtime = "nodejs20.x"
 }
 
+# https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
 data "archive_file" "lambda_cognito_email_domain_verify" {
   type        = "zip"
   output_path = "${path.module}/target/lambda/${local.lambda_cognito_email_domain_verify_name}.zip"
@@ -192,6 +201,14 @@ resource "aws_iam_policy_attachment" "cognito_add_user_to_group" {
   policy_arn = aws_iam_policy.cognito_add_user_to_group.arn
 }
 
+resource "aws_lambda_permission" "cognito_add_user_to_group" {
+  statement_id  = "AllowExecutionFromCognito"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.cognito_add_user_to_group.function_name
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.main.arn
+}
+
 resource "aws_lambda_function" "cognito_add_user_to_group" {
   filename      = data.archive_file.lambda_cognito_add_user_to_group.output_path
   function_name = local.lambda_cognito_add_user_to_group_name
@@ -200,59 +217,45 @@ resource "aws_lambda_function" "cognito_add_user_to_group" {
 
   source_code_hash = data.archive_file.lambda_cognito_add_user_to_group.output_base64sha256
 
-  runtime = "nodejs20.x"
+  runtime = "nodejs16.x"
 }
 
+# https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
 data "archive_file" "lambda_cognito_add_user_to_group" {
   type        = "zip"
   output_path = "${path.module}/target/lambda/${local.lambda_cognito_add_user_to_group_name}.zip"
 
   source {
-    filename = "index.ts"
+    filename = "index.js"
     content  = <<-EOT
-import { Callback, Context, PostConfirmationTriggerEvent } from "aws-lambda";
-import AWS from "aws-sdk";
+const AWS = require("aws-sdk");
 
-export async function main(event: PostConfirmationTriggerEvent, _context: Context, callback: Callback): Promise<void> {
+exports.handler = async (event, _context, callback) => {
   const { userPoolId, userName } = event;
-
-  var groupName:string = "${local.cognito_user_group_name}";
-  if (event.request.userAttributes.email && event.request.userAttributes.email.endsWith("@${var.admin_email_domain}")) {
-    groupName = "${local.cognito_admin_group_name}"
+  let groupName = "${local.cognito_user_group_name}";
+  if (event.request.userAttributes.email.endsWith("@${var.admin_email_domain}")) {
+    groupName = "${local.cognito_admin_group_name}";
   }
-
   try {
     await addUserToGroup({
       userPoolId,
       username: userName,
       groupName: groupName,
     });
-
     return callback(null, event);
   } catch (error) {
     return callback(error, event);
   }
-}
+};
 
-export function addUserToGroup({
-  userPoolId,
-  username,
-  groupName,
-}: {
-  userPoolId: string;
-  username: string;
-  groupName: string;
-}): Promise<{
-  $response: AWS.Response<Record<string, string>, AWS.AWSError>;
-}> {
+function addUserToGroup({ userPoolId, username, groupName }) {
   const params = {
     GroupName: groupName,
     UserPoolId: userPoolId,
     Username: username,
   };
-
   const cognitoIdp = new AWS.CognitoIdentityServiceProvider();
-  return cognitoIdp.addUserToGroup(params).promise();
+  return cognitoIdp.adminAddUserToGroup(params).promise();
 }
 EOT
   }
