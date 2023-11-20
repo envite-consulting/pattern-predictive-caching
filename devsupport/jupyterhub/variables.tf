@@ -28,3 +28,17 @@ variable "jupyterhub_chart_version" {
   default = "3.1.0"
   type = string
 }
+
+##################################
+# Cognito (AWS)                  #
+##################################
+
+variable "admin_email_domain" {
+  default = "envite.de"
+  type    = string
+}
+
+variable "user_email_domain" {
+  default = "hft-stuttgart.de"
+  type    = string
+}

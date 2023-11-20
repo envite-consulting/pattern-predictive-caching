@@ -12,13 +12,6 @@ proxy:
   service:
     type: ClusterIP
 
-  chp:
-    extraPodSpec:
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
-
 ingress:
   enabled: true
   ingressClassName: traefik
@@ -28,53 +21,37 @@ ingress:
     - ${jupyterhub_fqdn}
 
 hub:
-  config:
-    # https://tljh.jupyter.org/en/latest/howto/auth/awscognito.html
-    GenericOAuthenticator:
-      client_id: ${cognito_app_id}
-      client_secret: ${cognito_app_secret}
-      oauth_callback_url: https://${jupyterhub_fqdn}/hub/oauth_callback
-
-      authorize_url: https://${cognito_domain}/oauth2/authorize
-      token_url: https://${cognito_domain}/oauth2/token
-      userdata_url: https://${cognito_domain}/oauth2/userInfo
-      logout_redirect_url: https://${cognito_domain}/oauth2/logout
-
-      login_service: AWS Cognito
-      username_key: username
-      userdata_method: POST
-
-      claim_groups_key: cognito:groups
-      allowed_groups:
-        - user
-      admin_groups:
-        - admin
-
-    JupyterHub:
-      authenticator_class: generic-oauth
-      admin_access: true
-
-  extraPodSpec:
-    dnsConfig:
-      options:
-        - name: ndots
-          value: "1"
+  config: {}
+  # https://tljh.jupyter.org/en/latest/howto/auth/awscognito.html
+  extraConfig:
+    10_email_domain_as_group.py: |
+      def email_domain_as_group(user_data_resp_json):
+        email = user_data_resp_json['email']
+        domain = email[email.index('@') + 1 : ]
+        return [domain]
+    20_authenticator.py: |
+      from oauthenticator.generic import GenericOAuthenticator
+      c.JupyterHub.authenticator_class = GenericOAuthenticator
+      c.JupyterHub.admin_access = True
+      
+      c.GenericOAuthenticator.client_id = "${cognito_app_id}"
+      c.GenericOAuthenticator.client_secret = "${cognito_app_secret}"
+      c.GenericOAuthenticator.oauth_callback_url = "https://${jupyterhub_fqdn}/hub/oauth_callback"
+      
+      c.GenericOAuthenticator.authorize_url = "https://${cognito_domain}/oauth2/authorize"
+      c.GenericOAuthenticator.token_url = "https://${cognito_domain}/oauth2/token"
+      c.GenericOAuthenticator.userdata_url = "https://${cognito_domain}/oauth2/userInfo"
+      c.GenericOAuthenticator.logout_redirect_url = "https://${cognito_domain}/oauth2/logout"
+      
+      c.GenericOAuthenticator.login_service = "AWS Cognito"
+      c.GenericOAuthenticator.username_key = "username"
+      c.GenericOAuthenticator.userdata_method = "POST"
+      
+      c.GenericOAuthenticator.allowed_groups = ["${admin_email_domain}", "${user_email_domain}"]
+      c.GenericOAuthenticator.admin_groups = ["${admin_email_domain}"]
+      c.GenericOAuthenticator.claim_groups_key = email_domain_as_group
 
 singleuser:
   cloudMetadata:
     blockWithIptables: true
     ip: 192.80.8.124
-
-  extraPodConfig:
-    dnsConfig:
-      options:
-        - name: ndots
-          value: "1"
-
-  scheduling:
-    userScheduler:
-      extraPodSpec:
-        dnsConfig:
-          options:
-            - name: ndots
-              value: "1"

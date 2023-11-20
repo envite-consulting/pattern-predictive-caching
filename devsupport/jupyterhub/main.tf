@@ -48,6 +48,8 @@ data "template_file" "jupyterhub_values" {
     cognito_app_id     = aws_cognito_user_pool_client.main.id
     cognito_app_secret = aws_cognito_user_pool_client.main.client_secret
     cognito_domain     = "${replace(local.fqdn, ".", "-")}.auth.${data.aws_region.current.name}.amazoncognito.com"
+    admin_email_domain = var.admin_email_domain
+    user_email_domain  = var.user_email_domain
   }
 }
 
@@ -57,6 +59,8 @@ resource "helm_release" "jupyterhub" {
   repository = "https://hub.jupyter.org/helm-chart/"
   chart      = "jupyterhub"
   version    = var.jupyterhub_chart_version
+
+  create_namespace = true
 
   values = [
     data.template_file.jupyterhub_values.rendered
