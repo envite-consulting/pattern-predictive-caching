@@ -2,10 +2,6 @@
 # Common                        #
 #################################
 
-locals {
-  host_fqdn = "${var.hostname}.${local.fqdn}"
-}
-
 data "equinix_metal_project" "project" {
   name = var.project
 }
@@ -220,23 +216,42 @@ EOT
     {
       path    = "/var/lib/rancher/k3s/server/manifests/traefik-dashboard.yaml"
       content = <<-EOT
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+---
+apiVersion: v1
+kind: Service
 metadata:
   name: traefik-dashboard-external
   namespace: kube-system
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`traefik.${local.fqdn}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
-      middlewares:
-        - name: auth-admin
-          namespace: kube-system
-      services:
-        - kind: TraefikService
-          name: api@internal
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: traefik
+  selector:
+    app.kubernetes.io/instance: traefik-kube-system
+    app.kubernetes.io/name: traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-auth-admin@kubernetescrd
+  name: traefik-dashboard-external
+  namespace: kube-system
+spec:
+  rules:
+    - host: traefik.${local.fqdn}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: traefik-dashboard-external
+                port:
+                  name: http
 EOT
     },
     {
@@ -311,7 +326,7 @@ EOT
       ]
     }
 
-    write_files = concat(local.yum_repo_files, local.certificate_files, local.traefik_manifest_files)
+    write_files = concat(local.yum_repo_files, local.certificate_files, local.traefik_manifest_files, local.external_dns_manifest_files)
 
     package_upgrade = true
     packages        = [

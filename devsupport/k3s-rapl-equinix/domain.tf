@@ -3,7 +3,8 @@
 #################################
 
 locals {
-  fqdn = "${var.subdomain}.${var.route53_public_main_zone}"
+  fqdn      = "${var.subdomain}.${var.route53_public_main_zone}"
+  host_fqdn = "${var.hostname}.${local.fqdn}"
 }
 
 data "aws_route53_zone" "main" {
@@ -22,11 +23,11 @@ resource "aws_route53_record" "public_ns" {
   records = aws_route53_zone.public.name_servers
 }
 
-resource "aws_route53_record" "public_wildcard" {
+resource "aws_route53_record" "public_host" {
   count = var.host_enabled ? 1 : 0
 
   zone_id = aws_route53_zone.public.zone_id
-  name    = "*.${aws_route53_zone.public.name}"
+  name    = local.host_fqdn
   type    = "A"
   ttl     = "300"
   records = [equinix_metal_device.host[0].access_public_ipv4]

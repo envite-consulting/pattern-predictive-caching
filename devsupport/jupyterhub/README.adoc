@@ -25,7 +25,7 @@ export AWS_REGION='eu-north-1'
 [source,bash]
 ----
 mkdir target
-scp root@docker.lecture.codelabs.dev:/etc/rancher/k3s/k3s.yaml target/
+scp root@k3s.lecture.codelabs.dev:/etc/rancher/k3s/k3s.yaml target/
 export KUBECONFIG="$(pwd)/target/k3s.yaml"
 export KUBE_CONFIG_PATH="${KUBECONFIG}"
 export KUBE_CTX="default"
