@@ -84,12 +84,22 @@ variable "web_admin_password" {
 # Cognito (AWS)                  #
 ##################################
 
-variable "admin_email_domain" {
-  default = "envite.de"
-  type    = string
+variable "auto_verify_domains" {
+  default = ["envite.de"]
+  type    = list(string)
 }
 
-variable "auto_verify_email_domain" {
-  default = "hft-stuttgart.de"
-  type    = string
+variable "admin_domains" {
+  default = ["envite.de"]
+  type    = list(string)
+}
+
+variable "admin_group_name" {
+  default = "admin"
+  type = string
+}
+
+variable "user_group_name" {
+  default = "user"
+  type = string
 }

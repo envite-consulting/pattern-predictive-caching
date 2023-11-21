@@ -23,6 +23,7 @@ resource "aws_cognito_user_pool_client" "main" {
 
   supported_identity_providers         = ["COGNITO"]
   callback_urls                        = ["https://${local.jupyterhub_fqdn}/hub/oauth_callback"]
+  logout_urls                          = ["https://${local.jupyterhub_fqdn}/"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["openid"]
@@ -45,11 +46,12 @@ data "template_file" "jupyterhub_values" {
   template = file("${path.module}/values.yaml")
   vars     = {
     jupyterhub_fqdn    = local.jupyterhub_fqdn
+    jupyterhub_logout_url_encoded = urlencode("https://${local.jupyterhub_fqdn}/")
     cognito_app_id     = aws_cognito_user_pool_client.main.id
     cognito_app_secret = aws_cognito_user_pool_client.main.client_secret
     cognito_domain     = "${replace(local.fqdn, ".", "-")}.auth.${data.aws_region.current.name}.amazoncognito.com"
-    admin_email_domain = var.admin_email_domain
-    user_email_domain  = var.user_email_domain
+    allowed_domains    = jsonencode(var.allowed_domains)
+    admin_domains      = jsonencode(var.admin_domains)
   }
 }
 

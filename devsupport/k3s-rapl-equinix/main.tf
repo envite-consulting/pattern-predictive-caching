@@ -165,6 +165,26 @@ EOT
     }
   ]
 
+  powercap_permissions_systemd_files = [
+    {
+      path    = "/etc/systemd/system/powercap-readable.service"
+      content = <<-EOT
+[Unit]
+Description=Set Powercap readable to anybody
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/bin/bash -c 'find /sys/ -name energy_uj -exec chmod 0444 {} \;'
+ExecStop=/bin/bash -c 'find /sys/ -name energy_uj -exec chmod 0400 {} \;'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOT
+    }
+  ]
+
   certificate_files = [
     {
       path        = "/etc/pki/tls/private/${local.fqdn}.pem"
@@ -326,12 +346,12 @@ EOT
       ]
     }
 
-    write_files = concat(local.yum_repo_files, local.certificate_files, local.traefik_manifest_files, local.external_dns_manifest_files)
+    write_files = concat(local.yum_repo_files, local.powercap_permissions_systemd_files, local.certificate_files, local.traefik_manifest_files, local.external_dns_manifest_files)
 
     package_upgrade = true
     packages        = [
       "kernel-ml", "kernel-ml-tools", "perf",
-      "msr-tools", "sysfsutils",
+      "msr-tools",
       "firewalld", "bind-utils",
       "docker-ce", "docker-ce-cli", "containerd.io", "docker-compose-plugin", "docker-buildx-plugin", "fuse-overlayfs",
       "python3", "pip",
@@ -355,6 +375,8 @@ EOT
       ["firewall-cmd", "--zone=public", "--permanent", "--add-port=6443/tcp"], # apiserver
       ["firewall-cmd", "--zone=trusted", "--permanent", "--add-source=10.42.0.0/16"], # pods
       ["firewall-cmd", "--zone=trusted", "--permanent", "--add-source=10.43.0.0/16"], # services
+
+      ["systemctl", "enable", "powercap-readable"],
 
       ["systemctl", "enable", "docker"],
 
@@ -381,6 +403,8 @@ resource "equinix_metal_device" "host" {
   operating_system = "alma_9"
   user_data        = "#cloud-config\n${yamlencode(local.cloud_config)}"
   hostname         = local.host_fqdn
+
+  always_pxe = "false"
 
   termination_time = timeadd(timestamp(), var.terminate_in)
 

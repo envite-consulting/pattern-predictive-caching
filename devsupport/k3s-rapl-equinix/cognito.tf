@@ -2,11 +2,6 @@
 # Pool                          #
 #################################
 
-locals {
-  cognito_admin_group_name = "admin"
-  cognito_user_group_name  = "user"
-}
-
 resource "aws_cognito_user_pool" "main" {
   name = var.subdomain
 
@@ -30,14 +25,14 @@ resource "aws_cognito_user_pool_domain" "main" {
 }
 
 resource "aws_cognito_user_group" "admin" {
-  name         = local.cognito_admin_group_name
+  name         = var.admin_group_name
   user_pool_id = aws_cognito_user_pool.main.id
   description  = "Admin group managed by Terraform"
   precedence   = 1
 }
 
 resource "aws_cognito_user_group" "user" {
-  name         = local.cognito_user_group_name
+  name         = var.user_group_name
   user_pool_id = aws_cognito_user_pool.main.id
   description  = "User group managed by Terraform"
   precedence   = 2
@@ -118,9 +113,16 @@ data "archive_file" "lambda_cognito_email_domain_verify" {
     filename = "index.js"
     content  = <<-EOT
 exports.handler = function(event, context) {
-  // Log the event information for debugging purposes.
   console.log('Received event:', JSON.stringify(event, null, 2));
-  if (event.request.userAttributes.email.endsWith("@${var.admin_email_domain}") || event.request.userAttributes.email.endsWith("@${var.auto_verify_email_domain}")) {
+
+  let auto_verify = false;
+  for (const [index, domain] of ${jsonencode(var.auto_verify_domains)}.entries()) {
+    if (event.request.userAttributes.email.endsWith("@" + domain)) {
+      auto_verify = true;
+    }
+  }
+
+  if (auto_verify) {
     console.log ("This is an approved email address. Proceeding to send verification email.");
     event.response.emailSubject = "Signup Verification Code";
     event.response.emailMessage = "Thank you for signing up. " + event.request.codeParameter + " is your verification code.";
@@ -232,10 +234,14 @@ const AWS = require("aws-sdk");
 
 exports.handler = async (event, _context, callback) => {
   const { userPoolId, userName } = event;
-  let groupName = "${local.cognito_user_group_name}";
-  if (event.request.userAttributes.email.endsWith("@${var.admin_email_domain}")) {
-    groupName = "${local.cognito_admin_group_name}";
+
+  let groupName = "${var.user_group_name}";
+  for (const [index, domain] of ${jsonencode(var.admin_domains)}.entries()) {
+    if (event.request.userAttributes.email.endsWith("@" + domain)) {
+      groupName = "${var.admin_group_name}";
+    }
   }
+
   try {
     await addUserToGroup({
       userPoolId,

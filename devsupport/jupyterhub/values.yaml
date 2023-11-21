@@ -23,6 +23,7 @@ ingress:
 hub:
   config: {}
   # https://tljh.jupyter.org/en/latest/howto/auth/awscognito.html
+  # https://jupyterhub.readthedocs.io/en/stable/reference/urls.html
   extraConfig:
     10_email_domain_as_group.py: |
       def email_domain_as_group(user_data_resp_json):
@@ -31,6 +32,7 @@ hub:
         return [domain]
     20_authenticator.py: |
       from oauthenticator.generic import GenericOAuthenticator
+      
       c.JupyterHub.authenticator_class = GenericOAuthenticator
       c.JupyterHub.admin_access = True
       
@@ -41,17 +43,53 @@ hub:
       c.GenericOAuthenticator.authorize_url = "https://${cognito_domain}/oauth2/authorize"
       c.GenericOAuthenticator.token_url = "https://${cognito_domain}/oauth2/token"
       c.GenericOAuthenticator.userdata_url = "https://${cognito_domain}/oauth2/userInfo"
-      c.GenericOAuthenticator.logout_redirect_url = "https://${cognito_domain}/oauth2/logout"
+      c.GenericOAuthenticator.logout_redirect_url = "https://${cognito_domain}/logout?client_id=${cognito_app_id}&logout_uri=${jupyterhub_logout_url_encoded}"
       
       c.GenericOAuthenticator.login_service = "AWS Cognito"
-      c.GenericOAuthenticator.username_key = "username"
+      c.GenericOAuthenticator.username_key = "email"
       c.GenericOAuthenticator.userdata_method = "POST"
       
-      c.GenericOAuthenticator.allowed_groups = ["${admin_email_domain}", "${user_email_domain}"]
-      c.GenericOAuthenticator.admin_groups = ["${admin_email_domain}"]
+      c.GenericOAuthenticator.allowed_groups = ${allowed_domains}
+      c.GenericOAuthenticator.admin_groups = ${admin_domains}
       c.GenericOAuthenticator.claim_groups_key = email_domain_as_group
 
 singleuser:
   cloudMetadata:
     blockWithIptables: true
     ip: 192.80.8.124
+
+  storage:
+    extraVolumeMounts:
+      - mountPath: /proc
+        name: proc
+        readOnly: false
+      - mountPath: /sys
+        name: sys
+        readOnly: true
+    extraVolumes:
+      - hostPath:
+          path: /proc
+          type: "Directory"
+        name: proc
+      - hostPath:
+          path: /sys
+          type: "Directory"
+        name: sys
+
+  cpu:
+    limit: 4
+    guarantee: 1
+  memory:
+    limit: 4G
+    guarantee: 2G
+
+# https://github.com/jupyterhub/jupyterhub-idle-culler#as-a-standalone-script
+cull:
+  enabled: true
+  users: false # --cull-users
+  adminUsers: false # --cull-admin-users
+  removeNamedServers: false # --remove-named-servers
+  timeout: 3600 # --timeout
+  every: 3600 # --cull-every
+  concurrency: 1 # --concurrency
+  maxAge: 0 # --max-age
