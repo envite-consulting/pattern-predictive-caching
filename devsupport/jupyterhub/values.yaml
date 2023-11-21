@@ -60,17 +60,17 @@ singleuser:
 
   storage:
     extraVolumeMounts:
-      - mountPath: /proc
-        name: proc
-        readOnly: false
+      - mountPath: /proc/cpuinfo
+        name: cpuinfo
+        readOnly: true
       - mountPath: /sys
         name: sys
         readOnly: true
     extraVolumes:
       - hostPath:
-          path: /proc
-          type: "Directory"
-        name: proc
+          path: /proc/cpuinfo
+          type: "File"
+        name: cpuinfo
       - hostPath:
           path: /sys
           type: "Directory"
