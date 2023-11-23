@@ -357,9 +357,7 @@ EOT
       "python3", "pip",
       "vim", "tmux", "jq",
       "wget", "telnet", "nc", "openssl", "ca-certificates",
-      "gnupg",
-      "htop", "btop", "glances",
-      "stress-ng"
+      "htop", "btop", "glances"
     ]
 
     runcmd = [

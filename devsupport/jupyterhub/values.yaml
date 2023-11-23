@@ -54,9 +54,21 @@ hub:
       c.GenericOAuthenticator.claim_groups_key = email_domain_as_group
 
 singleuser:
-  cloudMetadata:
-    blockWithIptables: true
-    ip: 192.80.8.124
+  image:
+    name: enviteconsulting/jupyterlab-gswe-ki-ml-exercise
+    tag: 0.1.0
+
+  # https://z2jh.jupyter.org/en/latest/jupyterhub/customizing/user-environment.html#using-nbgitpuller-to-synchronize-a-folder
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          [
+            "gitpuller",
+            "https://gitlab.com/envite-consulting/gswe-lecture-public/ki-ml-exercise.git",
+            "main",
+            "ki-ml-exercise",
+          ]
 
   storage:
     extraVolumeMounts:
@@ -75,6 +87,10 @@ singleuser:
           path: /sys
           type: "Directory"
         name: sys
+
+  cloudMetadata:
+    blockWithIptables: true
+    ip: 192.80.8.124
 
   cpu:
     limit: 4
