@@ -45,13 +45,14 @@ resource "aws_cognito_user_pool_client" "main" {
 data "template_file" "jupyterhub_values" {
   template = file("${path.module}/values.yaml")
   vars     = {
-    jupyterhub_fqdn    = local.jupyterhub_fqdn
+    jupyterhub_fqdn               = local.jupyterhub_fqdn
     jupyterhub_logout_url_encoded = urlencode("https://${local.jupyterhub_fqdn}/")
-    cognito_app_id     = aws_cognito_user_pool_client.main.id
-    cognito_app_secret = aws_cognito_user_pool_client.main.client_secret
-    cognito_domain     = "${replace(local.fqdn, ".", "-")}.auth.${data.aws_region.current.name}.amazoncognito.com"
-    allowed_domains    = jsonencode(var.allowed_domains)
-    admin_domains      = jsonencode(var.admin_domains)
+    cognito_app_id                = aws_cognito_user_pool_client.main.id
+    cognito_app_secret            = aws_cognito_user_pool_client.main.client_secret
+    cognito_domain                = "${replace(local.fqdn, ".", "-")}.auth.${data.aws_region.current.name}.amazoncognito.com"
+    allow_all_domains             = var.allow_all_domains
+    allowed_domains               = jsonencode(var.allowed_domains)
+    admin_domains                 = jsonencode(var.admin_domains)
   }
 }
 

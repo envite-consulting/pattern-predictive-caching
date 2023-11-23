@@ -4,5 +4,6 @@ subdomain                = "lecture"
 
 jupyterhub_chart_version = "3.1.0"
 
-allowed_domains = ["envite.de", "hft-stuttgart.de"]
-admin_domains       = ["envite.de"]
+allow_all_domains = true
+allowed_domains   = ["envite.de", "hft-stuttgart.de"]
+admin_domains     = ["envite.de"]

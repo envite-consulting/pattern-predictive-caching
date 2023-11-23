@@ -34,6 +34,11 @@ variable "jupyterhub_chart_version" {
 # Cognito (AWS)                  #
 ##################################
 
+variable "allow_all_domains" {
+  default = false
+  type    = bool
+}
+
 variable "allowed_domains" {
   default = ["envite.de"]
   type    = list(string)

@@ -29,7 +29,12 @@ hub:
       def email_domain_as_group(user_data_resp_json):
         email = user_data_resp_json['email']
         domain = email[email.index('@') + 1 : ]
-        return [domain]
+        if domain in ${admin_domains}:
+          return ["admin"]
+        elif domain in ${allowed_domains}:
+          return ["user"]
+        else:
+          return ["anonymous"]
     20_authenticator.py: |
       from oauthenticator.generic import GenericOAuthenticator
       
@@ -49,8 +54,8 @@ hub:
       c.GenericOAuthenticator.username_key = "email"
       c.GenericOAuthenticator.userdata_method = "POST"
       
-      c.GenericOAuthenticator.allowed_groups = ${allowed_domains}
-      c.GenericOAuthenticator.admin_groups = ${admin_domains}
+      c.GenericOAuthenticator.allowed_groups = ["user"%{ if allow_all_domains },"anonymous"%{ endif }]
+      c.GenericOAuthenticator.admin_groups = ["admin"]
       c.GenericOAuthenticator.claim_groups_key = email_domain_as_group
 
 singleuser:
@@ -64,6 +69,9 @@ singleuser:
       exec:
         command:
           [
+            "tini",
+            "--",
+            "/usr/local/bin/_entrypoint.sh",
             "gitpuller",
             "https://gitlab.com/envite-consulting/gswe-lecture-public/ki-ml-exercise.git",
             "main",
