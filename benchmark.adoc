@@ -70,41 +70,37 @@ Configuration:
 === 100 Users and 250 Requests Per User
 
 * Without optimization:
-** 2023-11-16 22:01:27 to 2023-11-16 22:06:43
-*** Benchmark: https://grafana.lecture.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=default&tab=query&from=1700168487546&to=1700168803104
-*** Technical: https://grafana.lecture.codelabs.dev/d/7V26irrMz/application-technical?orgId=1&from=1700168487000&to=1700168803000
-*** Scaphandre: https://grafana.lecture.codelabs.dev/d/GOHnbBO7z/scaphandre?orgId=1&from=1700168487000&to=1700168803000
+**
+*** Benchmark:
+*** Technical:
+*** Scaphandre:
 
 * With Http client-side cache:
-** 2023-11-16 22:12:55 to 2023-11-16 22:17:33
-*** Benchmark: https://grafana.lecture.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=cache&tab=query&from=1700169175868&to=1700169453299
-*** Technical: https://grafana.lecture.codelabs.dev/d/7V26irrMz/application-technical?orgId=1&from=1700169175000&to=1700169453000
-*** Scaphandre: https://grafana.lecture.codelabs.dev/d/GOHnbBO7z/scaphandre?orgId=1&from=1700169175000&to=1700169453000
+**
+*** Benchmark:
+*** Technical:
+*** Scaphandre:
 
 === 200 Users and 125 Requests Per User
 
 * Without optimization:
-** 2023-11-16 22:22:40 to 2023-11-16 22:27:30
-*** Benchmark: https://grafana.lecture.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=default&tab=query&from=1700169760656&to=1700170050486
-*** Technical: https://grafana.lecture.codelabs.dev/d/7V26irrMz/application-technical?orgId=1&from=1700169760000&to=1700170050000
-*** Scaphandre: https://grafana.lecture.codelabs.dev/d/GOHnbBO7z/scaphandre?orgId=1&from=1700169760000&to=1700170050000
+** 2023-11-28 17:49:50 to 2023-11-28 17:54:46
+*** Benchmark: https://grafana.talk.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&from=1701190190720&to=1701190486296&var-variant=default
 
 * With Http client-side cache:
-** 2023-11-16 22:30:52 to 2023-11-16 22:33:15
-*** Benchmark: https://grafana.lecture.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=cache&tab=query&from=1700170252533&to=1700170395099
-*** Technical: https://grafana.lecture.codelabs.dev/d/7V26irrMz/application-technical?orgId=1&from=1700170252000&to=1700170395000
-*** Scaphandre: https://grafana.lecture.codelabs.dev/d/GOHnbBO7z/scaphandre?orgId=1&from=1700170252000&to=1700170395000
+** 2023-11-28 18:03:12 to 2023-11-28 18:05:31
+*** Benchmark: https://grafana.talk.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&from=1701190992200&to=1701191131195&var-variant=cache
 
 === 1000 Users and 25 Requests Per User
 
 * Without optimization:
-** 2023-11-16 22:37:38 to 2023-11-16 22:42:20
-*** Benchmark: https://grafana.lecture.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=default&tab=query&from=1700170658914&to=1700170940826
-*** Technical: https://grafana.lecture.codelabs.dev/d/7V26irrMz/application-technical?orgId=1&from=1700170658000&to=1700170940000
-*** Scaphandre: https://grafana.lecture.codelabs.dev/d/GOHnbBO7z/scaphandre?orgId=1&from=1700170658000&to=1700170940000
+**
+*** Benchmark:
+*** Technical:
+*** Scaphandre:
 
 * With Http client-side cache:
-** 2023-11-16 22:45:19 to 2023-11-16 22:46:05
-*** Benchmark: https://grafana.lecture.codelabs.dev/d/659db77a-2094-4e6a-8e4f-9b48282fea5b/benchmark-evaluation?orgId=1&var-variant=cache&tab=query&from=1700171119777&to=1700171165175
-*** Technical: https://grafana.lecture.codelabs.dev/d/7V26irrMz/application-technical?orgId=1&from=1700171119000&to=1700171165000
-*** Scaphandre: https://grafana.lecture.codelabs.dev/d/GOHnbBO7z/scaphandre?orgId=1&from=1700171100000&to=1700171165000
+**
+*** Benchmark:
+*** Technical:
+*** Scaphandre:
